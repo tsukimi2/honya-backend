@@ -3,10 +3,15 @@
 /**
  * Module dependencies.
  */
-
+/*
 var app = require('../app');
 var debug = require('debug')('honya-backend:server');
 var http = require('http');
+*/
+import app from '../app.js'
+import debug from 'debug'
+debug('honya-backend:server')
+import http from 'http'
 
 /**
  * Get port from environment and store in Express.
@@ -86,5 +91,6 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  // debug('Listening on ' + bind);
+  console.info('Listening on ' + bind)
 }
