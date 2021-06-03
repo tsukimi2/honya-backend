@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node -r dotenv/config ./bin/www.js",
-    "dev": "DEBUG=honya-backend:* node -r dotenv/config ./bin/www.js"
+    "start": "node -r dotenv/config ./src/bin/www.js",
+    "dev": "DEBUG=honya-backend:* node -r dotenv/config ./src/bin/www.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
