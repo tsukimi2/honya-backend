@@ -1,9 +1,10 @@
+import { UnauthorizedError } from '../errors/UnauthorizedError.js'
+
 export const register = (req, res) => {
   if(!req || (req && !req.user)) {
-    res.status(401).json({
-      err: 'AuthErr',
-      errmsg: 'User registration failed'
-    })
+    console.log('Error in auth.controll.er.js register')
+    console.log('Missing user profile in request')
+    throw new UnauthorizedError('User registration failed')
   }
 
   const { username, email } = req.user

@@ -1,5 +1,7 @@
 import passport from 'passport'
 import passportLocal from  'passport-local'
+import { DatabaseError } from '../errors/DatabaseError.js'
+import { UnauthorizedError } from '../errors/UnauthorizedError.js'
 import User from '../user/user.model.js'
 
 /*
@@ -34,7 +36,9 @@ passport.use(
         })
         return next(null, user)
       } catch(err) {
-        next(err)
+        next(new UnauthorizedError('Failed to create user', {
+          err,
+        }))
       }
     }
   )
