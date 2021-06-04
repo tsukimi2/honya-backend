@@ -2,7 +2,8 @@ import mongoose from 'mongoose'
 
 mongoose.connect('mongodb://localhost/honya', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useCreateIndex: true,
 })
 
 const db = mongoose.connection;

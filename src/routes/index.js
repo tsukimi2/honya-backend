@@ -1,14 +1,7 @@
-import express from 'express'
-const router = express.Router()
+import authRoutes from '../auth/auth.routes.js'
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  // res.render('index', { title: 'Express' });
-  res.status(200).json({
-    data: {
-      message: 'Konnichiwa'
-    }
-  })
-});
+const API_PREFIX = '/api/v1'
 
-export default router
+export function bindRoutes(app) {
+  app.use(API_PREFIX, authRoutes)
+}
