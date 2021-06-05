@@ -1,6 +1,6 @@
-import { UserFacingError } from "./UserFacingError.js";
+import UserFacingError from "./UserFacingError.js";
 
-export class UnauthorizedError extends UserFacingError {
+export default class UnauthorizedError extends UserFacingError {
   constructor(message='Unauthorized error', options={}) {
     super(message, options)
   }

@@ -1,6 +1,8 @@
-import { UnauthorizedError } from '../errors/UnauthorizedError.js'
+import UnauthorizedError from '../errors/UnauthorizedError.js'
 
 export const register = (req, res) => {
+  // validationResult(req).throw();
+
   if(!req || (req && !req.user)) {
     console.log('Error in auth.controll.er.js register')
     console.log('Missing user profile in request')

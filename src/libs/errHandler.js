@@ -1,5 +1,5 @@
-import { UserFacingError } from '../errors/UserFacingError.js';
-import { DatabaseError } from '../errors/DatabaseError.js';
+import UserFacingError from '../errors/UserFacingError.js';
+import DatabaseError from '../errors/DatabaseError.js';
 
 const errHandler = (err, req, res, next) => {
   console.log(err)

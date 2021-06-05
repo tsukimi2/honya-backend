@@ -1,4 +1,4 @@
-export class UserFacingError extends Error {
+export default class UserFacingError extends Error {
   constructor(message, options={}) {
     super(message)
     

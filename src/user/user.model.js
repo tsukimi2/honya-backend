@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     minLength: 3,
     maxLength: 20,
   },
-  password: {
+  hashed_password: {
     type: String,
     required: true,
   },
@@ -18,12 +18,21 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-})
+  role: {
+    type: String,
+    defaut: 'user',
+    enum: [ 'user', 'supervisor', 'admin' ]
+  },
+  history: {
+    type: Array,
+    default: []
+  }
+}, { timestamp: true })
 
+/*
 UserSchema.pre(
   'save',
   async function(next) {
-    console.log('User pre save')
     // const user = this
     const saltRounds = 10
     const hash = await bcrypt.hash(this.password, saltRounds)
@@ -31,6 +40,18 @@ UserSchema.pre(
     next()
   }
 )
+*/
+
+UserSchema.virtual('password')
+  .set(function(password) {
+    this._password = password
+    const saltRounds = 10
+    this.hashed_password = bcrypt.hashSync(password, saltRounds)
+  })
+  .get(function() {
+    // return this._password
+    return this.hashed_password
+  })
 
 UserSchema.methodsisValidPassword = async (password) => bcrypt.compare(password, this.password)
 
