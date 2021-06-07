@@ -1,7 +1,7 @@
 import express from 'express'
 import passport from 'passport'
 import { body } from 'express-validator'
-import { register } from './auth.controller.js'
+import { register, login, logout } from './auth.controller.js'
 import validator from '../libs/validator.js'
 const router = express.Router()
 
@@ -13,8 +13,7 @@ router.get('/', (req, res, next) => {
   })    
 })
 
-router.post(
-  '/register',
+router.post('/register',
   body('username')
     .isAlphanumeric()
     .withMessage('Username must contain only alphnumeric characters')
@@ -32,12 +31,11 @@ router.post(
   register
 )
 
-router.post('/login', (req, res, next) => {
+router.post('/login',
+  passport.authenticate('login', { session: false }),
+  login
+)
 
-})
-
-router.post('/logout', (req, res, next) => {
-
-})
+router.post('/logout', logout)
 
 export default router

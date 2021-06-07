@@ -1,6 +1,8 @@
 import passport from 'passport'
 import passportLocal from  'passport-local'
+import bcrypt from 'bcrypt'
 import DatabaseError from '../errors/DatabaseError.js'
+import UnauthorizedError from '../errors/UnauthorizedError.js'
 import User from '../user/user.model.js'
 
 /*
@@ -31,13 +33,46 @@ passport.use(
         const user = await User.create({
           username,
           password,
-          email
+          email,
         })
 
         return next(null, user)
       } catch(err) {
         next(new DatabaseError('Failed to create user', {
           err,
+        }))
+      }
+    }
+  )
+)
+
+passport.use(
+  'login',
+  new localStrategy(
+    {
+      usernameField: 'username',
+      passwordField: 'password',
+    },
+    async (username, password, next) => {
+      try {
+        // find user
+        const user = await User.findOne({ username })
+        if(!user) {
+          // return next(null, false, { message: 'Invalid username/password' })
+          return next(new UnauthorizedError('Invalid username/password'))
+        }
+
+        // validate password
+        const hasValidPassword = await user.isValidPassword(password)
+        if(!hasValidPassword) {
+          // return next(null, false, { message: 'Invalid username/password' })
+          return next(new UnauthorizedError('Invalid username/password'))
+        }
+
+        return next(null, user)
+      } catch(err) {
+        return next(new DatabaseError('Log in error', {
+          err
         }))
       }
     }

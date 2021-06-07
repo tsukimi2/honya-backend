@@ -4,6 +4,7 @@ mongoose.connect('mongodb://localhost/honya', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
+  useFindAndModify: false,
 })
 
 const db = mongoose.connection;
