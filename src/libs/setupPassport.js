@@ -1,6 +1,5 @@
 import passport from 'passport'
 import passportLocal from  'passport-local'
-import bcrypt from 'bcrypt'
 import DatabaseError from '../errors/DatabaseError.js'
 import UnauthorizedError from '../errors/UnauthorizedError.js'
 import User from '../user/user.model.js'

@@ -1,15 +1,13 @@
 import express from 'express'
 import { validateJwt } from '../auth/jwt.js'
+import { isAuth } from '../auth/auth.controller.js'
+import { attachUidParamToReq, getUserById } from './user.controller.js'
+
 const router = express.Router()
 
 /* GET users listing. */
-// isAuth
-router.get('/users/:userId', validateJwt, function(req, res, next) {
-  const user = req.user
+router.get('/users/:uid', validateJwt, isAuth, getUserById);
 
-  res.status(200).json({
-    message: 'Konnichiwa',
-  })
-});
+router.param('uid', attachUidParamToReq)
 
 export default router

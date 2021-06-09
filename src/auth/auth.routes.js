@@ -32,6 +32,15 @@ router.post('/register',
 )
 
 router.post('/login',
+  body('username')
+    .isAlphanumeric()
+    .withMessage('Username must contain only alphnumeric characters')
+    .isLength({ min: 3, max: 20 })
+    .withMessage('Username must have length between 3 and 20'),
+  body('password')
+    .isLength({ min: 8, max: 20 })
+    .withMessage('Password must be between 8 and 20 characters'),
+  validator,
   passport.authenticate('login', { session: false }),
   login
 )

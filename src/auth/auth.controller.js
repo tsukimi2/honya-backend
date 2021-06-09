@@ -4,11 +4,13 @@ import UnauthorizedError from '../errors/UnauthorizedError.js'
 import User from '../user/user.model.js'
 import { generateDatetime } from '../libs/datetime.js'
 import { generateJwt } from '../auth/jwt.js'
+import ForbiddenError from '../errors/ForbiddenError.js'
 
 const DEFAULT_SALTROUNDS = 10
 const JWT_SECRET = 'myjwtsecret'
-const ACCESS_TOKEN_EXPIRES_IN='10s'
+const ACCESS_TOKEN_EXPIRES_IN='1d'
 const ACCESS_TOKEN_EXPIRES_IN_SEC = 86400
+// const ACCESS_TOKEN_EXPIRES_IN_SEC = 10
 const REFRESH_TOKEN_EXPIRES_IN='60d'
 const REFRESH_TOKEN_EXPIRES_IN_SEC = 5184000
 
@@ -56,11 +58,6 @@ export const login = async (req, res) => {
     })
 
     // generate new access token
-    /*
-    const accessToken = await jwt.sign({ uid }, JWT_SECRET, {
-      expiresIn: ACCESS_TOKEN_EXPIRES_IN
-    })
-    */
     const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
     // set access token cookie
     res.cookie('accessToken', accessToken, {
@@ -69,11 +66,6 @@ export const login = async (req, res) => {
     })
 
     // generate new refresh token
-    /*
-    const refreshToken = await jwt.sign({ uid }, JWT_SECRET, {
-      expiresIn: REFRESH_TOKEN_EXPIRES_IN
-    })
-    */
     const refreshToken = await generateJwt({ uid }, REFRESH_TOKEN_EXPIRES_IN)
     // set refresh token cookie
     res.cookie('refreshToken', refreshToken, {
@@ -125,5 +117,13 @@ export const logout = (req, res) => {
   res.status(200).json({
     message: 'Log out successful'
   })
+}
 
+export const isAuth = (req, res, next) => {
+  const isAuthFlag = req.auth && req.user && req.auth._id === req.user._id
+  if(!isAuthFlag) {
+    throw new ForbiddenError('Access denied')
+  }
+
+  next()
 }
