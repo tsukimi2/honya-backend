@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
+import config from './config/index.js'
 
-mongoose.connect('mongodb://localhost/honya', {
+mongoose.connect(config.get('db:uri'), {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
