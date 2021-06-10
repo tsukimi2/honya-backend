@@ -2,13 +2,13 @@ import jwt from 'jsonwebtoken'
 import ForbiddenError from '../errors/ForbiddenError.js'
 import User from '../user/user.model.js'
 import { generateDatetime } from '../libs/datetime.js'
+import config from '../libs/config/index.js'
 
-const JWT_SECRET = 'myjwtsecret'
-const ACCESS_TOKEN_EXPIRES_IN='1d'
-const ACCESS_TOKEN_EXPIRES_IN_SEC = 86400
-// const ACCESS_TOKEN_EXPIRES_IN_SEC = 10
-const REFRESH_TOKEN_EXPIRES_IN='60d'
-const REFRESH_TOKEN_EXPIRES_IN_SEC = 5184000
+const JWT_SECRET = config.get('security:jwt:secret')
+const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
+const ACCESS_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt.access_token_expires_in_sec')
+const REFRESH_TOKEN_EXPIRES_IN = config.get('security:jwt:refresh_token_expires_in')
+const REFRESH_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt.refresh_token_expires_in_sec')
 
 const attachJwtPayloadToRequest = (req, { requestProperty='auth', payload, fieldsToInclude=[] }) => {
   req[requestProperty] = {}

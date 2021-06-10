@@ -1,0 +1,14 @@
+{
+  "app": {
+    "api_prefix": "/api/v1"
+  },
+  "db": {
+    "uri": "mongodb://localhost/honya"
+  },
+  "jwt": {
+    "secret": "myjwtsecret"
+  },
+  "server": {
+    "port": 8000
+  }
+}
