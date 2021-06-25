@@ -40,3 +40,16 @@ export const getUserById = async (req, res) => {
     }
   })
 }
+
+export const deleteUserById = async (req, res, next) => {
+  const { _id } = req.user
+
+  try {
+    await User.deleteOne({ _id })
+  } catch(err) {
+    next(new NotFoundError('User delete unsuccessful'))
+    return
+  }
+
+  return res.status(204).end()
+}

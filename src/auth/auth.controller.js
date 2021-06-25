@@ -7,7 +7,7 @@ import ForbiddenError from '../errors/ForbiddenError.js'
 import config from '../libs/config/index.js'
 
 const SALTROUNDS = config.get('security:password:saltrounds')
-const JWT_SECRET = config.get('security:jwt:secret')
+// const JWT_SECRET = config.get('security:jwt:secret')
 const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
 const ACCESS_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt.access_token_expires_in_sec')
 const REFRESH_TOKEN_EXPIRES_IN = config.get('security:jwt:refresh_token_expires_in')
@@ -22,8 +22,7 @@ export const register = (req, res) => {
 
   const { username, email } = req.user
 
-  res.status(200).json({
-    message: 'Register successful',
+  res.status(201).json({
     data: {
       user: {
         username,

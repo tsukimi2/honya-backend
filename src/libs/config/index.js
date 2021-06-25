@@ -1,11 +1,11 @@
 import nconf from 'nconf'
 
 function Config() {
-  nconf.argv().env()
-  const env = nconf.get(process.env.NODE_ENV) || 'dev'
+  const env = process.env.NODE_ENV || 'dev'
   nconf.file(env, 'src/config/config.' + env + '.json')
   nconf.file('default', 'src/config/config.default.json')
 
+  nconf.set('app:node_env', env)
   if(process.env.JWT_SECRET) {
     nconf.set('security:jwt:secret', process.env.JWT_SECRET)
   }
