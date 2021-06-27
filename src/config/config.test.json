@@ -1,3 +1,5 @@
 {
-  
+  "db": {
+    "uri": "mongodb://localhost/honya-test"
+  }
 }
