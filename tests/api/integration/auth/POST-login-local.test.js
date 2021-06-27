@@ -40,70 +40,68 @@ describe(API_PREFIX + '/login', () => {
     }
   })
 
-  context('username, password, and email are valid', async () => {
-    it('should login successfully with valid username and password', async () => {
-      const res = await request(app)
-        .post(API_PREFIX + '/login')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .set('Accept', 'application/json')
-        .expect(200)
+  it('should login successfully with valid username and password', async () => {
+    const res = await request(app)
+      .post(API_PREFIX + '/login')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .set('Accept', 'application/json')
+      .expect(200)
 
-      expect(res.body.access_token).to.exist
-      expect(res.body.refresh_token).to.exist
-      expect(res.body.token_type).to.exist
-      expect(res.body.token_type).to.eql('bearer')
-      expect(res.body.expires_in).to.exist
-    })
+    expect(res.body.access_token).to.exist
+    expect(res.body.refresh_token).to.exist
+    expect(res.body.token_type).to.exist
+    expect(res.body.token_type).to.eql('bearer')
+    expect(res.body.expires_in).to.exist
+  })
 
-    it('shoudl fail login with incorrect username', async () => {
-      user.username = 'baka'
+  it('shoudl fail login with incorrect username', async () => {
+    user.username = 'baka'
 
-      const res = await request(app)
-        .post(API_PREFIX + '/login')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .set('Accept', 'application/json')
-        .expect(401)
+    const res = await request(app)
+      .post(API_PREFIX + '/login')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .set('Accept', 'application/json')
+      .expect(401)
 
-      expect(res.body.err).to.eql('AuthErr')
-      expect(res.body.errmsg).to.eql('Invalid username/password')
-    })
+    expect(res.body.err).to.eql('AuthErr')
+    expect(res.body.errmsg).to.eql('Invalid username/password')
+  })
 
-    it('should fail login with incorrect password', async () => {
-      user.password = 'bakamono'
+  it('should fail login with incorrect password', async () => {
+    user.password = 'bakamono'
 
-      const res = await request(app)
-        .post(API_PREFIX + '/login')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .set('Accept', 'application/json')
-        .expect(401)
-        
-      expect(res.body.err).to.eql('AuthErr')
-      expect(res.body.errmsg).to.eql('Invalid username/password')
-    })
+    const res = await request(app)
+      .post(API_PREFIX + '/login')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .set('Accept', 'application/json')
+      .expect(401)
+      
+    expect(res.body.err).to.eql('AuthErr')
+    expect(res.body.errmsg).to.eql('Invalid username/password')
+  })
 
-    it('should fail login with missing username', async () => {
-      user.username = ''
+  it('should fail login with missing username', async () => {
+    user.username = ''
 
-      await request(app)
-        .post(API_PREFIX + '/login')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .set('Accept', 'application/json')
-        .expect(400)
-    })
+    await request(app)
+      .post(API_PREFIX + '/login')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .set('Accept', 'application/json')
+      .expect(400)
+  })
 
-    it('should fail login with missing password', async () => {
-      user.password = ''
+  it('should fail login with missing password', async () => {
+    user.password = ''
 
-      await request(app)
-        .post(API_PREFIX + '/login')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .set('Accept', 'application/json')
-        .expect(400)
-    })
+    await request(app)
+      .post(API_PREFIX + '/login')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .set('Accept', 'application/json')
+      .expect(400)
   })
 })

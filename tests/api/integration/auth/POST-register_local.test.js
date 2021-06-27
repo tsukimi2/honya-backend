@@ -25,106 +25,104 @@ describe(API_PREFIX + '/register', () => {
     }
   })
 
-  context('username, password, and email are valid', async () => {
-    it('should registers a new user successfully with valid username, password, and email', async () => {
-      await request(app)
-        .post(API_PREFIX + '/register')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .send(`email=${user.email}`)
-        .set('Accept', 'application/json')
-        .expect(201, {
-          data: {
-            user: {
-              username: user.username,
-              email: user.email
-            }
+  it('should registers a new user successfully with valid username, password, and email', async () => {
+    await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .set('Accept', 'application/json')
+      .expect(201, {
+        data: {
+          user: {
+            username: user.username,
+            email: user.email
           }
-        })
-    })
+        }
+      })
+  })
 
-    it('should not register a user with existing username or existing email', async () => {
-      await request(app)
-        .post(API_PREFIX + '/register')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .send(`email=${user.email}`)
-        .set('Accept', 'application/json')
-      
-      await request(app)
-        .post(API_PREFIX + '/register')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .send(`email=${user.email}`)
-        .set('Accept', 'application/json')
-        .expect(400, {
-          err: "DatabaseErr",
-          errmsg: "Duplicate key error"
-        })
-    })
+  it('should not register a user with existing username or existing email', async () => {
+    await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .set('Accept', 'application/json')
+    
+    await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .set('Accept', 'application/json')
+      .expect(400, {
+        err: "DatabaseErr",
+        errmsg: "Duplicate key error"
+      })
+  })
 
-    it('should not register a user with empty username, password, or email', async () => {
-      user = {
-        username: '',
-        password: '',
-        email: ''
-      }
+  it('should not register a user with empty username, password, or email', async () => {
+    user = {
+      username: '',
+      password: '',
+      email: ''
+    }
 
-      const result = await request(app)
-        .post(API_PREFIX + '/register')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .send(`email=${user.email}`)
-        .set('Accept', 'application/json')
-        .expect(400)
+    const result = await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .set('Accept', 'application/json')
+      .expect(400)
 
-      expect(result.body.err).to.exist
-      expect(result.body.err).to.eql('BadRequestErr')
-    })
+    expect(result.body.err).to.exist
+    expect(result.body.err).to.eql('BadRequestErr')
+  })
 
-    it('should not register a user with username less than 3 characters or greater than 20 characters', async () => {
-      user.username = 'ab'
+  it('should not register a user with username less than 3 characters or greater than 20 characters', async () => {
+    user.username = 'ab'
 
-      const result = await request(app)
-        .post(API_PREFIX + '/register')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .send(`email=${user.email}`)
-        .set('Accept', 'application/json')
-        .expect(400)
+    const result = await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .set('Accept', 'application/json')
+      .expect(400)
 
-      expect(result.body.err).to.exist
-      expect(result.body.err).to.eql('BadRequestErr')
-    })
+    expect(result.body.err).to.exist
+    expect(result.body.err).to.eql('BadRequestErr')
+  })
 
-    it('should not register a user with password less than 8 characters or greater than 20 characters', async () => {
-      user.password = '1234567'
+  it('should not register a user with password less than 8 characters or greater than 20 characters', async () => {
+    user.password = '1234567'
 
-      const result = await request(app)
-        .post(API_PREFIX + '/register')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .send(`email=${user.email}`)
-        .set('Accept', 'application/json')
-        .expect(400)
+    const result = await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .set('Accept', 'application/json')
+      .expect(400)
 
-      expect(result.body.err).to.exist
-      expect(result.body.err).to.eql('BadRequestErr')
-    })
+    expect(result.body.err).to.exist
+    expect(result.body.err).to.eql('BadRequestErr')
+  })
 
-    it('should not register a user with invalid email format', async() => {
-      user.email = `${username}gmail.com`
+  it('should not register a user with invalid email format', async() => {
+    user.email = `${username}gmail.com`
 
-      const result = await request(app)
-        .post(API_PREFIX + '/register')
-        .send(`username=${user.username}`)
-        .send(`password=${user.password}`)
-        .send(`email=${user.email}`)
-        .set('Accept', 'application/json')
-        .expect(400)
+    const result = await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .set('Accept', 'application/json')
+      .expect(400)
 
-      expect(result.body.err).to.exist
-      expect(result.body.err).to.eql('BadRequestErr')
-    })
+    expect(result.body.err).to.exist
+    expect(result.body.err).to.eql('BadRequestErr')
   })
 })

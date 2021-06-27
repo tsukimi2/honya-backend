@@ -112,9 +112,7 @@ export const logout = (req, res) => {
   res.clearCookie('accessToken')
   res.clearCookie('refreshToken')
 
-  res.status(200).json({
-    message: 'Log out successful'
-  })
+  res.status(204).end()
 }
 
 export const isAuth = (req, res, next) => {
