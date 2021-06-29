@@ -5,6 +5,7 @@ import { generateDatetime } from '../libs/datetime.js'
 import { generateJwt } from '../auth/jwt.js'
 import ForbiddenError from '../errors/ForbiddenError.js'
 import config from '../libs/config/index.js'
+import logger from '../libs/logger/index.js'
 
 const SALTROUNDS = config.get('security:password:saltrounds')
 // const JWT_SECRET = config.get('security:jwt:secret')
@@ -15,8 +16,7 @@ const REFRESH_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt.refresh_token_expi
 
 export const register = (req, res) => {
   if(!req || (req && !req.user)) {
-    console.log('Error in auth.controller.js register')
-    console.log('Missing user profile in request')
+    logger.warn('Missing user profile in request')
     throw new UnauthorizedError('User registration failed')
   }
 
@@ -32,17 +32,17 @@ export const register = (req, res) => {
   })
 }
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   if(!req || (req && !req.user)) {
-    console.log('Error in auth.controller.js login')
-    console.log('Missing user profile in request')
-    throw new UnauthorizedError('User log in failed')
+    logger.warn('Missing user profile in request')
+    next(new UnauthorizedError('User log in failed'))
+    return
   }
 
   if(!req.user.username) {
-    console.log('Error in auth.controller.js login')
-    console.log('Missing username in request')
-    throw new UnauthorizedError('User log in failed')    
+    logger.warn('Missing username in request')
+    next(new UnauthorizedError('User log in failed'))
+    return
   }
 
   try {
@@ -86,11 +86,10 @@ export const login = async (req, res) => {
       expires_in: ACCESS_TOKEN_EXPIRES_IN_SEC,
     })
   } catch(err) {
-    console.log('Error in auth.controller.js login')
-    console.log(err)
-    throw new UnauthorizedError('User log in failed', {
+    logger.warn(err)
+    next(new UnauthorizedError('User log in failed', {
       err
-    })
+    }))
   }
 }
 
@@ -98,11 +97,16 @@ export const logout = (req, res) => {
   // delete user refresh token from db
   if(req && req.cookies && req.cookies.loginHash) {
     const loginHash = req.cookies.loginHash
-    User.updateLoginHashAndRefreshToken({ loginHash }, { 
-      loginHash: null,
-      refreshToken: null,
-      refreshTokenExpiresDt: null,
-    })
+    try {
+      User.updateLoginHashAndRefreshToken({ loginHash }, { 
+        loginHash: null,
+        refreshToken: null,
+        refreshTokenExpiresDt: null,
+      })
+    } catch(err) {
+      logger.warn('Update loginhash and refresh token failed during logout')
+      logger.warn(err)
+    }
   }
 
   req.logout()

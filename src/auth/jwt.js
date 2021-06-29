@@ -3,6 +3,7 @@ import ForbiddenError from '../errors/ForbiddenError.js'
 import User from '../user/user.model.js'
 import { generateDatetime } from '../libs/datetime.js'
 import config from '../libs/config/index.js'
+import logger from '../libs/logger/index.js'
 
 const JWT_SECRET = config.get('security:jwt:secret')
 const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
@@ -26,22 +27,19 @@ export const generateJwt = async (payload, expiresIn = ACCESS_TOKEN_EXPIRES_IN) 
 
 export const validateJwt = async (req, res, next) => {
   if(!req || (req && !req.cookies)) {
-    console.error('Error in jwt.js validateJwt')
-    console.error('Missing cookies')
+    logger.warn('Missing cookies')
     return next(new ForbiddenError('Forbidden access; Missing cookies'))
   }
 
   if(!req.cookies.accessToken || !req.cookies.refreshToken) {
-    console.error('Error in jwt.js validateJwt')
-    console.error('Missing access or refresh token')
+    logger.warn('Missing access or refresh token')
     return next(new ForbiddenError('Forbidden access'))
   }
   const accessToken = req.cookies.accessToken
   const refreshToken = req.cookies.refreshToken
 
   if(!req.cookies.loginHash) {
-    console.error('Error in jwt.js validateJwt')
-    console.error('Missing loginHash')
+    logger.warn('Missing loginHash')
     return next(new ForbiddenError('Forbidden access'))
   }
   const loginHash = req.cookies.loginHash
@@ -56,28 +54,24 @@ export const validateJwt = async (req, res, next) => {
   } catch(err) {
     // access token expired; issue new access token using refresh token
     if(err.name === 'TokenExpiredError') {
-      console.error('TokenExpiredError')
       let user = null
 
       try {
         user = await User.findOne({ loginHash })
       } catch(err) {
-        console.error('Error in jwt.js validateJwt')
-        console.error(err)
+        logger.warn(err)
         return next(new ForbiddenError('Forbidden access'))
       }
 
       if(!user) {
-        console.error('Error in jwt.js validateJwt')
-        console.error('User not found in db')
+        logger.warn('User not found in db')
         return next(new ForbiddenError('Forbidden access'))
       }
 
       // const { _id: uid, refreshToken: storedRefreshToken, refreshTokenExpiresDt } = user
       let { _id: uid, refreshToken: storedRefreshToken, refreshTokenExpiresDt } = user
       if(!refreshTokenExpiresDt || storedRefreshToken !== refreshToken) {
-        console.error('Error in jwt.js validateJwt')
-        console.error('Stored refresh token different from cookie refresh token')
+        logger.warn('Stored refresh token different from cookie refresh token')
         return next(new ForbiddenError('Forbidden access'))
       }
 
@@ -111,16 +105,14 @@ export const validateJwt = async (req, res, next) => {
           fieldsToInclude: [ '_id' ]
         })
       } catch(err) {
-        console.error('Error in jwt.js validateJwt')
-        console.error(err)
+        logger.warn(err)
         return next(new ForbiddenError('Forbidden access'))
       }
       return next()
     } else {
       // Errors other than TokenExpiredError are rejected
-      console.error('Error in validateJwt')
-      console.error('Token error other than TokenExpiredError')
-      console.error(err)
+      logger.error('Token error other than TokenExpiredError')
+      logger.error(err)
       return(new ForbiddenError('Forbidden access'))
     }
   }
