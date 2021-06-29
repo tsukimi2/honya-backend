@@ -1,11 +1,12 @@
 import UserFacingError from '../errors/UserFacingError.js';
 import DatabaseError from '../errors/DatabaseError.js';
+import logger from '../libs/logger/index.js'
 
 const errHandler = (err, req, res, next) => {
-  console.error(err)
-  console.error(err.name)
-  console.error(err.message)
-  console.error(err.stack)
+  logger.error(err)
+  logger.error(err.name)
+  logger.error(err.message)
+  logger.error(err.stack)
   if(err instanceof UserFacingError) {
     return res.status(err.statusCode).json({
       err: err.name,
