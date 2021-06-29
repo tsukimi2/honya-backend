@@ -1,10 +1,16 @@
 import winston from 'winston'
 
+const { combine, timestamp, label, printf, errors, json, prettyPrint } = winston.format
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} [${label}] ${level}: ${message}`
+})
+
 let options = {
   console: {
     level: 'debug',
     handleExceptions: true,
-    json: false,
+    json: true,
+    timestamp: true,
     colorize: true,
   },
   fileCombinedLog: {
@@ -14,7 +20,8 @@ let options = {
     json: true,
     maxsize: 5242880, // 5MB
     maxFiles: 5,
-    colorsize: false,
+    colorize: false,
+    timestamp: true,
   },
   fileErrLog: {
     level: 'error',
@@ -23,7 +30,8 @@ let options = {
     json: true,
     maxsize: 5242880, // 5MB
     maxFiles: 5,
-    colorsize: false,
+    colorize: false,
+    timestamp: true,
   }
 }
 
@@ -33,6 +41,14 @@ export const consoleTransport = new winston.transports.Console(options.console)
 
 const logger = winston.createLogger({
   levels: winston.config.npm.levels,
+  format: combine(
+    // label({ label: '' }),
+    errors({ stack: true }), // <-- use errors format
+    timestamp(),
+    json(),
+    // prettyPrint(),
+    // myFormat
+  ),
   transports: [
     consoleTransport
   ],

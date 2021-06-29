@@ -38,7 +38,7 @@ export const login = async (req, res, next) => {
     next(new UnauthorizedError('User log in failed'))
     return
   }
-req.user.username = null
+
   if(!req.user.username) {
     logger.warn('Missing username in request')
     next(new UnauthorizedError('User log in failed'))
@@ -87,9 +87,9 @@ req.user.username = null
     })
   } catch(err) {
     logger.warn(err)
-    throw new UnauthorizedError('User log in failed', {
+    next(new UnauthorizedError('User log in failed', {
       err
-    })
+    }))
   }
 }
 
@@ -97,11 +97,16 @@ export const logout = (req, res) => {
   // delete user refresh token from db
   if(req && req.cookies && req.cookies.loginHash) {
     const loginHash = req.cookies.loginHash
-    User.updateLoginHashAndRefreshToken({ loginHash }, { 
-      loginHash: null,
-      refreshToken: null,
-      refreshTokenExpiresDt: null,
-    })
+    try {
+      User.updateLoginHashAndRefreshToken({ loginHash }, { 
+        loginHash: null,
+        refreshToken: null,
+        refreshTokenExpiresDt: null,
+      })
+    } catch(err) {
+      logger.warn('Update loginhash and refresh token failed during logout')
+      logger.warn(err)
+    }
   }
 
   req.logout()
