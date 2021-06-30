@@ -1,6 +1,9 @@
 import UserFacingError from '../errors/UserFacingError.js';
 import DatabaseError from '../errors/DatabaseError.js';
 import logger from '../libs/logger/index.js'
+import BaseError from '../errors/BaseError.js';
+
+export const isOperationalError = (err) => (err instanceof BaseError) ? err.isOperational : false
 
 const errHandler = (err, req, res, next) => {
   logger.error(err)
