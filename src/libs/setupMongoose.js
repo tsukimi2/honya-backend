@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import config from './config/index.js'
+import logger from '../libs/logger/index.js'
 
 mongoose.connect(config.get('db:uri'), {
   useNewUrlParser: true,
@@ -9,7 +10,10 @@ mongoose.connect(config.get('db:uri'), {
 })
 
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'db connection error:'))
+//db.on('error', logger.error.bind(console, 'db connection error:'))
+db.on('error', () => {
+  logger.error('db connection error:')
+})
 db.once('open', () => {
-  console.info('Connected to db')
+  logger.info('Connected to db')
 })

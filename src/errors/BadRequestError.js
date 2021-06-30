@@ -6,7 +6,6 @@ export default class BadRequestError extends UserFacingError {
 
     if(options.err && Array.isArray(options.err)) {
       const arrErrmsg = options.err.map(elem => elem.msg)
-      console.log('arrErrmsg')
       this.message = arrErrmsg.join(';')
     }
   }

@@ -6,3 +6,7 @@ if(config.get('app:node_env') === 'production') {
   logger.add(fileCombinedLogTransport)
     .add(fileErrLogTransport)
 }
+
+if(config.get('app:node_env') === 'test') {
+  logger.silent = true
+}

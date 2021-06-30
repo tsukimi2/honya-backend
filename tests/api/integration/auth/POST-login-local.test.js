@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import request from 'supertest'
 import app from '../../../../src/app.js'
 import config from '../../../../src/libs/config/index.js'
+import logger from '../../../../src/libs/logger/index.js'
 import User from '../../../../src/user/user.model.js'
 
 const API_PREFIX = config.get('app:api_prefix')
