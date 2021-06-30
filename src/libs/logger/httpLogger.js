@@ -1,6 +1,7 @@
 import morgan from 'morgan'
 import json from 'morgan-json'
 import logger from './index.js'
+import config from '../config/index.js'
 
 const format = json({
   method: ':method',
@@ -11,6 +12,7 @@ const format = json({
 })
 
 const httpLogger = morgan(format, {
+  skip: (req, res) => config.get('app:node_env') === 'test',
   stream: {
     write: (message) => {
       const {
