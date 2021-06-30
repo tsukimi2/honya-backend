@@ -1,9 +1,5 @@
 import winston from 'winston'
-
 const { combine, timestamp, label, printf, errors, json, prettyPrint } = winston.format
-const myFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} [${label}] ${level}: ${message}`
-})
 
 let options = {
   console: {
@@ -46,8 +42,6 @@ const logger = winston.createLogger({
     errors({ stack: true }), // <-- use errors format
     timestamp(),
     json(),
-    // prettyPrint(),
-    // myFormat
   ),
   transports: [
     consoleTransport

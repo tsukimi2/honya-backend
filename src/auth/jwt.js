@@ -28,12 +28,14 @@ export const generateJwt = async (payload, expiresIn = ACCESS_TOKEN_EXPIRES_IN) 
 export const validateJwt = async (req, res, next) => {
   if(!req || (req && !req.cookies)) {
     logger.warn('Missing cookies')
-    return next(new ForbiddenError('Forbidden access; Missing cookies'))
+    next(new ForbiddenError('Forbidden access; Missing cookies'))
+    return
   }
 
   if(!req.cookies.accessToken || !req.cookies.refreshToken) {
     logger.warn('Missing access or refresh token')
-    return next(new ForbiddenError('Forbidden access'))
+    next(new ForbiddenError('Forbidden access'))
+    return
   }
   const accessToken = req.cookies.accessToken
   const refreshToken = req.cookies.refreshToken

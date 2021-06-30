@@ -1,16 +1,20 @@
-export default class DatabaseError extends Error {
+import BaseError from './BaseError.js'
+
+export default class DatabaseError extends BaseError {
   constructor(message, options={}) {
-    super(message)
+    super(message, options)
     this.name = 'DatabaseErr'
     this.message = 'Data-related error'
     this.statusCode = 500
     this.err = null
 
+    /*
     if(options) {
       for (const [key, value] of Object.entries(options)) {
         this[key] = value
       }
     }
+    */
 
     if(this.err && this.err.name === 'MongoError') {
       if(this.err.message) {
