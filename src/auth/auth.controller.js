@@ -1,3 +1,4 @@
+import util from 'util'
 import bcrypt from 'bcrypt'
 import UnauthorizedError from '../errors/UnauthorizedError.js'
 import { generateDatetime } from '../libs/datetime.js'
@@ -24,6 +25,7 @@ const authController = ({ config, logger, userService }) => {
   }
 
   const login = async (req, res, next) => {
+    const bcryptHash = util.promisify(bcrypt.hash)
     const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
   
     if(!req || (req && !req.user)) {
@@ -41,7 +43,8 @@ const authController = ({ config, logger, userService }) => {
     try {
       // generate login hash from username
       const { id: uid, username } = req.user
-      const loginHash = bcrypt.hashSync(username, config.get('security:password:saltrounds'))
+      const loginHash = await bcrypt.hash(username, config.get('security:password:saltrounds'))
+
       // set user hash cookie
       res.cookie('loginHash', loginHash, {
         // scure: true,
