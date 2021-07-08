@@ -1,9 +1,10 @@
 import express from 'express'
 import passport from 'passport'
 import { body } from 'express-validator'
-import { register, login, logout } from './auth.controller.js'
+import { authController } from '../di-container.js'
 import validator from '../libs/validator.js'
 const router = express.Router()
+
 
 router.get('/', (req, res, next) => {
   res.status(200).json({
@@ -28,7 +29,7 @@ router.post('/register',
     .normalizeEmail(),
   validator,
   passport.authenticate('register', { session: false }),
-  register
+  authController.register
 )
 
 router.post('/login',
@@ -42,9 +43,9 @@ router.post('/login',
     .withMessage('Password must be between 8 and 20 characters'),
   validator,
   passport.authenticate('login', { session: false }),
-  login
+  authController.login
 )
 
-router.post('/logout', logout)
+router.post('/logout', authController.logout)
 
 export default router
