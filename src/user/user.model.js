@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  /*
   loginHash: {
     type: String,
     required: false,
@@ -21,6 +22,15 @@ const UserSchema = new mongoose.Schema({
       partialFilterExpression: { loginHash: { $type: 'string' } },
     },
     default: null,
+  },
+  */
+  loginHash: {
+    type: String,
+    trim: true,
+    index: {
+      unique: true,
+      partialFilterExpression: {loginHash: {$type: "string"}}
+    }
   },
   email: {
     type: String,
