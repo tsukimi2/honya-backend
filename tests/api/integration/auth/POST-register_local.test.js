@@ -18,7 +18,7 @@ describe(API_PREFIX + '/register', () => {
       email: `${username}@gmail.com`
     }
 
-    try {
+    try {    
       await User.deleteMany({ "username": /^user*/ })
     } catch(err) {
       console.log(err)
