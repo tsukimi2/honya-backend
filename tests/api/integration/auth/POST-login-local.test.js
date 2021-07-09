@@ -51,8 +51,8 @@ describe(API_PREFIX + '/login', () => {
       .send(`password=${user.password}`)
       .set('Accept', 'application/json')
       .expect(200)
-console.log('req body')
-console.log(req.body)
+console.log('res body')
+console.log(res.body)
     expect(res.body.access_token).to.exist
     expect(res.body.refresh_token).to.exist
     expect(res.body.token_type).to.exist
