@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import config from './config/index.js'
 import logger from '../libs/logger/index.js'
 
-mongoose.connect(config.get('db:uri'), {
+mongoose.connect(config.get('db:mongo:uri'), {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,

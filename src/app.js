@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 import './libs/setupMongoose.js'
 import './libs/setupPassport.js'
+import './libs/cache.js'
 
 app.use(cookieParser());
 
