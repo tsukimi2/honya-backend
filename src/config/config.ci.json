@@ -1,0 +1,17 @@
+{
+  "db": {
+    "uri": "mongodb://localhost:27017/honya-ci"
+  },
+  "security": {
+    "jwt": {
+      "secret": "cijwtsecret",
+      "access_token_expires_in": "1d",
+      "access_token_expires_in_sec": 86400,
+      "refresh_token_expires_in": "60d",
+      "refresh_token_expires_in_sec": 5184000
+    },
+    "password": {
+      "saltrounds": 10
+    }
+  }
+}
