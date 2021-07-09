@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import request from 'supertest'
 import app from '../../../../src/app.js'
 import config from '../../../../src/libs/config/index.js'
+import logger from '../../../../src/libs/logger/index.js'
 import User from '../../../../src/user/user.model.js'
 
 const API_PREFIX = config.get('app:api_prefix')
@@ -21,17 +22,15 @@ describe(API_PREFIX + '/login', () => {
       console.log(err)
     }
 
-    await request(app)
+    request(app)
       .post(API_PREFIX + '/register')
       .send(`username=${user.username}`)
       .send(`password=${user.password}`)
       .send(`email=${user.email}`)
       .set('Accept', 'application/json')
-      /*
       .end(function(err, res) {
         if (err) throw err;
       })
-      */
   })
 
   beforeEach(async () => {
@@ -43,8 +42,6 @@ describe(API_PREFIX + '/login', () => {
   })
 
   it('should login successfully with valid username and password', async () => {
-    const storedUser = await User.findOne({ "username": user.username })
-
     const res = await request(app)
       .post(API_PREFIX + '/login')
       .send(`username=${user.username}`)

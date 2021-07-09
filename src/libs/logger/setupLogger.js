@@ -7,6 +7,6 @@ if(config.get('app:node_env') === 'production') {
     .add(fileErrLogTransport)
 }
 
-if(config.get('app:node_env') === 'test' || config.get('app:node_env') === 'ci') {
+if(config.get('app:node_env') === 'test') {
   logger.silent = true
 }
