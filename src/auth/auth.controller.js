@@ -42,20 +42,16 @@ const authController = ({ config, logger, userService }) => {
     }
   
     try {
-console.log('kon')
       // generate login hash from username
       const { id: uid, username } = req.user
       const loginHash = await bcrypt.hash(username, config.get('security:password:saltrounds'))
-console.log('kon2')
+
       // set user hash cookie
       res.cookie('loginHash', loginHash, {
         // scure: true,
         httpOnly: true
       })
-console.log('ACCESS_TOKEN_EXPIRES_IN')
-console.log(ACCESS_TOKEN_EXPIRES_IN)
-console.log(process.env.ACCESS_TOKEN_EXPIRES_IN)
-console.log(process.env.JWT_SECRET)
+
       // generate new access token
       const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
       // set access token cookie
@@ -63,9 +59,7 @@ console.log(process.env.JWT_SECRET)
         // secure: true,
         httpOnly: true
       })
-console.log('kon3')
-console.log('refresh token expires in')
-console.log(config.get('security:jwt:refresh_token_expires_in'))
+
       // generate new refresh token
       const refreshToken = await generateJwt({ uid }, config.get('security:jwt:refresh_token_expires_in'))
       // set refresh token cookie
@@ -73,7 +67,7 @@ console.log(config.get('security:jwt:refresh_token_expires_in'))
         // secure: true,
         httpOnly: true
       })
-console.log('kon4')  
+
       // update user in db
       const updatedUser = await userService.updateLoginHashAndRefreshToken({ _id: uid }, {
         loginHash,
@@ -81,7 +75,7 @@ console.log('kon4')
         refreshToken,
         refreshTokenExpiresDt: generateDatetime(new Date(), config.get('security:jwt.refresh_token_expires_in_sec') * 1000)
       })
-console.log('kon5') 
+
       res.status(200).json({
         message: 'Log in successful',
         access_token: accessToken,
@@ -90,8 +84,6 @@ console.log('kon5')
         expires_in: config.get('security:jwt.access_token_expires_in_sec'),
       })
     } catch(err) {
-console.log('err')
-console.log(err)
       logger.warn(err)
       next(new UnauthorizedError('User log in failed', {
         err
