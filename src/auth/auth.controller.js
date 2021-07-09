@@ -25,7 +25,7 @@ const authController = ({ config, logger, userService }) => {
   }
 
   const login = async (req, res, next) => {
-  console.log('kon')
+
     const bcryptHash = util.promisify(bcrypt.hash)
     const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
   
@@ -34,7 +34,7 @@ const authController = ({ config, logger, userService }) => {
       next(new UnauthorizedError('User log in failed'))
       return
     }
-console.log('kon2') 
+
     if(!req.user.username) {
       logger.warn('Missing username in request')
       next(new UnauthorizedError('User log in failed'))
@@ -42,17 +42,18 @@ console.log('kon2')
     }
   
     try {
-console.log('kon3')       
+console.log('kon')
       // generate login hash from username
       const { id: uid, username } = req.user
       const loginHash = await bcrypt.hash(username, config.get('security:password:saltrounds'))
-
+console.log('kon2')
       // set user hash cookie
       res.cookie('loginHash', loginHash, {
         // scure: true,
         httpOnly: true
       })
-  
+console.log('ACCESS_TOKEN_EXPIRES_IN')
+console.log(ACCESS_TOKEN_EXPIRES_IN)
       // generate new access token
       const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
       // set access token cookie
@@ -60,7 +61,9 @@ console.log('kon3')
         // secure: true,
         httpOnly: true
       })
-  
+console.log('kon3')
+console.log('refresh token expires in')
+console.log(config.get('security:jwt:refresh_token_expires_in'))
       // generate new refresh token
       const refreshToken = await generateJwt({ uid }, config.get('security:jwt:refresh_token_expires_in'))
       // set refresh token cookie
