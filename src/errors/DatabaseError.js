@@ -6,7 +6,7 @@ export default class DatabaseError extends BaseError {
     this.name = 'DatabaseErr'
     this.message = 'Data-related error'
     this.statusCode = 500
-    this.err = null
+    // this.err = null
 
     /*
     if(options) {
