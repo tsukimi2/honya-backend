@@ -42,7 +42,7 @@ describe(API_PREFIX + '/login', () => {
     }
   })
 
-  it.only('should login successfully with valid username and password', async () => {
+  it('should login successfully with valid username and password', async () => {
     const storedUser = await User.findOne({ "username": user.username })
 
     const res = await request(app)
@@ -51,8 +51,7 @@ describe(API_PREFIX + '/login', () => {
       .send(`password=${user.password}`)
       .set('Accept', 'application/json')
       .expect(200)
-console.log('res body')
-console.log(res.body)
+
     expect(res.body.access_token).to.exist
     expect(res.body.refresh_token).to.exist
     expect(res.body.token_type).to.exist
