@@ -73,7 +73,7 @@ const authController = ({ config, logger, userService }) => {
         loginHash,
         lastLoginAt: new Date(),
         refreshToken,
-        refreshTokenExpiresDt: generateDatetime(new Date(), config.get('security:jwt.refresh_token_expires_in_sec') * 1000)
+        refreshTokenExpiresDt: generateDatetime(new Date(), config.get('security:jwt:refresh_token_expires_in_sec') * 1000)
       })
 
       res.status(200).json({
@@ -81,7 +81,7 @@ const authController = ({ config, logger, userService }) => {
         access_token: accessToken,
         refresh_token: refreshToken,
         token_type: 'bearer',
-        expires_in: parseInt(config.get('security:jwt.access_token_expires_in_sec')),
+        expires_in: config.get('security:jwt:access_token_expires_in_sec'),
       })
     } catch(err) {
       logger.warn(err)
