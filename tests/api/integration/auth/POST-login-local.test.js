@@ -21,17 +21,15 @@ describe(API_PREFIX + '/login', () => {
       console.log(err)
     }
 
-    await request(app)
+    request(app)
       .post(API_PREFIX + '/register')
       .send(`username=${user.username}`)
       .send(`password=${user.password}`)
       .send(`email=${user.email}`)
       .set('Accept', 'application/json')
-      /*
       .end(function(err, res) {
         if (err) throw err;
       })
-      */
   })
 
   beforeEach(async () => {
