@@ -54,6 +54,8 @@ console.log('kon2')
       })
 console.log('ACCESS_TOKEN_EXPIRES_IN')
 console.log(ACCESS_TOKEN_EXPIRES_IN)
+console.log(process.env.ACCESS_TOKEN_EXPIRES_IN)
+console.log(process.env.JWT_SECRET)
       // generate new access token
       const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
       // set access token cookie
