@@ -8,6 +8,16 @@ const client = redis.createClient(redisUrl)
 client.hget = util.promisify(client.hget)
 const exec = mongoose.Query.prototype.exec
 
+const clearHash = (hashKey) => {
+  client.del(JSON.stringify(hashKey))
+}
+
+export const cleanCache = async (req, res, next) => {
+  await next()
+
+  clearHash(req.user._id)
+}
+
 mongoose.Query.prototype.cache = function(options = {}) {
   this.useCache = true
   this.hashKey = JSON.stringify(options.key || '')

@@ -70,8 +70,6 @@ passport.use(
 
         return next(null, user)
       } catch(err) {
-        console.log('err')
-        console.log(err)
         return next(new DatabaseError('Log in error', {
           err
         }))
