@@ -42,10 +42,8 @@ describe(API_PREFIX + '/login', () => {
     }
   })
 
-  it('should login successfully with valid username and password', async () => {
+  it.only('should login successfully with valid username and password', async () => {
     const storedUser = await User.findOne({ "username": user.username })
-    console.log('storedUser')
-    console.log(storedUser)
 
     const res = await request(app)
       .post(API_PREFIX + '/login')
