@@ -10,6 +10,9 @@ const errHandler = (err, req, res, next) => {
   logger.error(err.name)
   logger.error(err.message)
   logger.error(err.stack)
+  if(err.err) {
+    logger.log(err.err)
+  }
   if(err instanceof UserFacingError) {
     return res.status(err.statusCode).json({
       err: err.name,
