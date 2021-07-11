@@ -24,6 +24,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "redis": "^3.1.2",
+    "sinon": "^11.1.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {
