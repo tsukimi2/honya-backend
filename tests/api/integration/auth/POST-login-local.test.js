@@ -4,16 +4,12 @@ import app from '../../../../src/app.js'
 import config from '../../../../src/libs/config/index.js'
 import logger from '../../../../src/libs/logger/index.js'
 import User from '../../../../src/user/user.model.js'
+import { generateUserParams } from '../../../factories/userFactory.js'
 
 const API_PREFIX = config.get('app:api_prefix')
 
 describe(API_PREFIX + '/login', () => {
-  let username = 'user'
-  let user = {
-    username,
-    password: 'testing1',
-    email: `${username}@gmail.com`
-  }
+  let user = generateUserParams({ userProfile: 'validUser1' })
 
   before(async () => {
     try {
@@ -34,11 +30,14 @@ describe(API_PREFIX + '/login', () => {
   })
 
   beforeEach(async () => {
+    /*
     username = 'user'
     user = {
       username,
       password: 'testing1',
     }
+    */
+    user = generateUserParams({ userProfile: 'validUser1' })
   })
 
   it('should login successfully with valid username and password', async () => {

@@ -1,0 +1,6 @@
+{
+  "require": "./tests/fixtures.mjs",
+  "exit": true,
+  "timeout": 30000,
+  "parallel": true
+}
