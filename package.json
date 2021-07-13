@@ -6,9 +6,10 @@
   "scripts": {
     "start": "node -r dotenv/config ./src/bin/www.js",
     "dev": "NODE_ENV=dev DEBUG=honya-backend:* node -r dotenv/config ./src/bin/www.js",
+    "test": "npm run test:unit && npm run test:integration",
     "test:unit": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r dotenv/config ./tests/api/unit/**/*.test.js",
     "test:integration": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r dotenv/config --parallel=true ./tests/api/integration/**/*.test.js",
-    "coverage": "NODE_ENV=test nyc --reporter=text npm run test:integration"
+    "coverage": "NODE_ENV=test nyc --reporter=text npm run test"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
