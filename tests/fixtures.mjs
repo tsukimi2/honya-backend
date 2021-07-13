@@ -1,19 +1,9 @@
-/*
-import mongoose from 'mongoose'
-import config from './config/index.js'
-import logger from '../libs/logger/index.js'
-
-// https://mochajs.org/#global-fixtures
-
-mongoose.connect(config.get('db:mongo:uri'), {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-})
-
+import { database } from '../src/di-container.js'
+import config from '../src/libs/config/index.js'
 
 export async function mochaGlobalSetup() {
-  import '../src/user/user.model.js'
+  const db = database.connect(config.get('db:mongo:uri'))
+  db.on('error', () => {
+    console.error('db connection error:')
+  })
 }
-*/

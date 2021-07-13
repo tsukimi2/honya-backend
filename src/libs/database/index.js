@@ -1,5 +1,6 @@
 const database = ({ mongoose }) => {
   const connect = (dbUri) => {
+    mongoose.Promise = global.Promise
     mongoose.connect(dbUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -10,8 +11,13 @@ const database = ({ mongoose }) => {
     return mongoose.connection
   }
 
+  const disconnect = () => {
+    mongoose.connection.close()
+  }
+
   return {
-    connect
+    connect,
+    // disconnect
   }
 }
 
