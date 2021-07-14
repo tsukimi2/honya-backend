@@ -1,23 +1,28 @@
-// import mongoose from 'mongoose'
 import User from '../../src/user/user.model.js'
 
 
-export const generateUserParams = ({ userProfile }) => {
-  if(userProfile === 'validUser1') {
-    const username = 'user'
+export const generateUserParams = ({ userProfile, hasHashedPassword=false, optParams={}}) => {
+  const username = 'user'
+  let initUserParams = {}
+  const password = 'testing1'
 
-    return {
+  if(userProfile === 'validUser1') {
+    initUserParams = {
       username,
-      password: 'testing1',
       email: `${username}@gmail.com`
+    }
+
+    if(hasHashedPassword) {
+      initUserParams['hashedPassword'] = password
+    } else {
+      initUserParams['password'] = password
     }
   }
 
-  return {}
+  return Object.assign({}, initUserParams, optParams)
 }
 
 export const generateUser = async ({ userProfile }) => {
-  // const User = mongoose.model('User')
   const userParams = generateUserParams({ userProfile })
   return new User(userParams).save()
 }

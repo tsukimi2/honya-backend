@@ -7,7 +7,6 @@ const userController = ({ logger, userService }) => {
     let user = null
   
     try {
-      // user = await User.findById(_id).exec()
       user = await userService.getUserById(_id)
     } catch(err) {
       logger.warn(err)

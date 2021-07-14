@@ -1,25 +1,27 @@
-const userRepos = ({ User }) => {
-  const getUserById = async (id) => {
-    return User.findById(id).exec()
+import _ from 'lodash'
+import NotFoundError from '../errors/NotFoundError.js'
+
+export default class UserRepos {
+  constructor(model) {
+    this.model = model
   }
 
-  const deleteUser = async (filterParams) => {
-    await User.deleteOne(filterParams)
+  async getUserById(id, opts={}) {
+    return opts.lean ? await this.model.findById(id).lean() : await this.model.findById(id).exec()
   }
 
-  const updateLoginHashAndRefreshToken = async (filterParams) => {
-    await User.updateLoginHashAndRefreshToken(filterParams, {
+  async deleteUser(filterParams) {
+    if(!filterParams || _.isEmpty(filterParams)) {
+      throw new NotFoundError('Empty filter params when deleting user')
+    }
+    await this.model.deleteOne(filterParams)
+  }
+
+  async updateLoginHashAndRefreshToken(filterParams) {
+    await this.model.updateLoginHashAndRefreshToken(filterParams, {
       loginHash: null,
       refreshToken: null,
       refreshTokenExpiresDt: null,
     })
   }
-
-  return {
-    getUserById,
-    deleteUser,
-    updateLoginHashAndRefreshToken
-  }
 }
-
-export default userRepos
