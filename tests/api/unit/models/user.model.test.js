@@ -1,8 +1,8 @@
+import util from 'util'
 import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 chai.use(sinonChai)
-// import rewire from 'babel-plugin-rewire'
 import mongoose from 'mongoose'
 import { generateUser, generateUserParams } from '../../../factories/userFactory.js'
 import User from '../../../../src/user/user.model.js'
@@ -28,148 +28,110 @@ describe('User model', () => {
   })
 
   context('Testing model validations', async () => {
-    it('should be valid with valid username, password, and email', async () => {
-      let user = null
-      let err = undefined
-      try {
-        user = await generateUser({ userProfile: 'validUser1' })
-      } catch(e) {
-        err = e
-      }
+    let userParams = null
 
-      expect(err).to.be.undefined
+    beforeEach(() => {
+      userParams = generateUserParams({ userProfile: 'validUser1' })
+    })
+
+    it('should be valid with valid username, password, and email', (done) => {
+      const user = new User(userParams)
+      user.validate((err) => {
+        expect(err).to.not.exist
+        done()
+      })
     })
 
     context('Testng username', () => {
-      it('should be invalid with empty username', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with empty username', (done) => {
         userParams.username = ''
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.username).to.exist
-        expect(err.errors.username.kind).to.eq('required')
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.username).to.exist
+          expect(err.errors.username.kind).to.eq('required')
+          done()
+        })
       })
 
-      it('should be invalid with username shorter than length 3', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with username shorter than length 3', (done) => {
         userParams.username = 'ab'
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.username).to.exist
-        expect(err.errors.username.kind).to.eq('minlength')        
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.username).to.exist
+          expect(err.errors.username.kind).to.eq('minlength')
+          done()
+        })
       })
       
-      it('should be invalid with username longer than length 20', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with username longer than length 20', (done) => {
         userParams.username = '123456789012345678901'
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.username).to.exist
-        expect(err.errors.username.kind).to.eq('maxlength')    
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.username).to.exist
+          expect(err.errors.username.kind).to.eq('maxlength')
+          done()
+        })
       })
     })
 
     context('Testing password', () => {
-      it('should be invalid with empty password', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with empty password', (done) => {
         userParams.password = ''
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.password).to.exist
-        expect(err.errors.password.kind).to.eq('required')           
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.password).to.exist
+          expect(err.errors.password.kind).to.eq('required')
+          done()
+        })
       })
 
-      it('should be invalid with password less than length 8', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with password less than length 8', (done) => {
         userParams.password = '1234567'
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.password).to.exist
-        expect(err.errors.password.kind).to.eq('minlength')
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.password).to.exist
+          expect(err.errors.password.kind).to.eq('minlength')
+          done()
+        })
       })
 
-      it('should be invalid with password greater than length 20', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with password greater than length 20', (done) => {
         userParams.password = '123456789012345678901'
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.password).to.exist
-        expect(err.errors.password.kind).to.eq('maxlength')        
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.password).to.exist
+          expect(err.errors.password.kind).to.eq('maxlength')
+          done()
+        })
       })
     })
     context('Testing email', () => {
-      it('should be invalid with empty email', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with empty email', (done) => {
         userParams.email = ''
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.email).to.exist
-        expect(err.errors.email.kind).to.eq('required')
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.email).to.exist
+          expect(err.errors.email.kind).to.eq('required')
+          done()
+        })
       })
 
-      it('should be invalid with invalid email', async () => {
-        let userParams = generateUserParams({ userProfile: 'validUser1' })
+      it('should be invalid with invalid email', (done) => {
         userParams.email = 'usergmail.com'
-        let user = null
-        let err = undefined
-        
-        try {
-          user = await new User(userParams).save()
-        } catch(e) {
-          err = e
-        }
 
-        expect(err.errors.email).to.exist
-        expect(err.errors.email.kind).to.eq('invalidEmailFormat')
+        const user = new User(userParams)
+        user.validate((err)=>{
+          expect(err.errors.email).to.exist
+          expect(err.errors.email.kind).to.eq('invalidEmailFormat')
+          done()
+        })
       })
     })
   })

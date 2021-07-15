@@ -1,10 +1,14 @@
+import sinon from 'sinon'
 import chai from 'chai'
 const expect = chai.expect
+import sinonChai from 'sinon-chai'
 import _ from 'lodash'
 import UserRepos from '../../../../src/user/user.repos.js'
 import { generateUserParams } from '../../../factories/userFactory.js'
 import DatabaseError from '../../../../src/errors/DatabaseError.js'
 import NotFoundError from '../../../../src/errors/NotFoundError.js'
+
+chai.use(sinonChai)
 
 /*
 user
@@ -22,6 +26,8 @@ user
 }
 */
 
+const sandbox = sinon.createSandbox()
+
 describe('User repository', () => {
   let model = {
     findById: (id) => {
@@ -29,12 +35,16 @@ describe('User repository', () => {
         throw new DatabaseError()
       }
       return model
-    },deleteOne: (filterParams) => {
+    }, deleteOne: (filterParams) => {
       if(!filterParams || _.isEmpty(filterParams)) {
         throw new NotFoundError('Empty filter params when deleting user')
       }
     }
   }
+
+  afterEach(() => {
+    sandbox.restore()
+  })
 
   context('get user', () => {
     context('getUserById()', () => {
@@ -59,7 +69,7 @@ describe('User repository', () => {
         expect(resultUser).to.have.property('_id').to.equal(expectedUser._id)
         expect(resultUser).to.have.property('username').to.equal(expectedUser.username)
         expect(resultUser).to.have.property('hashedPassword').to.equal(expectedUser.hashedPassword)
-        expect(resultUser).to.have.property('email').to.equal(expectedUser.email)        
+        expect(resultUser).to.have.property('email').to.equal(expectedUser.email)
       })
 
       it('should throw DatabaseError with empty user id', async () => {
@@ -100,20 +110,24 @@ describe('User repository', () => {
     it('should delete user successfully with valid filter params', async () => {
       let err = null
       const dummyid = 'dummyid'
+      const filterParams = { _id: dummyid }
+      const deleteUserSpy = sandbox.spy(model, 'deleteOne')
 
       try {
         const userRepos = new UserRepos(model)
-        await userRepos.deleteUser({ _id: dummyid })
+        await userRepos.deleteUser(filterParams)
       } catch(e) {
         err = e
       }
 
+      expect(deleteUserSpy.withArgs(filterParams).calledOnce).to.be.true
       expect(err).to.be.null
     })
 
     it('should throw NotFoundError with empty filter params', async () => {
       let err = null
-      const dummyid = 'dummyid'
+      const filterParams = {}
+      const deleteUserSpy = sandbox.spy(model, 'deleteOne')
 
       try {
         const userRepos = new UserRepos(model)
@@ -122,6 +136,7 @@ describe('User repository', () => {
         err = e
       }
 
+      expect(deleteUserSpy.called).to.be.false
       expect(err).to.not.be.null
       expect(err).to.be.an.instanceof(NotFoundError)
     })
