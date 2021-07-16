@@ -1,1 +1,1 @@
-export const generateDatetime = (origDatetime, offsetInMillisec) => new Date(origDatetime.getTime() + parseInt(offsetInMillisec))
+export const generateDatetime = (origDatetime=new Date(), offsetInMillisec=0) => new Date(origDatetime.getTime() + parseInt(offsetInMillisec))

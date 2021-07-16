@@ -1,0 +1,5 @@
+{
+  "require": "./tests/fixtures.mjs",
+  "exit": true,
+  "timeout": 50000
+}

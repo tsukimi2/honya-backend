@@ -1,16 +1,8 @@
-import mongoose from 'mongoose'
 import config from './config/index.js'
-import logger from '../libs/logger/index.js'
+import { database } from '../di-container.js'
+import logger from './logger/index.js'
 
-mongoose.connect(config.get('db:mongo:uri'), {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-})
-
-const db = mongoose.connection;
-//db.on('error', logger.error.bind(console, 'db connection error:'))
+const db = database.connect(config.get('db:mongo:uri'))
 db.on('error', () => {
   logger.error('db connection error:')
 })

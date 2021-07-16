@@ -2,7 +2,8 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import httpLogger from './libs/logger/httpLogger.js'
 import { bindRoutes } from './routes/index.js'
-import errHandler from './libs/errHandler.js'
+// import errHandler from './libs/errHandler.js'
+import { errHandler } from './di-container.js'
 import { isOperationalError } from './libs/errHandler.js'
 import logger from './libs/logger/index.js'
 
@@ -32,6 +33,6 @@ process.on('uncaughtException', err => {
   }
 })
 
-app.use(errHandler)
+app.use(errHandler.process)
 
 export default app;

@@ -1,6 +1,6 @@
 const userService = ({ userRepos }) => {
   const getUserById = async (id) => {
-    return userRepos.getUserById(id)
+    return userRepos.getUserById(id, { lean: true })
   }
 
   const deleteUser = async (filterParams) => {
