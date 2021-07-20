@@ -19,6 +19,16 @@ let options = {
     colorize: false,
     timestamp: true,
   },
+  fileCombinedLog: {
+    level: 'warn',
+    filename: './logs/combined.log',
+    handleExceptions: true,
+    json: true,
+    maxsize: 5242880, // 5MB
+    maxFiles: 5,
+    colorize: false,
+    timestamp: true,
+  },
   fileErrLog: {
     level: 'error',
     filename: './logs/error.log',

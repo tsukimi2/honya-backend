@@ -17,11 +17,7 @@ export default class UserRepos {
     await this.model.deleteOne(filterParams)
   }
 
-  async updateLoginHashAndRefreshToken(filterParams) {
-    await this.model.updateLoginHashAndRefreshToken(filterParams, {
-      loginHash: null,
-      refreshToken: null,
-      refreshTokenExpiresDt: null,
-    })
+  async updateLoginHashAndRefreshToken(filterParams, updateParams={}) {
+    await this.model.updateLoginHashAndRefreshToken(filterParams, updateParams)
   }
 }

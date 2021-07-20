@@ -41,7 +41,7 @@ const errHandler = ({ logger }) => {
     logger.error(err.message)
     logger.error(err.stack)
     if(err.err) {
-      logger.log(err.err)
+      logger.error(err.err)
     }
     if(err instanceof UserFacingError) {
       return res.status(err.statusCode).json({

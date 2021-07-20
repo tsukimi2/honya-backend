@@ -10,7 +10,7 @@ import UserRepos from './user/user.repos.js'
 import User from './user/user.model.js'
 
 export const errHandler = ErrHandler({ logger })
-export const database = Database({ mongoose })
+export const database = Database({ mongoose, logger })
 export const userRepos = new UserRepos(User)
 export const userService = UserService({ userRepos })
 export const authController = AuthController({ config, logger, userService })
