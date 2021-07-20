@@ -7,8 +7,8 @@ const userService = ({ userRepos }) => {
     return userRepos.deleteUser(filterParams)
   }
 
-  const updateLoginHashAndRefreshToken = async (filterParams) => {
-    await userRepos.updateLoginHashAndRefreshToken(filterParams)
+  const updateLoginHashAndRefreshToken = async (filterParams, updateParams={}) => {
+    await userRepos.updateLoginHashAndRefreshToken(filterParams, updateParams)
   }
 
   return {

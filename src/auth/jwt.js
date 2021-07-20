@@ -1,15 +1,17 @@
 import jwt from 'jsonwebtoken'
 import ForbiddenError from '../errors/ForbiddenError.js'
+import TokenNotFoundError from '../errors/TokenNotFoundError.js'
 import User from '../user/user.model.js'
 import { generateDatetime } from '../libs/datetime.js'
 import config from '../libs/config/index.js'
 import logger from '../libs/logger/index.js'
+import { generateTokenCookieOptions } from '../libs/cookies.js'
 
 const JWT_SECRET = config.get('security:jwt:secret')
 const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
-const ACCESS_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt.access_token_expires_in_sec')
+const ACCESS_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt:access_token_expires_in_sec')
 const REFRESH_TOKEN_EXPIRES_IN = config.get('security:jwt:refresh_token_expires_in')
-const REFRESH_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt.refresh_token_expires_in_sec')
+const REFRESH_TOKEN_EXPIRES_IN_SEC = config.get('security:jwt:refresh_token_expires_in_sec')
 
 const attachJwtPayloadToRequest = (req, { requestProperty='auth', payload, fieldsToInclude=[] }) => {
   req[requestProperty] = {}
@@ -32,14 +34,6 @@ export const validateJwt = async (req, res, next) => {
     return
   }
 
-  if(!req.cookies.accessToken || !req.cookies.refreshToken) {
-    logger.warn('Missing access or refresh token')
-    next(new ForbiddenError('Forbidden access'))
-    return
-  }
-  const accessToken = req.cookies.accessToken
-  const refreshToken = req.cookies.refreshToken
-
   if(!req.cookies.loginHash) {
     logger.warn('Missing loginHash')
     return next(new ForbiddenError('Forbidden access'))
@@ -47,6 +41,15 @@ export const validateJwt = async (req, res, next) => {
   const loginHash = req.cookies.loginHash
 
   try {
+    if(!req.cookies.accessToken) {
+      logger.warn('Missing access token')
+      // next(new ForbiddenError('Forbidden access'))
+      // return
+      throw new TokenNotFoundError('access token cookie not found')
+    }
+    const accessToken = req.cookies.accessToken
+    // const refreshToken = req.cookies.refreshToken
+
     const payload = jwt.verify(accessToken, JWT_SECRET)
     attachJwtPayloadToRequest(req, {
       payload,
@@ -55,8 +58,16 @@ export const validateJwt = async (req, res, next) => {
     return next()
   } catch(err) {
     // access token expired; issue new access token using refresh token
-    if(err.name === 'TokenExpiredError') {
+    if(err.name === 'TokenExpiredError' || err.name === 'TokenNotFoundError') {
+      logger.info('Access token missing or expired')
       let user = null
+
+      if(!req.cookies.refreshToken) {
+        logger.error('Missing refresh token')
+        next(new ForbiddenError('Missing refresh token'))
+        return
+      }
+      const refreshToken = req.cookies.refreshToken
 
       try {
         user = await User.findOne({ loginHash })
@@ -80,25 +91,27 @@ export const validateJwt = async (req, res, next) => {
       try {
         // if refresh token expired already, issue both access and refresh tokens
         if(refreshTokenExpiresDt > new Date()) {
+          logger.info('refresh token expired')
+
           // generate new refresh token
+          const refreshTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
+            maxAge: REFRESH_TOKEN_EXPIRES_IN_SEC * 1000
+          })
           const newRefreshToken = await generateJwt({ uid }, REFRESH_TOKEN_EXPIRES_IN)
           // set new refresh token in cookie
-          res.cookie('refreshToken', newRefreshToken, {
-            // secure: true,
-            httpOnly: true
-          })
+          res.cookie('refreshToken', newRefreshToken, refreshTokencookieOptions)
           // save new refresh token in storage
           const newRefreshTokenExpiresDt = generateDatetime(new Date(), REFRESH_TOKEN_EXPIRES_IN_SEC * 1000)
-          const updateUser = User.findOneAndUpdate({ _id: uid }, { refreshToken: newRefreshToken, refreshTokenExpiresDt: newRefreshTokenExpiresDt }, { new: true })
+          User.findOneAndUpdate({ _id: uid }, { refreshToken: newRefreshToken, refreshTokenExpiresDt: newRefreshTokenExpiresDt }, { new: true })
         }
 
         // issue access token
         const newAccessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN_SEC)
         // set access token in cookie
-        res.cookie('accessToken', newAccessToken, {
-          // secure: true,
-          httpOnly: true,
+        const accessTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
+          maxAge: ACCESS_TOKEN_EXPIRES_IN_SEC * 1000
         })
+        res.cookie('accessToken', newAccessToken, accessTokencookieOptions)
 
         attachJwtPayloadToRequest(req, {
           payload: {

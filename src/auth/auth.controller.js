@@ -4,6 +4,7 @@ import UnauthorizedError from '../errors/UnauthorizedError.js'
 import { generateDatetime } from '../libs/datetime.js'
 import { generateJwt } from '../auth/jwt.js'
 import ForbiddenError from '../errors/ForbiddenError.js'
+import { generateTokenCookieOptions } from '../libs/cookies.js'
 
 const authController = ({ config, logger, userService }) => {
   const register = (req, res) => {
@@ -47,26 +48,24 @@ const authController = ({ config, logger, userService }) => {
       const loginHash = await bcrypt.hash(username, config.get('security:password:saltrounds'))
 
       // set user hash cookie
-      res.cookie('loginHash', loginHash, {
-        // scure: true,
-        httpOnly: true
-      })
+      let loginHashCookieOptions = generateTokenCookieOptions(config.get('app:node_env'))
+      res.cookie('loginHash', loginHash, loginHashCookieOptions)
 
       // generate new access token
+      const accessTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
+        maxAge: config.get('security:jwt:access_token_expires_in_sec') * 1000
+      })
       const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
       // set access token cookie
-      res.cookie('accessToken', accessToken, {
-        // secure: true,
-        httpOnly: true
-      })
+      res.cookie('accessToken', accessToken, accessTokencookieOptions)
 
       // generate new refresh token
+      const refreshTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
+        maxAge: config.get('security:jwt:refresh_token_expires_in_sec') * 1000
+      })
       const refreshToken = await generateJwt({ uid }, config.get('security:jwt:refresh_token_expires_in'))
       // set refresh token cookie
-      res.cookie('refreshToken', refreshToken, {
-        // secure: true,
-        httpOnly: true
-      })
+      res.cookie('refreshToken', refreshToken, refreshTokencookieOptions)
 
       // update user in db
       const updatedUser = await userService.updateLoginHashAndRefreshToken({ _id: uid }, {

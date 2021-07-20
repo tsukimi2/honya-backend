@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import _ from 'lodash'
+import { database } from '../di-container.js'
+import config from '../libs/config/index.js'
 import DatabaseError from '../errors/DatabaseError.js'
 
 const UserSchema = new mongoose.Schema({
@@ -101,13 +103,13 @@ UserSchema.path('email').validate(function (email) {
   }
 })
 
-UserSchema.statics.updateLoginHashAndRefreshToken = async function(filterParam, { loginHash=null, lastLoginAt=null, refreshToken=null, refreshTokenExpiresDt=null}) {
-  let filter = {...filterParam}
+UserSchema.statics.updateLoginHashAndRefreshToken = async function(filterParams, { loginHash=null, lastLoginAt=null, refreshToken=null, refreshTokenExpiresDt=null}) {
+  let filter = {...filterParams}
   if(!filter || _.isEmpty(filter)) {
     throw new DatabaseError('Empty filter in updateLoginHashAndRefreshToken()')
   }
-  if(filterParam._id && typeof filterParam._id === 'string') {
-    filter._id = mongoose.Types.ObjectId(filterParam._id)
+  if(filterParams._id && typeof filterParams._id === 'string') {
+    filter._id = mongoose.Types.ObjectId(filterParams._id)
   }
   
   let update = {
