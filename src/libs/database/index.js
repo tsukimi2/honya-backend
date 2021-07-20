@@ -1,5 +1,4 @@
 const database = ({ mongoose, logger }) => {
-  console.log('init database')
   /*
   const connect = (dbUri) => {
     mongoose.Promise = global.Promise
