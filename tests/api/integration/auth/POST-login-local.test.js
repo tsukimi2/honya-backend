@@ -29,13 +29,6 @@ describe(API_PREFIX + '/login', () => {
   })
 
   beforeEach(async () => {
-    /*
-    username = 'user'
-    user = {
-      username,
-      password: 'testing1',
-    }
-    */
     user = generateUserParams({ userProfile: 'validUser1' })
   })
 

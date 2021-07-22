@@ -1,11 +1,16 @@
 import nconf from 'nconf'
 
 function Config() {
+console.log('Config')  
   const env = process.env.NODE_ENV || 'dev'
+console.log('env')
+console.log(env)
   nconf.file(env, 'src/config/config.' + env + '.json')
   nconf.file('default', 'src/config/config.default.json')
 
   nconf.set('app:node_env', env)
+console.log('JWT_SECRET')
+console.log(process.env.JWT_SECRET)
   if(process.env.JWT_SECRET) {
     nconf.set('security:jwt:secret', process.env.JWT_SECRET)
   }

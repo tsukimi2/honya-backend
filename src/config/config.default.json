@@ -11,8 +11,10 @@
       "port": 6379
     }
   },
-  "jwt": {
-    "secret": "myjwtsecret"
+  "security": {
+    "jwt": {
+      "secret": "myjwtsecret"
+    }
   },
   "server": {
     "port": 8000
