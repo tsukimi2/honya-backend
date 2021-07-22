@@ -29,7 +29,8 @@ const authController = ({ config, logger, userService }) => {
 console.log('login')
     const bcryptHash = util.promisify(bcrypt.hash)
     const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
-  
+console.log('ACCESS_TOKEN_EXPIRES_IN')
+console.log(config.get('security:jwt:access_token_expires_in'))
     if(!req || (req && !req.user)) {
       logger.warn('Missing user profile in request')
       next(new UnauthorizedError('User log in failed'))
