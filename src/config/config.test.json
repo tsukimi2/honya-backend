@@ -1,10 +1,7 @@
 {
   "db": {
     "mongo": {
-      "uri": "mongodb://localhost/honya-test"
-    },
-    "redis": {
-      "uri": "redis://127.0.0.1:6379"
+      "uri": "mongodb://mongo/honya-test"
     }
   }
 }
