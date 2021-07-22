@@ -13,11 +13,6 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
-  api-tests:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - .:/app
-    command: ["npm", "run", "test"]
+    depends_on:
+      - redis
+      - mongo
