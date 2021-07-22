@@ -13,6 +13,13 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
+    environment:
+      - JWT_SECRET=myjwtsecret
+      - ACCESS_TOKEN_EXPIRES_IN=1d
+      - ACCESS_TOKEN_EXPIRES_IN_SEC=86400
+      - REFRESH_TOKEN_EXPIRES_IN=60d
+      - REFRESH_TOKEN_EXPIRES_IN_SEC=5184000
+      - SALTROUNDS=10
     depends_on:
       - redis
       - mongo
