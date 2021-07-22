@@ -3,8 +3,11 @@ import redis from 'redis'
 import util from 'util'
 import config from './config/index.js'
 
-const redisUrl = config.get('db:redis:uri')
-const client = redis.createClient(redisUrl)
+const client = redis.createClient({
+  host: config.get('db:redis:host'),
+  port: config.get('db:redis:port'),
+  retry_strategy: () => 1000,
+})
 client.hget = util.promisify(client.hget)
 const exec = mongoose.Query.prototype.exec
 

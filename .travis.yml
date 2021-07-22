@@ -1,19 +1,11 @@
-language: node_js
-node_js:
-  - 14
-dist: trusty
+sudo: required
+language: generic
+
 services:
-  - mognodb
-  - redis-server
-env:
-  - NODE_ENV=test PORT=8000 ACCESS_TOKEN_EXPIRES_IN=1d ACCESS_TOKEN_EXPIRES_IN_SEC=86400 JWT_SECRET=myjwtsecretmyjwtsecret REFRESH_TOKEN_EXPIRES_IN=60d EFRESH_TOKEN_EXPIRES_IN_SEC=5184000 SALTROUNDS=10
-cache:
-  directories:
-    - node_modules
-    - client/node_modules
-install:
-  - npm install
+  - docker
+
+before_install:
+  - docker build -t osiris65/honya-backend -f Dockerfile.dev .
+
 script:
-  - nohup npm run start &
-  - sleep 3
-  - npm run test
+  - docker run osiris65/honya-backend npm run test
