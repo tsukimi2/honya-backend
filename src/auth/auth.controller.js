@@ -26,10 +26,11 @@ const authController = ({ config, logger, userService }) => {
   }
 
   const login = async (req, res, next) => {
-
+console.log('login')
     const bcryptHash = util.promisify(bcrypt.hash)
     const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
-  
+console.log('ACCESS_TOKEN_EXPIRES_IN')
+console.log(config.get('security:jwt:access_token_expires_in'))
     if(!req || (req && !req.user)) {
       logger.warn('Missing user profile in request')
       next(new UnauthorizedError('User log in failed'))
@@ -41,7 +42,7 @@ const authController = ({ config, logger, userService }) => {
       next(new UnauthorizedError('User log in failed'))
       return
     }
-  
+console.log('kon')
     try {
       // generate login hash from username
       const { id: uid, username } = req.user
@@ -58,7 +59,7 @@ const authController = ({ config, logger, userService }) => {
       const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
       // set access token cookie
       res.cookie('accessToken', accessToken, accessTokencookieOptions)
-
+console.log('kon2')
       // generate new refresh token
       const refreshTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
         maxAge: config.get('security:jwt:refresh_token_expires_in_sec') * 1000
@@ -66,7 +67,7 @@ const authController = ({ config, logger, userService }) => {
       const refreshToken = await generateJwt({ uid }, config.get('security:jwt:refresh_token_expires_in'))
       // set refresh token cookie
       res.cookie('refreshToken', refreshToken, refreshTokencookieOptions)
-
+console.log('kon3')
       // update user in db
       const updatedUser = await userService.updateLoginHashAndRefreshToken({ _id: uid }, {
         loginHash,
@@ -74,7 +75,8 @@ const authController = ({ config, logger, userService }) => {
         refreshToken,
         refreshTokenExpiresDt: generateDatetime(new Date(), config.get('security:jwt:refresh_token_expires_in_sec') * 1000)
       })
-
+console.log('updateUser')
+console.log(updatedUser)
       res.status(200).json({
         message: 'Log in successful',
         access_token: accessToken,
@@ -83,7 +85,9 @@ const authController = ({ config, logger, userService }) => {
         expires_in: config.get('security:jwt:access_token_expires_in_sec'),
       })
     } catch(err) {
-      logger.warn(err)
+console.log('err')
+console.log(err)
+      logger.warn(err)      
       next(new UnauthorizedError('User log in failed', {
         err
       }))
