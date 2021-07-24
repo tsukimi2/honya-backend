@@ -1,16 +1,26 @@
 import nconf from 'nconf'
 
 function Config() {
-console.log('Config')  
   const env = process.env.NODE_ENV || 'dev'
-console.log('env')
-console.log(env)
+
   nconf.file(env, 'src/config/config.' + env + '.json')
   nconf.file('default', 'src/config/config.default.json')
 
   nconf.set('app:node_env', env)
-console.log('JWT_SECRET')
-console.log(process.env.JWT_SECRET)
+
+  if(process.env.MONGO_HOST) {
+    nconf.set('db:mongo:host', process.env.MONGO_HOST)
+  }
+  if(process.env.MONGO_PORT) {
+    nconf.set('db:mongo:port', process.env.MONGO_PORT)
+  }
+  if(process.env.REDIS_HOST) {
+    nconf.set('db:redis:host', process.env.REDIS_HOST)
+  }
+  if(process.env.REDIS_PORT) {
+    nconf.set('db:redis:port', process.env.REDIS_PORT)
+  }
+
   if(process.env.JWT_SECRET) {
     nconf.set('security:jwt:secret', process.env.JWT_SECRET)
   }

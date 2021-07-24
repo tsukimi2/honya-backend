@@ -1,7 +1,9 @@
 {
   "db": {
     "mongo": {
-      "uri": "mongodb://mongo/honya-test"
+      "host": "localhost",
+      "port": 27017,
+      "schema": "honya-test"
     }
   }
 }

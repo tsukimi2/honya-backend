@@ -8,6 +8,9 @@ yarn-error.log*
 # .bak
 *.bak
 
+# local docker-compose
+docker-compose.dev.local.yml
+
 # Runtime data
 pids
 *.pid
