@@ -1,5 +1,5 @@
-.env
-node_modules/
+server/.env
+server/node_modules/
 LICENSE
 README.md
 .gitignore
@@ -7,3 +7,4 @@ README.md
 .travis.yml
 Dockerfile
 Dockerfile.*
+docker-compose.*

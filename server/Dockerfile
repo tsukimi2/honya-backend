@@ -1,6 +1,10 @@
 FROM node:14.17.3-alpine
-WORKDIR "/app"
+
+WORKDIR /app
+
 COPY ./package.json ./
 RUN npm install
 COPY . .
+
+# Default command
 CMD ["npm", "run", "start"]
