@@ -25,3 +25,6 @@ after_script:
   - docker build -t osiris65/honya-server-0-1-0 ./server
   # Log in to docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push built images to docker hub
+  - docker push osiris65/honya-nginx-0-1-0
+  - docker push osiris65/honya-server-0-1-0  
