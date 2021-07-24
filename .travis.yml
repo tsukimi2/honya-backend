@@ -21,15 +21,3 @@ script:
 
 after_script:
   - docker-compose -f docker-compose.dev.yml down
-
-deploy:
-  provider: elasticbeanstalk
-  region: 'us-east-2'
-  app: 'honya-backend'
-  env: 'Honyabackend-env-1'
-  bucket_name: 'elasticbeanstalk-us-east-2-302362783199'
-  bucket_path: 'honya-backend'
-  on:
-    branch: master
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
