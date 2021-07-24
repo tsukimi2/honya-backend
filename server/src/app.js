@@ -5,7 +5,7 @@ import { bindRoutes } from './routes/index.js'
 import { errHandler } from './di-container.js'
 import { isOperationalError } from './libs/errHandler.js'
 import logger from './libs/logger/index.js'
-// dummy
+
 const app = express();
 
 import './libs/logger/setupLogger.js'

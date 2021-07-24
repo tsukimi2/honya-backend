@@ -21,3 +21,4 @@ script:
 
 after_script:
   - docker-compose -f docker-compose.dev.yml down
+  - docker build -t osiris65/honya-nginx-0-1-0 ./nginx
