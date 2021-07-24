@@ -4,12 +4,19 @@ services:
     image: 'redis'
   mongo:
     image: 'mongo'
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - '80:80'
+    depends_on:
+      - api
   api:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
-    ports:
-      - "8000:8000"
     volumes:
       - /app/node_modules
       - ./server:/app

@@ -4,6 +4,15 @@ services:
     image: 'redis'
   mongo:
     image: 'mongo'
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - '80:80'
+    depends_on:
+      - api
   api:
     build:
       context: ./server
