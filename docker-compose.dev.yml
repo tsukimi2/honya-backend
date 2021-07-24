@@ -13,12 +13,13 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
+    command: sh -c "echo $MONGO_HOST"
     environment:
-      - MONGO_HOST="${MONGO_HOST}"
-      - MONGO_PORT="${MONGO_PORT}"
-      - REDIS_HOST="${REDIS_HOST}"
-      - REDIS_PORT="${REDIS_PORT}"
-      - JWT_SECRET="${JWT_SECRET}"
+      - MONGO_HOST=$MONGO_HOST
+      - MONGO_PORT=$MONGO_PORT
+      - REDIS_HOST=$$REDIS_HOST
+      - REDIS_PORT=$REDIS_PORT
+      - JWT_SECRET=$JWT_SECRET
       - ACCESS_TOKEN_EXPIRES_IN=1d
       - ACCESS_TOKEN_EXPIRES_IN_SEC=86400
       - REFRESH_TOKEN_EXPIRES_IN=60d
