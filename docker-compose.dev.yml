@@ -13,7 +13,7 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
-    command: sh -c "echo $MONGO_HOST"
+    command: bash -c 'echo $MONGO_HOST'
     environment:
       - MONGO_HOST=$MONGO_HOST
       - MONGO_PORT=$MONGO_PORT
