@@ -15,10 +15,10 @@ services:
       - .:/app
     command: bash -c 'echo $MONGO_HOST'
     environment:
-      - MONGO_HOST=$MONGO_HOST
-      - MONGO_PORT=$MONGO_PORT
-      - REDIS_HOST=$$REDIS_HOST
-      - REDIS_PORT=$REDIS_PORT
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - JWT_SECRET=$JWT_SECRET
       - ACCESS_TOKEN_EXPIRES_IN=1d
       - ACCESS_TOKEN_EXPIRES_IN_SEC=86400
