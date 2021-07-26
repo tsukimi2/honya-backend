@@ -33,9 +33,9 @@ deploy:
   provider: elasticbeanstalk
   region: 'us-east-2'
   app: 'honya'
-  env: 'Honya-env'
+  env: 'Honya-env-1'
   bucket_name: 'elasticbeanstalk-us-east-2-302362783199'
-  bucket_path: 'honya'
+  bucket_path: 'honya-multi'
   on:
     branch: master
   access_key_id: $AWS_ACCESS_KEY
