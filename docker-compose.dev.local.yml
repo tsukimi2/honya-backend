@@ -3,7 +3,7 @@ services:
   redis:
     image: 'redis'
   mongo:
-    image: 'mongo'
+    image: 'mongo:4.4.7'
   nginx:
     build:
       context: ./nginx
