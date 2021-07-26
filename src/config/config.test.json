@@ -1,7 +1,0 @@
-{
-  "db": {
-    "mongo": {
-      "uri": "mongodb://mongo/honya-test"
-    }
-  }
-}

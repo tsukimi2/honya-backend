@@ -1,25 +1,24 @@
 version: '3.9'
 services:
-  redis:
-    image: 'redis'
   mongo:
     image: 'mongo:4.4.7'
+    restart: always
+    mem_limit: 128m
+    volumes:
+      - db-data:/data/db
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.dev
+    image: 'osiris65/honya-nginx-0-1-0'
     restart: always
     ports:
       - '80:80'
+    mem_limit: 128m
+    links:
+      - api
     depends_on:
       - api
   api:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./server:/app
+    image: 'osiris65/honya-server-0-1-0'
+    mem_limit: 128m
     environment:
       - MONGO_HOST
       - MONGO_PORT
@@ -30,7 +29,9 @@ services:
       - ACCESS_TOKEN_EXPIRES_IN_SEC=86400
       - REFRESH_TOKEN_EXPIRES_IN=60d
       - REFRESH_TOKEN_EXPIRES_IN_SEC=5184000
-      - SALTROUNDS=10      
+      - SALTROUNDS=10
     depends_on:
-      - redis
       - mongo
+
+volumes:
+  db-data:
