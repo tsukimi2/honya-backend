@@ -44,7 +44,7 @@ const authController = ({ config, logger, userService }) => {
     try {
       // generate login hash from username
       const { id: uid, username } = req.user
-      const loginHash = await bcrypt.hash(username, config.get('security:password:saltrounds'))
+      const loginHash = await bcryptHash(username, config.get('security:password:saltrounds'))
 
       // set user hash cookie
       let loginHashCookieOptions = generateTokenCookieOptions(config.get('app:node_env'))
@@ -89,8 +89,71 @@ const authController = ({ config, logger, userService }) => {
     }
   }
 
+  const googleAuth = async (req, res, next) => {
+    const bcryptHash = util.promisify(bcrypt.hash)
+    const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
+
+    if(!req || (req && !req.user)) {
+      logger.warn('Missing user profile in request')
+      next(new UnauthorizedError('User log in failed'))
+      return
+    }
+
+    if(!req.user.googleAccountId) {
+      logger.warn('Missing google account ID in request')
+      next(new UnauthorizedError('User log in failed'))
+      return
+    }
+
+    try {
+      // generate login hash from username
+      const { _id: uid, googleAccountEmail } = req.user
+      const loginHash = await bcryptHash(googleAccountEmail, config.get('security:password:saltrounds'))
+      // set user hash cookie
+      let loginHashCookieOptions = generateTokenCookieOptions(config.get('app:node_env'))
+      res.cookie('loginHash', loginHash, loginHashCookieOptions)
+
+      // generate new access token
+      const accessTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
+        maxAge: config.get('security:jwt:access_token_expires_in_sec') * 1000
+      })
+      const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
+      // set access token cookie
+      res.cookie('accessToken', accessToken, accessTokencookieOptions)
+
+      // generate new refresh token
+      const refreshTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
+        maxAge: config.get('security:jwt:refresh_token_expires_in_sec') * 1000
+      })
+      const refreshToken = await generateJwt({ uid }, config.get('security:jwt:refresh_token_expires_in'))
+      // set refresh token cookie
+      res.cookie('refreshToken', refreshToken, refreshTokencookieOptions)
+
+      // update user in db
+      const updatedUser = await userService.updateLoginHashAndRefreshToken({ _id: uid }, {
+        loginHash,
+        lastLoginAt: new Date(),
+        refreshToken,
+        refreshTokenExpiresDt: generateDatetime(new Date(), config.get('security:jwt:refresh_token_expires_in_sec') * 1000)
+      })
+
+      res.status(200).json({
+        message: 'Log in successful',
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        token_type: 'bearer',
+        expires_in: config.get('security:jwt:access_token_expires_in_sec'),
+      })
+    } catch(err) {
+      logger.warn(err)      
+      next(new UnauthorizedError('User log in failed', {
+        err
+      }))
+    }
+  }
+
   const logout = (req, res) => {
-    // delete user refresh token from db
+    // delete user refresh token from db  
     if(req && req.cookies && req.cookies.loginHash) {
       const loginHash = req.cookies.loginHash
       try {
@@ -102,13 +165,15 @@ const authController = ({ config, logger, userService }) => {
     }
   
     req.logout()
-  
+
     // remove cookies from browser
     res.clearCookie('loginHash')
     res.clearCookie('accessToken')
     res.clearCookie('refreshToken')
-  
-    res.status(204).end()
+
+    res.status(200).json({
+      message: 'logout successful'
+    })
   }
 
   const isAuth = (req, res, next) => {
@@ -127,6 +192,7 @@ const authController = ({ config, logger, userService }) => {
   return {
     register,
     login,
+    googleAuth,
     logout,
     isAuth
   }

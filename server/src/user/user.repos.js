@@ -10,6 +10,21 @@ export default class UserRepos {
     return opts.lean ? await this.model.findById(id).lean() : await this.model.findById(id).exec()
   }
 
+  async getUser(filterParams, opts={}) {
+    return opts.lean ? await this.model.findOne(filterParams).lean() : await this.model.findOne(filterParams).exec()
+  }
+
+  async createUser(params) {
+    let user = new this.model
+    
+    for (const [key, value] of Object.entries(params)) {
+      user[key] = value
+    }
+    await user.save()
+
+    return user
+  }
+
   async deleteUser(filterParams) {
     if(!filterParams || _.isEmpty(filterParams)) {
       throw new NotFoundError('Empty filter params when deleting user')

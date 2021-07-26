@@ -8,14 +8,14 @@ import DatabaseError from '../errors/DatabaseError.js'
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
+    // required: true,
     unique: true,
     minLength: 3,
     maxLength: 20,
   },
   hashedPassword: {
     type: String,
-    required: true,
+    // equired: true,
   },
   /*
   loginHash: {
@@ -38,7 +38,15 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    // required: true,
+    unique: true,
+  },
+  googleAccountId: {
+    type: Number,
+    unique: true,
+  },
+  googleAccountEmail: {
+    type: String,
     unique: true,
   },
   role: {

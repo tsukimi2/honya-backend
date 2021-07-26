@@ -1,8 +1,11 @@
 import passport from 'passport'
 import passportLocal from  'passport-local'
+import GoogleStratgey from 'passport-google-oauth20'
 import DatabaseError from '../errors/DatabaseError.js'
 import UnauthorizedError from '../errors/UnauthorizedError.js'
+import config from '../libs/config/index.js'
 import User from '../user/user.model.js'
+import { userService } from '../di-container.js'
 
 /*
 passport.serializeUser(function(user, next) {
@@ -15,6 +18,14 @@ passport.deserializeUser(function(id, done) {
     });
 });
 */
+
+passport.serializeUser(function(user, next) {
+  next(null, user)
+})
+
+passport.deserializeUser(function(user, next) {
+  next(null, user)
+})
 
 const localStrategy = passportLocal.Strategy
 passport.use(
@@ -77,3 +88,26 @@ passport.use(
     }
   )
 )
+
+passport.use(new GoogleStratgey({
+  clientID: config.get('GOOGLE_OAUTH_CLIENT_ID'),
+  clientSecret: config.get('GOOGLE_OAUTH_CLIENT_SECRET'),
+  callbackURL: config.get('GOOGLE_OAUTH_CALLBACK_URL'),
+}, async (accessToken, refreshToken, profile, cb) => {
+  return cb(null, await userService.getOneOrCreateByGoogleDetails(profile.id, profile.emails[0].value))
+}))
+
+
+/*
+passport.use(new GoogleStrategy({
+  clientID: GOOGLE_CLIENT_ID,
+  clientSecret: GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://www.example.com/auth/google/callback"
+},
+function(accessToken, refreshToken, profile, cb) {
+  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    return cb(err, user);
+  });
+}
+));
+*/

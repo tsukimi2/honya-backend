@@ -48,4 +48,33 @@ router.post('/login',
 
 router.post('/logout', authController.logout)
 
+// google auth routes
+router.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile', 'email'],
+}))
+
+router.get('/auth/google/callback', passport.authenticate('google', {
+  failureRedirect: '/failed'
+}), authController.googleAuth)
+
+/*
+router.get('/auth/google/callback', passport.authenticate('google', {
+  failureRedirect: '/failed'
+}), (req, res) => {
+  res.status(200).json({
+    message: 'login success'
+  })
+})
+*/
+
+router.get('/logout', authController.logout)
+
+/*
+router.get('/auth/google/callback', passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+    failureRedirect: '/api/v1/auth/google/callback'
+}), authController.googleAuth)
+*/
+
 export default router
