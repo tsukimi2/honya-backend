@@ -1,10 +1,9 @@
-import util from 'util'
 import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 chai.use(sinonChai)
 import mongoose from 'mongoose'
-import { generateUser, generateUserParams } from '../../../factories/userFactory.js'
+import { generateUserParams } from '../../../factories/userFactory.js'
 import User from '../../../../src/user/user.model.js'
 import DatabaseError from '../../../../src/errors/DatabaseError.js'
 
@@ -13,18 +12,16 @@ const sandbox = sinon.createSandbox()
 let user = null
 
 describe('User model', () => {
-  beforeEach(() => {
-
-  })
-
-  afterEach(async () => {
-    // sandbox.restore()
-
+  beforeEach(async () => {
     try {
       await User.deleteMany({ "username": /^user*/ })
     } catch(err) {
       console.log(err)
     }
+  })
+
+  afterEach(() => {
+    // sandbox.restore()
   })
 
   context('Testing model validations', async () => {

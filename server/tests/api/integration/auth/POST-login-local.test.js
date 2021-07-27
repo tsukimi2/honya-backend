@@ -13,28 +13,26 @@ describe(API_PREFIX + '/login', () => {
   before(async () => {
     try {
       await User.deleteMany({ "username": /^user*/ })
-    } catch(err) {
-      console.log(err)
-    }
 
-    request(app)
-      .post(API_PREFIX + '/register')
-      .send(`username=${user.username}`)
-      .send(`password=${user.password}`)
-      .send(`email=${user.email}`)
-      .set('Accept', 'application/json')
-      .end(function(err, res) {
-        if (err) throw err;
-      })
+      request(app)
+        .post(API_PREFIX + '/register')
+        .send(`username=${user.username}`)
+        .send(`password=${user.password}`)
+        .send(`email=${user.email}`)
+        .set('Accept', 'application/json')
+        .end(function(err, res) {
+          if (err) throw err;
+        })
+    } catch(err) {
+
+    }
   })
 
-  beforeEach(async () => {
+  beforeEach(() => {
     user = generateUserParams({ userProfile: 'validUser1' })
   })
 
   it('should login successfully with valid username and password', async () => {
-    const storedUser = await User.findOne({ "username": user.username })
-
     const res = await request(app)
       .post(API_PREFIX + '/login')
       .send(`username=${user.username}`)

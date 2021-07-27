@@ -37,7 +37,7 @@ describe(API_PREFIX + '/logout', () => {
 
   it('should logout successfully with refresh token removed from storage given existing access and refresh token cookies', async () => {
     const res = await request(app)
-      .post(API_PREFIX + '/logout')
+      .get(API_PREFIX + '/logout')
       .set('Accept', 'application/json')
       .expect(204)
 

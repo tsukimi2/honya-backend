@@ -46,7 +46,7 @@ router.post('/login',
   authController.login
 )
 
-router.post('/logout', authController.logout)
+// router.post('/logout', authController.logout)
 
 // google auth routes
 router.get('/auth/google', passport.authenticate('google', {
