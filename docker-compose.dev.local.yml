@@ -4,6 +4,10 @@ services:
     image: 'redis'
   mongo:
     image: 'mongo:4.4.7'
+    volumes:
+      - /data/mongodb:/data/db
+    ports:
+      - "27017:27017"
   nginx:
     build:
       context: ./nginx
@@ -21,8 +25,8 @@ services:
       - /app/node_modules
       - ./server:/app
     environment:
-      - GOOGLE_OAUTH_CLIENT_ID=765177302336-ppho0d0i2qkotm1290f1k92qp68bqcpa.apps.googleusercontent.com
-      - GOOGLE_OAUTH_CLIENT_SECRET=mH1JWxacesVCPEz7EK80TfRj
+      - GOOGLE_OAUTH_CLIENT_ID=[key]
+      - GOOGLE_OAUTH_CLIENT_SECRET=[key]
       - GOOGLE_OAUTH_CALLBACK_URL=http://localhost/api/v1/auth/google/callback
       - MONGO_HOST=mongo
       - MONGO_PORT=27017
@@ -37,6 +41,3 @@ services:
     depends_on:
       - redis
       - mongo
-
-volumes:
-  db-data:

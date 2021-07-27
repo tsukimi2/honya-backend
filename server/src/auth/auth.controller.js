@@ -171,9 +171,7 @@ const authController = ({ config, logger, userService }) => {
     res.clearCookie('accessToken')
     res.clearCookie('refreshToken')
 
-    res.status(200).json({
-      message: 'logout successful'
-    })
+    res.status(204).end()
   }
 
   const isAuth = (req, res, next) => {
