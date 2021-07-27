@@ -3,8 +3,12 @@ import nconf from 'nconf'
 function Config() {
   const env = process.env.NODE_ENV || 'dev'
 
-  nconf.file(env, 'src/config/config.' + env + '.json')
-  nconf.file('default', 'src/config/config.default.json')
+  nconf.argv()
+    .env()
+    .file(env, 'src/config/config.' + env + '.json')
+    .file('default', 'src/config/config.default.json')
+  // nconf.file(env, 'src/config/config.' + env + '.json')
+  // nconf.file('default', 'src/config/config.default.json')
 
   nconf.set('app:node_env', env)
 

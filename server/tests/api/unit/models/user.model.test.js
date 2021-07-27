@@ -43,17 +43,6 @@ describe('User model', () => {
     })
 
     context('Testng username', () => {
-      it('should be invalid with empty username', (done) => {
-        userParams.username = ''
-
-        const user = new User(userParams)
-        user.validate((err)=>{
-          expect(err.errors.username).to.exist
-          expect(err.errors.username.kind).to.eq('required')
-          done()
-        })
-      })
-
       it('should be invalid with username shorter than length 3', (done) => {
         userParams.username = 'ab'
 
@@ -112,17 +101,6 @@ describe('User model', () => {
       })
     })
     context('Testing email', () => {
-      it('should be invalid with empty email', (done) => {
-        userParams.email = ''
-
-        const user = new User(userParams)
-        user.validate((err)=>{
-          expect(err.errors.email).to.exist
-          expect(err.errors.email.kind).to.eq('required')
-          done()
-        })
-      })
-
       it('should be invalid with invalid email', (done) => {
         userParams.email = 'usergmail.com'
 
