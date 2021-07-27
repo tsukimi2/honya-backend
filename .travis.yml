@@ -28,15 +28,3 @@ after_script:
   # Push built images to docker hub
   - docker push osiris65/honya-nginx-0-1-0
   - docker push osiris65/honya-server-0-1-0
-
-deploy:
-  provider: elasticbeanstalk
-  region: 'us-east-2'
-  app: 'honya'
-  env: 'Honya-env-1'
-  bucket_name: 'elasticbeanstalk-us-east-2-302362783199'
-  bucket_path: 'honya-multi'
-  on:
-    branch: master
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
