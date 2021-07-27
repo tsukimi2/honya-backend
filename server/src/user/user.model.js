@@ -1,8 +1,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import _ from 'lodash'
-import { database } from '../di-container.js'
-import config from '../libs/config/index.js'
 import DatabaseError from '../errors/DatabaseError.js'
 
 const UserSchema = new mongoose.Schema({
