@@ -5,7 +5,7 @@ services:
   mongo:
     image: 'mongo:4.4.7'
     volumes:
-      - /data/mongodb:/data/db
+      - honya-mongodb:/data/db
     ports:
       - "27017:27017"
   nginx:
@@ -41,3 +41,5 @@ services:
     depends_on:
       - redis
       - mongo
+volumes:
+  honya-mongodb:
