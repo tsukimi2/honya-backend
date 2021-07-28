@@ -39,7 +39,7 @@ describe('User model', () => {
       })
     })
 
-    context('Testng username', () => {
+    context('Testing username', () => {
       it('should be invalid with username shorter than length 3', (done) => {
         userParams.username = 'ab'
 
