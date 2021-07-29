@@ -5,7 +5,6 @@ import sinonChai from 'sinon-chai'
 import _ from 'lodash'
 import UserRepos from '../../../../src/user/user.repos.js'
 import { generateUserParams } from '../../../factories/userFactory.js'
-import DatabaseError from '../../../../src/errors/DatabaseError.js'
 import NotFoundError from '../../../../src/errors/NotFoundError.js'
 import ApplicationError from '../../../../src/errors/ApplicationError.js'
 
@@ -232,7 +231,7 @@ describe('User repository', () => {
       expect(actualUser).to.have.property('email').to.eq(userParams.email)
     })
 
-    it('should throw NotFoundError with empty params', async () => {
+    it('should throw ApplicationError with empty params', async () => {
       const userParams = {}
 
       try {
@@ -247,7 +246,7 @@ describe('User repository', () => {
       expect(err).to.be.an.instanceOf(ApplicationError)
     })
 
-    it('should throw NotFoundError with null params', async () => {
+    it('should throw ApplicationError with null params', async () => {
       const userParams = null
 
       try {
@@ -264,7 +263,9 @@ describe('User repository', () => {
   })
 
   context('update user', () => {
+    context('updateLoginHashAndRefreshToken', () => {
 
+    })
   })
 
   context('delete user', () => {
@@ -285,7 +286,7 @@ describe('User repository', () => {
       expect(err).to.be.null
     })
 
-    it('should throw NotFoundError with empty filter params', async () => {
+    it('should throw ApplicationError with empty filter params', async () => {
       let err = null
       const filterParams = {}
       const deleteUserSpy = sandbox.spy(model, 'deleteOne')
@@ -299,7 +300,7 @@ describe('User repository', () => {
 
       expect(deleteUserSpy.called).to.be.false
       expect(err).to.not.be.null
-      expect(err).to.be.an.instanceof(NotFoundError)
+      expect(err).to.be.an.instanceof(ApplicationError)
     })
   })
 })

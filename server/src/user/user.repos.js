@@ -43,7 +43,7 @@ export default class UserRepos {
 
   async deleteUser(filterParams) {
     if(!filterParams || _.isEmpty(filterParams)) {
-      throw new NotFoundError('Empty filter params when deleting user')
+      throw new ApplicationError('Empty filter params when deleting user')
     }
     await this.model.deleteOne(filterParams)
   }

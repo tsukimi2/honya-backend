@@ -1,6 +1,5 @@
 import User from '../../src/user/user.model.js'
 
-
 export const generateUserParams = ({ userProfile, hasHashedPassword=false, optParams={}}) => {
   const username = 'user'
   let initUserParams = {}
