@@ -35,7 +35,7 @@ export default errHandler
 */
 
 const errHandler = ({ logger }) => {
-  const process = (err, req, res, next) => {
+  const process = (err, req, res, next) => {   
     logger.error(err)
     logger.error(err.name)
     logger.error(err.message)
@@ -53,6 +53,14 @@ const errHandler = ({ logger }) => {
         err: err.name,
         errmsg: err.message
       })
+    } else if(err.name === 'MongoError') {
+      const words = err.message.split(' ')
+      if(words[0] === 'E11000') {
+        return res.status(400).json({
+          err: 'BadRequestError',
+          errmsg: 'duplicate key'
+        })
+      }
     }
   
     return res.status(500).json({

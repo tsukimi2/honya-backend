@@ -10,18 +10,16 @@ const userController = ({ logger, userService }) => {
       user = await userService.getUserById(_id)
     } catch(err) {
       logger.warn(err)
-      next(new DatabaseError('DatabaseErr', {
+      return next(new NotFoundError('User not found', {
         err
       }))
-      return
     }
   
     if(!user) {
-      next(new NotFoundError('User not found'))
-      return
+      return next(new NotFoundError('User not found'))
     }
     
-    res.status(200).json({
+    return res.status(200).json({
       data: {
         user: {
           _id: user._id.toString(),
@@ -38,8 +36,6 @@ const userController = ({ logger, userService }) => {
     try {
       await userService.deleteUser({ _id })
     } catch(err) {
-      console.log('err')
-      console.log(err)
       next(new NotFoundError('User delete unsuccessful'), { err })
       return
     }

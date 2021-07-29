@@ -11,7 +11,7 @@ export default class BadRequestError extends UserFacingError {
   }
 
   get name() {
-    return 'BadRequestErr'
+    return 'BadRequestError'
   }
 
   get statusCode() {

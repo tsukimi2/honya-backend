@@ -3,7 +3,7 @@ import BaseError from './BaseError.js'
 export default class DatabaseError extends BaseError {
   constructor(message, options={}) {
     super(message, options)
-    this.name = 'DatabaseErr'
+    this.name = 'DatabaseError'
     this.message = 'Data-related error'
     this.statusCode = 500
     // this.err = null

@@ -30,8 +30,7 @@ export const generateJwt = async (payload, expiresIn = ACCESS_TOKEN_EXPIRES_IN) 
 export const validateJwt = async (req, res, next) => {
   if(!req || (req && !req.cookies)) {
     logger.warn('Missing cookies')
-    next(new ForbiddenError('Forbidden access; Missing cookies'))
-    return
+    return next(new ForbiddenError('Forbidden access; Missing cookies'))
   }
 
   if(!req.cookies.loginHash) {
@@ -53,7 +52,7 @@ export const validateJwt = async (req, res, next) => {
     const payload = jwt.verify(accessToken, JWT_SECRET)
     attachJwtPayloadToRequest(req, {
       payload,
-      fieldsToInclude: [ 'uid' ]
+      fieldsToInclude: [ 'uid', 'role' ]
     })
     return next()
   } catch(err) {
@@ -117,7 +116,7 @@ export const validateJwt = async (req, res, next) => {
           payload: {
             _id: user._id.toString()
           },
-          fieldsToInclude: [ '_id' ]
+          fieldsToInclude: [ '_id', 'role' ]
         })
       } catch(err) {
         logger.warn(err)

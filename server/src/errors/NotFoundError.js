@@ -6,7 +6,7 @@ export default class NotFoundError extends UserFacingError {
   }
 
   get name() {
-    return 'NotFoundErr'
+    return 'NotFoundError'
   }
 
   get statusCode() {

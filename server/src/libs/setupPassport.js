@@ -4,7 +4,6 @@ import GoogleStratgey from 'passport-google-oauth20'
 import DatabaseError from '../errors/DatabaseError.js'
 import UnauthorizedError from '../errors/UnauthorizedError.js'
 import config from '../libs/config/index.js'
-import User from '../user/user.model.js'
 import { userService } from '../di-container.js'
 
 /*
@@ -38,13 +37,17 @@ passport.use(
     },
     async (req, username, password, next) => {
       const email = req.body.email
+      let userParams = {
+        username,
+        password,
+        email,        
+      }
+      if(req.body.role) {
+        userParams['role'] = req.body.role
+      }
 
       try {
-        const user = await User.create({
-          username,
-          password,
-          email,
-        })
+        const user = await userService.createUser(userParams)
 
         return next(null, user)
       } catch(err) {
@@ -66,16 +69,14 @@ passport.use(
     async (username, password, next) => {
       try {
         // find user
-        const user = await User.findOne({ username })
+        const user = await userService.getUser({ username })
         if(!user) {
-          // return next(null, false, { message: 'Invalid username/password' })
           return next(new UnauthorizedError('Invalid username/password'))
         }
 
         // validate password
         const hasValidPassword = await user.isValidPassword(password)
         if(!hasValidPassword) {
-          // return next(null, false, { message: 'Invalid username/password' })
           return next(new UnauthorizedError('Invalid username/password'))
         }
 
@@ -96,18 +97,3 @@ passport.use(new GoogleStratgey({
 }, async (accessToken, refreshToken, profile, cb) => {
   return cb(null, await userService.getOneOrCreateByGoogleDetails(profile.id, profile.emails[0].value))
 }))
-
-
-/*
-passport.use(new GoogleStrategy({
-  clientID: GOOGLE_CLIENT_ID,
-  clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://www.example.com/auth/google/callback"
-},
-function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    return cb(err, user);
-  });
-}
-));
-*/

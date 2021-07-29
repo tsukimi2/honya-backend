@@ -6,19 +6,24 @@ import mongoose from 'mongoose'
 import { generateUserParams } from '../../../factories/userFactory.js'
 import User from '../../../../src/user/user.model.js'
 import DatabaseError from '../../../../src/errors/DatabaseError.js'
+import { ROLE } from '../../../../src/user/user.constants.js'
 
 const expect = chai.expect
 const sandbox = sinon.createSandbox()
 let user = null
 
 describe('User model', () => {
+  /*
   beforeEach(async () => {
     try {
-      await User.deleteMany({ "username": /^user*/ })
+      */
+      //await User.deleteMany({ "username": /^user*/ })
+      /*
     } catch(err) {
       console.log(err)
     }
   })
+  */
 
   afterEach(() => {
     // sandbox.restore()
@@ -39,7 +44,7 @@ describe('User model', () => {
       })
     })
 
-    context('Testng username', () => {
+    context('Testing username', () => {
       it('should be invalid with username shorter than length 3', (done) => {
         userParams.username = 'ab'
 
@@ -105,6 +110,45 @@ describe('User model', () => {
         user.validate((err)=>{
           expect(err.errors.email).to.exist
           expect(err.errors.email.kind).to.eq('invalidEmailFormat')
+          done()
+        })
+      })
+    })
+
+    context('Testing role', () => {
+      it('should be valid with role user', (done) => {
+        userParams['role'] = ROLE.USER
+        let user = new User(userParams)
+        user.validate((err) => {     
+          expect(err).to.not.exist
+          done()
+        })
+      })
+
+      it('should be valid with role superivsor', (done) => {
+        userParams['role'] = ROLE.SUPERVISOR
+        let user = new User(userParams)
+        user.validate((err) => {
+          expect(err).to.not.exist
+          done()
+        })
+      })
+
+      it('should be valid with role admin', (done) => {
+        userParams['role'] = ROLE.ADMIN
+        let user = new User(userParams)
+        user.validate((err) => {
+          expect(err).to.not.exist
+          done()
+        })
+      })
+
+      it('should not be valid with role other than user, supervisor, or admin', (done) => {
+        userParams['role'] = 'dummyrole'
+        let user = new User(userParams)
+        user.validate((err) => {
+          expect(err.errors.role).to.exist
+          expect(err.errors.role.kind).to.eq('enum')
           done()
         })
       })

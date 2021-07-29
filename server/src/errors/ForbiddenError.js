@@ -6,7 +6,7 @@ export default class ForbiddenError extends UserFacingError {
   }
 
   get name() {
-    return 'ForbiddenErr'
+    return 'ForbiddenError'
   }
 
   get statusCode() {

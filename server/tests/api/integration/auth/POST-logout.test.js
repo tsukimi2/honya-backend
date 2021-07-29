@@ -3,16 +3,21 @@ import request from 'supertest'
 import app from '../../../../src/app.js'
 import config from '../../../../src/libs/config/index.js'
 import User from '../../../../src/user/user.model.js'
+import { generateUserParams } from '../../../factories/userFactory.js'
 
 const API_PREFIX = config.get('app:api_prefix')
 
 describe(API_PREFIX + '/logout', () => {
+  /*
   const username = 'user'
   const user = {
     username: 'user',
     password: 'testing1',
     email: `${username}@gmail.com`
   }
+  */
+
+  const user = generateUserParams({ userProfile: 'validUser1' })
 
   before(async () => {
     try {
