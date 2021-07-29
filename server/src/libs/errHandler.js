@@ -35,7 +35,7 @@ export default errHandler
 */
 
 const errHandler = ({ logger }) => {
-  const process = (err, req, res, next) => {
+  const process = (err, req, res, next) => {   
     logger.error(err)
     logger.error(err.name)
     logger.error(err.message)

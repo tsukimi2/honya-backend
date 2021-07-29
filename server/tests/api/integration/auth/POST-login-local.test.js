@@ -57,7 +57,7 @@ describe(API_PREFIX + '/login', () => {
       .set('Accept', 'application/json')
       .expect(401)
 
-    expect(res.body.err).to.eql('AuthErr')
+    expect(res.body.err).to.eql('UnauthorizedError')
     expect(res.body.errmsg).to.eql('Invalid username/password')
   })
 
@@ -71,7 +71,7 @@ describe(API_PREFIX + '/login', () => {
       .set('Accept', 'application/json')
       .expect(401)
       
-    expect(res.body.err).to.eql('AuthErr')
+    expect(res.body.err).to.eql('UnauthorizedError')
     expect(res.body.errmsg).to.eql('Invalid username/password')
   })
 

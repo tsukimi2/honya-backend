@@ -6,7 +6,7 @@ export default class UnauthorizedError extends UserFacingError {
   }
 
   get name() {
-    return 'AuthErr'
+    return 'UnauthorizedError'
   }
 
   get statusCode() {

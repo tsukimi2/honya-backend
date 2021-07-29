@@ -10,7 +10,7 @@ const userController = ({ logger, userService }) => {
       user = await userService.getUserById(_id)
     } catch(err) {
       logger.warn(err)
-      return next(new DatabaseError('DatabaseErr', {
+      return next(new NotFoundError('User not found', {
         err
       }))
     }

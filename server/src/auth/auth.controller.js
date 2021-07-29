@@ -188,7 +188,7 @@ const authController = ({ config, logger, userService }) => {
     next()
   }
 
-  const isAdmin = async (req, res, next) => {
+  const isAdmin = async (req, res, next) => {    
     if(!req.auth || (req.auth && req.auth.role !== 'admin')) {
       return next(new ForbiddenError('User is not admin'))
     }

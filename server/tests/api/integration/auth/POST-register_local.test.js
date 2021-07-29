@@ -81,7 +81,7 @@ describe(API_PREFIX + '/register', () => {
       .send(`email=${user.email}`)
       .set('Accept', 'application/json')     
       .expect(400, {
-        err: "DatabaseErr",
+        err: "DatabaseError",
         errmsg: "Duplicate key error"
       })   
   })
@@ -102,7 +102,7 @@ describe(API_PREFIX + '/register', () => {
       .expect(400)
 
     expect(result.body.err).to.exist
-    expect(result.body.err).to.eql('BadRequestErr')
+    expect(result.body.err).to.eql('BadRequestError')
   })
 
   it('should not register a user with username less than 3 characters or greater than 20 characters', async () => {
@@ -117,7 +117,7 @@ describe(API_PREFIX + '/register', () => {
       .expect(400)
 
     expect(result.body.err).to.exist
-    expect(result.body.err).to.eql('BadRequestErr')
+    expect(result.body.err).to.eql('BadRequestError')
   })
 
   it('should not register a user with password less than 8 characters or greater than 20 characters', async () => {
@@ -132,7 +132,7 @@ describe(API_PREFIX + '/register', () => {
       .expect(400)
 
     expect(result.body.err).to.exist
-    expect(result.body.err).to.eql('BadRequestErr')
+    expect(result.body.err).to.eql('BadRequestError')
   })
 
   it('should not register a user with invalid email format', async() => {
@@ -147,6 +147,6 @@ describe(API_PREFIX + '/register', () => {
       .expect(400)
 
     expect(result.body.err).to.exist
-    expect(result.body.err).to.eql('BadRequestErr')
+    expect(result.body.err).to.eql('BadRequestError')
   })
 })
