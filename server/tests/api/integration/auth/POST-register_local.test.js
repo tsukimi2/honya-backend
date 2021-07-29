@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import request from 'supertest'
 import app from '../../../../src/app.js'
 import config from '../../../../src/libs/config/index.js'
+import { ROLE } from '../../../../src/user/user.constants.js'
 import User from '../../../../src/user/user.model.js'
 
 const API_PREFIX = config.get('app:api_prefix')
@@ -25,7 +26,7 @@ describe(API_PREFIX + '/register', () => {
     }
   })
 
-  it('should registers a new user successfully with valid username, password, and email', async () => {
+  it('should registers a new user with default role user successfully with valid username, password, and email and without role param', async () => {
     await request(app)
       .post(API_PREFIX + '/register')
       .send(`username=${user.username}`)
@@ -36,7 +37,29 @@ describe(API_PREFIX + '/register', () => {
         data: {
           user: {
             username: user.username,
-            email: user.email
+            email: user.email,
+            role: ROLE.USER,
+          }
+        }
+      })
+  })
+
+  it('should registers a new user successfully with valid username, password, email and role', async () => {
+    const role = ROLE.ADMIN
+
+    await request(app)
+      .post(API_PREFIX + '/register')
+      .send(`username=${user.username}`)
+      .send(`password=${user.password}`)
+      .send(`email=${user.email}`)
+      .send(`role=${ROLE.ADMIN}`)
+      .set('Accept', 'application/json')
+      .expect(201, {
+        data: {
+          user: {
+            username: user.username,
+            email: user.email,
+            role
           }
         }
       })

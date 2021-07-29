@@ -79,7 +79,21 @@ describe('User service', () => {
 
       it('should throw ApplicationError with empty user id', async () => {
         const dummyid = ''
-        const expectedUser = generatedUser
+        const userService = UserService({ userRepos })
+        let resultUser = null
+        let err = null
+        try {
+          resultUser = await userService.getUserById(dummyid)
+        } catch(e) {
+          err = e
+        }
+        
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(ApplicationError)
+      })
+
+      it('should throw ApplicationError with empty user id', async () => {
+        const dummyid = null
         const userService = UserService({ userRepos })
         let resultUser = null
         let err = null
@@ -93,6 +107,57 @@ describe('User service', () => {
         expect(err).to.be.an.instanceof(ApplicationError)
       })
     }))
+
+    context('getUser', (() => {
+      it('should get user with valid user params', async () => {
+        const expectedUser = generatedUser
+        const userService = UserService({ userRepos })
+
+        try {
+          actualUser = await userService.getUser(generatedUser)
+        } catch(e) {
+          err = e
+        }
+        
+        expect(actualUser).to.not.be.null
+        expect(actualUser).to.have.property('_id').to.equal(expectedUser._id)
+        expect(actualUser).to.have.property('username').to.equal(expectedUser.username)
+        expect(actualUser).to.have.property('hashedPassword').to.equal(expectedUser.hashedPassword)
+        expect(actualUser).to.have.property('email').to.equal(expectedUser.email)
+      })
+
+      it('should throw ApplicationError with empty user params', async () => {
+        const userParams = {}
+        const userService = UserService({ userRepos })
+        let resultUser = null
+        let err = null
+        try {
+          resultUser = await userService.getUser(userParams)
+        } catch(e) {
+          err = e
+        }
+        
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(ApplicationError)
+      })
+
+      it('should throw ApplicationError with null user params', async () => {
+        const userParams = null
+        const userService = UserService({ userRepos })
+        let resultUser = null
+        let err = null
+        try {
+          resultUser = await userService.getUser(userParams)
+        } catch(e) {
+          err = e
+        }
+        
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(ApplicationError)
+      })
+    }))    
+
+    
   })
 
   context('create user', () => {

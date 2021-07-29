@@ -13,13 +13,14 @@ const authController = ({ config, logger, userService }) => {
       throw new UnauthorizedError('User registration failed')
     }
   
-    const { username, email } = req.user
+    const { username, email, role } = req.user
   
     res.status(201).json({
       data: {
         user: {
           username,
-          email
+          email,
+          role
         }
       }
     })
@@ -43,7 +44,7 @@ const authController = ({ config, logger, userService }) => {
 
     try {
       // generate login hash from username
-      const { id: uid, username } = req.user
+      const { id: uid, username, role } = req.user
       const loginHash = await bcryptHash(username, config.get('security:password:saltrounds'))
 
       // set user hash cookie
@@ -54,7 +55,7 @@ const authController = ({ config, logger, userService }) => {
       const accessTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
         maxAge: config.get('security:jwt:access_token_expires_in_sec') * 1000
       })
-      const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
+      const accessToken = await generateJwt({ uid, role }, ACCESS_TOKEN_EXPIRES_IN)
       // set access token cookie
       res.cookie('accessToken', accessToken, accessTokencookieOptions)
 
@@ -62,7 +63,7 @@ const authController = ({ config, logger, userService }) => {
       const refreshTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
         maxAge: config.get('security:jwt:refresh_token_expires_in_sec') * 1000
       })
-      const refreshToken = await generateJwt({ uid }, config.get('security:jwt:refresh_token_expires_in'))
+      const refreshToken = await generateJwt({ uid, role }, config.get('security:jwt:refresh_token_expires_in'))
       // set refresh token cookie
       res.cookie('refreshToken', refreshToken, refreshTokencookieOptions)
 
@@ -117,7 +118,7 @@ const authController = ({ config, logger, userService }) => {
       const accessTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
         maxAge: config.get('security:jwt:access_token_expires_in_sec') * 1000
       })
-      const accessToken = await generateJwt({ uid }, ACCESS_TOKEN_EXPIRES_IN)
+      const accessToken = await generateJwt({ uid, role }, ACCESS_TOKEN_EXPIRES_IN)
       // set access token cookie
       res.cookie('accessToken', accessToken, accessTokencookieOptions)
 
@@ -125,7 +126,7 @@ const authController = ({ config, logger, userService }) => {
       const refreshTokencookieOptions = generateTokenCookieOptions(config.get('app:node_env'), {
         maxAge: config.get('security:jwt:refresh_token_expires_in_sec') * 1000
       })
-      const refreshToken = await generateJwt({ uid }, config.get('security:jwt:refresh_token_expires_in'))
+      const refreshToken = await generateJwt({ uid, role }, config.get('security:jwt:refresh_token_expires_in'))
       // set refresh token cookie
       res.cookie('refreshToken', refreshToken, refreshTokencookieOptions)
 
@@ -187,12 +188,21 @@ const authController = ({ config, logger, userService }) => {
     next()
   }
 
+  const isAdmin = async (req, res, next) => {
+    if(!req.auth || (req.auth && req.auth.role !== 'admin')) {
+      return next(new ForbiddenError('User is not admin'))
+    }
+
+    next()
+  }
+
   return {
     register,
     login,
     googleAuth,
     logout,
-    isAuth
+    isAuth,
+    isAdmin
   }
 }
 

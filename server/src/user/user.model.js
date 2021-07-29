@@ -2,11 +2,15 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import _ from 'lodash'
 import DatabaseError from '../errors/DatabaseError.js'
+import { ROLE } from './user.constants.js'
 
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: true,
+    index: {
+      unique: true,
+      partialFilterExpression: {username: {$type: "string"}}
+    },
     minLength: 3,
     maxLength: 20,
   },
@@ -34,20 +38,29 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
+    index: {
+      unique: true,
+      partialFilterExpression: {email: {$type: "string"}}
+    }
   },
   googleAccountId: {
     type: Number,
-    unique: true,
+    index: {
+      unique: true,
+      partialFilterExpression: {googleAccountId: {$type: "number"}}
+    }
   },
   googleAccountEmail: {
     type: String,
-    unique: true,
+    index: {
+      unique: true,
+      partialFilterExpression: {googleAccountEmail: {$type: "string"}}
+    }
   },
   role: {
     type: String,
-    defaut: 'user',
-    enum: [ 'user', 'supervisor', 'admin' ]
+    default: ROLE.USER,
+    enum: [ ROLE.USER, ROLE.SUPERVISOR, ROLE.ADMIN ]
   },
   history: {
     type: Array,

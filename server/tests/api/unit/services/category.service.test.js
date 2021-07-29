@@ -34,7 +34,7 @@ describe('Category service', () => {
 
   context('Create category', () => {
     context('createCategory', () => {
-      it.only('should create user successfully and return created user with valid params', async () => {
+      it('should create user successfully and return created user with valid params', async () => {
         let actualCategory = null
 
         try {
@@ -48,8 +48,31 @@ describe('Category service', () => {
         expect(actualCategory).to.have.property('name').to.eq(categoryParams.name)
       })
 
-      it('should throw ApplicationError with empty params')
-      it('should throw ApplicationError with null params')
+      it('should throw ApplicationError with empty params', async () => {
+        const categoryParams = {}
+
+        try {
+          await categoryService.createCategory(categoryParams)
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(ApplicationError)
+      })
+
+      it('should throw ApplicationError with null params', async () => {
+        const categoryParams = null
+
+        try {
+          await categoryService.createCategory(categoryParams)
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(ApplicationError)
+      })
     })
   })
 })

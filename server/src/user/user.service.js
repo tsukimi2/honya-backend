@@ -1,8 +1,13 @@
 import ApplicationError from "../errors/ApplicationError.js"
 
 const userService = ({ userRepos }) => {
-  const getUserById = async (id) => {
-    return userRepos.getUserById(id, { lean: true })
+  const getUserById = async (id, opts={}) => {
+    // return userRepos.getUserById(id, { lean: true })
+    return userRepos.getUserById(id)
+  }
+
+  const getUser = async (filterParams, opts={}) => {
+    return userRepos.getUser(filterParams, opts)
   }
 
   const createUser = async (params) => {
@@ -35,6 +40,7 @@ const userService = ({ userRepos }) => {
 
   return {
     getUserById,
+    getUser,
     createUser,
     deleteUser,
     getOneOrCreateByGoogleDetails,
