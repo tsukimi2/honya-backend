@@ -1,7 +1,7 @@
 import UserFacingError from './UserFacingError.js'
 
 export default class UnprocessableEntityError extends UserFacingError {
-  constructor(message='Unauthorized error', options={}) {
+  constructor(message='UnprocessableEntityError', options={}) {
     super(message, options)
   }
 

@@ -1,7 +1,7 @@
 import UserFacingError from './UserFacingError.js'
 
 export default class NotFoundError extends UserFacingError {
-  constructor(message, options={}) {
+  constructor(message='NotFoundError', options={}) {
     super(message, options)
   }
 

@@ -1,7 +1,7 @@
 import UserFacingError from './UserFacingError.js'
 
 export default class ForbiddenError extends UserFacingError {
-  constructor(message, options={}) {
+  constructor(message='ForbiddenError', options={}) {
     super(message, options)
   }
 

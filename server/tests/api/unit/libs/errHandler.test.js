@@ -15,7 +15,6 @@ describe('libs/errHandler', () => {
     error: () => {}
   }
   const req = {}
-  const next = () => {}
   const errHandler = ErrHandler({ logger })
 
   beforeEach(() => {
@@ -35,7 +34,7 @@ describe('libs/errHandler', () => {
   it('should check error instance and replies with status code, error name, and error message corresponding to the Error instance if it is an instance of Error', () => {
     const expectedErrmsg = 'testing not found'
     const err = new NotFoundError(expectedErrmsg)
-    const result = errHandler.process(err, req, res, next)
+    const result = errHandler.process(err, req, res)
 
     expect(statusStub).to.have.been.calledWith(404)
     expect(jsonStub).to.have.been.calledWith({
@@ -47,7 +46,7 @@ describe('libs/errHandler', () => {
   it('should reply http status code 500 if not instance of Error', () => {
     const expectedErrmsg = 'testing not found'
     const err = expectedErrmsg
-    const result = errHandler.process(err, req, res, next)
+    const result = errHandler.process(err, req, res)
 
     expect(statusStub).to.have.been.calledWith(500)
     expect(jsonStub).to.have.been.calledWith({

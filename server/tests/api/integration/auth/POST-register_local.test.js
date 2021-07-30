@@ -79,11 +79,11 @@ describe(API_PREFIX + '/register', () => {
       .send(`username=${user.username}`)
       .send(`password=${user.password}`)
       .send(`email=${user.email}`)
-      .set('Accept', 'application/json')     
+      .set('Accept', 'application/json')          
       .expect(400, {
         err: "DatabaseError",
         errmsg: "Duplicate key error"
-      })   
+      })
   })
 
   it('should not register a user with empty username, password, or email', async () => {
