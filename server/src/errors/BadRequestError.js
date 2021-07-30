@@ -1,7 +1,7 @@
 import UserFacingError from './UserFacingError.js'
 
 export default class BadRequestError extends UserFacingError {
-  constructor(message, options = {}) {
+  constructor(message='BadRequestError', options = {}) {
     super(message, options)
 
     if(options.err && Array.isArray(options.err)) {

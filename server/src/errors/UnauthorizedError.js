@@ -1,7 +1,7 @@
 import UserFacingError from "./UserFacingError.js";
 
 export default class UnauthorizedError extends UserFacingError {
-  constructor(message='Unauthorized error', options={}) {
+  constructor(message='UnauthorizedError', options={}) {
     super(message, options)
   }
 

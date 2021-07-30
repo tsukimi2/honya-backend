@@ -44,8 +44,10 @@ const userController = ({ logger, userService }) => {
   }
 
   const attachUidParamToReq = (req, res, next, uid) => {
-    req.user = {
-      _id: uid
+    if(uid) {
+      req.user = {
+        _id: uid
+      }
     }
   
     next()

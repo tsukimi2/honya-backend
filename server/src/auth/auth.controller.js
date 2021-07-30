@@ -177,14 +177,10 @@ const authController = ({ config, logger, userService }) => {
 
   const isAuth = (req, res, next) => {
     const isAuthFlag = req.auth && req.user && req.auth._id === req.user._id
-    if(!isAuthFlag) {
-      logger.error('req auth')
-      logger.error(req.auth)
-      logger.error('req user')
-      logger.error(req.user)
-      throw new ForbiddenError('Access denied')
+    if(!isAuthFlag) {   
+      return next(new ForbiddenError('Access denied'))
     }
-  
+
     next()
   }
 
