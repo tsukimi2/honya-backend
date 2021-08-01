@@ -1,7 +1,4 @@
 import chai from 'chai'
-// import sinon from 'sinon'
-// import sinonChai from 'sinon-chai'
-// chai.use(sinonChai)
 import Category from '../../../../src/category/category.model.js'
 
 const expect = chai.expect
