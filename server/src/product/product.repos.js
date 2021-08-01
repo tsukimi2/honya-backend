@@ -7,7 +7,7 @@ export default class ProductRepos {
     this.model = model
   }
 
-  async create(params) {
+  async create(params) { 
     if(!params || _.isEmpty(params)) {
       throw new ApplicationError('Invalid user params')
     }

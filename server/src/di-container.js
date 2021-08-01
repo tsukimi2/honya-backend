@@ -1,4 +1,7 @@
 import mongoose from 'mongoose'
+import formidable from 'formidable'
+const IncomingForm = formidable
+import fs from 'fs'
 import config from './libs/config/index.js'
 import logger from './libs/logger/index.js'
 import Database from './libs/database/index.js'
@@ -14,6 +17,8 @@ import CategoryRepos from './category/category.repos.js'
 import Category from './category/category.model.js'
 import Product from './product/product.model.js'
 import ProductRepos from './product/product.repos.js'
+import ProductService from './product/product.service.js'
+import ProductController from './product/product.controller.js'
 
 export const errHandler = ErrHandler({ logger })
 export const database = Database({ mongoose, logger })
@@ -24,4 +29,6 @@ export const categoryService = CategoryService({ categoryRepos })
 export const categoryController = CategoryController({ categoryService })
 export const authController = AuthController({ config, logger, userService })
 export const userController = UserController({ logger, userService })
-export const productRepos = new ProductRepos({ Product })
+export const productRepos = new ProductRepos(Product)
+export const productService = ProductService({ productRepos, categoryRepos, config, fs, mongoose })
+export const productController = ProductController({ productService, IncomingForm })

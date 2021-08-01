@@ -1,6 +1,9 @@
 {
   "app": {
-    "api_prefix": "/api/v1"
+    "api_prefix": "/api/v1",
+    "img": {
+      "max_img_size": 1000000
+    }
   },
   "db": {
     "mongo": {

@@ -7,7 +7,6 @@ import CategoryService from '../../../../src/category/category.service.js'
 import ApplicationError from '../../../../src/errors/ApplicationError.js'
 
 chai.use(sinonChai)
-
 const sandbox = sinon.createSandbox()
 
 describe('Category service', () => {
@@ -34,7 +33,7 @@ describe('Category service', () => {
 
   context('Create category', () => {
     context('createCategory', () => {
-      it('should create user successfully and return created user with valid params', async () => {
+      it('should create category successfully and return created category with valid params', async () => {
         let actualCategory = null
 
         try {
