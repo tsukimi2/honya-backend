@@ -24,8 +24,8 @@ describe('Category repository', () => {
         name: 'category1'
       }
 
-      model = sinon.stub()
-      model.prototype.save = sinon.stub().resolves()
+      model = sandbox.stub()
+      model.prototype.save = sandbox.stub().resolves()
       createCategorySpy = model.prototype.save
     })
 

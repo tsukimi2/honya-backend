@@ -11,13 +11,13 @@ export default class CategoryRepos {
       throw new ApplicationError('Invalid user params')
     }
 
-    const category = new this.model
+    const doc = new this.model
     for (const [key, value] of Object.entries(params)) {
-      category[key] = value
+      doc[key] = value
     }
 
-    await category.save()
+    await doc.save()
 
-    return category
+    return doc
   }
 }

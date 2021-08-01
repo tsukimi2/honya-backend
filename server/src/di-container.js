@@ -12,6 +12,8 @@ import CategoryController from './category/category.controller.js'
 import CategoryService from './category/category.service.js'
 import CategoryRepos from './category/category.repos.js'
 import Category from './category/category.model.js'
+import Product from './product/product.model.js'
+import ProductRepos from './product/product.repos.js'
 
 export const errHandler = ErrHandler({ logger })
 export const database = Database({ mongoose, logger })
@@ -22,3 +24,4 @@ export const categoryService = CategoryService({ categoryRepos })
 export const categoryController = CategoryController({ categoryService })
 export const authController = AuthController({ config, logger, userService })
 export const userController = UserController({ logger, userService })
+export const productRepos = new ProductRepos({ Product })
