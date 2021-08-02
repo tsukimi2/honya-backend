@@ -56,8 +56,8 @@ describe('Product repository', () => {
       docParams = {}
 
       try {
-        const reepos = new ProductRepos(model)
-        actualDoc = await reepos.create(docParams)
+        const repos = new ProductRepos(model)
+        actualDoc = await repos.create(docParams)
       } catch(e) {
         err = e
       }
@@ -71,8 +71,8 @@ describe('Product repository', () => {
       docParams = null
 
       try {
-        const reepos = new ProductRepos(model)
-        actualDoc = await reepos.create(docParams)
+        const repos = new ProductRepos(model)
+        actualDoc = await repos.create(docParams)
       } catch(e) {
         err = e
       }
@@ -87,8 +87,8 @@ describe('Product repository', () => {
       createSpy = model.prototype.save
 
       try {
-        const reepos = new ProductRepos(model)
-        actualDoc = await reepos.create(docParams)
+        const repos = new ProductRepos(model)
+        actualDoc = await repos.create(docParams)
       } catch(e) {
         err = e
       }

@@ -12,9 +12,9 @@ const sandbox = sinon.createSandbox()
 describe('Category service', () => {
   const dummyid = 'dummyid'
   const categoryRepos = {
-    createCategory: async (params) => {
+    create: async (params) => {
       if(!params || _.isEmpty(params)) {
-        throw new ApplicationError('Invalid user params')
+        throw new ApplicationError('Invalid category params')
       }
 
       return Object.assign({}, params, { _id: dummyid })

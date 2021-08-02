@@ -82,7 +82,7 @@ describe(API_PREFIX + '/register', () => {
       .set('Accept', 'application/json')          
       .expect(400, {
         err: "DatabaseError",
-        errmsg: "Duplicate key error"
+        errmsg: "duplicate key"
       })
   })
 

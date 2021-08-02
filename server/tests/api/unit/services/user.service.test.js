@@ -27,26 +27,26 @@ describe('User service', () => {
     err = null
 
     userRepos = {
-      getUserById: (id) => {
+      getById: (id) => {
         if(!id) {
           throw new ApplicationError('Invalid user id')
         }
         return generatedUser
       },
-      getUser: (params) => {
+      getOne: (params) => {
         if(!params || _.isEmpty(params)) {
           throw new ApplicationError('Invalid user params')
         }
         return Object.assign({}, params, { _id: dummyid })
       },
-      createUser: (params) => {
+      create: (params) => {
         if(!params || _.isEmpty(params)) {
           throw new ApplicationError()
         }
   
         return Object.assign({}, params, { _id: 'dummyid' })
       },
-      deleteUser: (filterParams) => {
+      deleteOne: (filterParams) => {
         if(!filterParams || _.isEmpty(filterParams)) {
           throw new ApplicationError('Empty filter params when deleting user')
         }
@@ -164,7 +164,7 @@ describe('User service', () => {
     context('getOneOrCreateByGoogleDetails', () => {
       let createUserSpy = null
       beforeEach(() => {
-        createUserSpy = sandbox.spy(userRepos, 'createUser')
+        createUserSpy = sandbox.spy(userRepos, 'create')
       })
 
       it('should throw ApplicationError with empty param googleAccountId', async () => {
@@ -215,10 +215,9 @@ describe('User service', () => {
       })
 
       it('should create new user if user with provided googleAccountId not existed yet', async () => {
-        userRepos['getUser'] = (params) => {
+        userRepos['getOne'] = (params) => {
           return []
         }
-        
         const googleAccountId = 123456789
         const googleAccountEmail = 'dummy@gmail.com'
 
@@ -246,7 +245,7 @@ describe('User service', () => {
     let userService = null
 
     beforeEach(() => {
-      deleteUserSpy = sandbox.spy(userRepos, 'deleteUser')
+      deleteUserSpy = sandbox.spy(userRepos, 'deleteOne')
       userService = UserService({ userRepos })
     })
 
