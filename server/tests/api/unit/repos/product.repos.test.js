@@ -6,23 +6,144 @@ import mongoose from 'mongoose'
 import ProductRepos from '../../../../src/product/product.repos.js'
 import ApplicationError from '../../../../src/errors/ApplicationError.js'
 import DatabaseError from '../../../../src/errors/DatabaseError.js'
-
+import { generateProductParams } from '../../../factories/productFactory.js'
 
 chai.use(sinonChai)
+const sandbox = sinon.createSandbox()
 
 describe('Product repository', () => {
+  let err = null
+  let model = {
+    findById: (id) => {
+      return model
+    },
+    findOne: (filterParams) => {
+      return model
+    },
+    // deleteOne: (filterParams) => {},
+    select: (filterParams) => {
+      return model
+    }
+  }
+
+  beforeEach(() => {
+    err = null
+    model['deleteOne'] = (filterParams) => {}
+  })
+
+  afterEach(() => {
+    sandbox.restore()
+  })
+
+  context('Get product', () => {
+    context('getById()', () => {
+      it('should get product with valid product id', async () => {
+        const dummyid = 'dummy1'
+        const expected = generateProductParams({
+          productProfile: 'basic',
+          optParams: { _id: dummyid }
+        })
+        model['exec'] = () => {
+          return expected
+        }
+        model['lean'] = () => {
+          return expected
+        }
+
+        let actual = null
+        try {
+          const repos = new ProductRepos(model)
+          actual = await repos.getById(dummyid, { lean: true })
+        } catch(e) {
+          err = e
+        }
+
+        expect(actual).to.be.not.null
+        expect(actual).to.have.property('_id').to.eq(dummyid)
+        expect(actual).to.have.property('name').to.eq(expected.name)
+      })
+
+      it('should throw ApplicationError with empty product id', async () => {
+        const dummyid = ''
+        const expected = generateProductParams({
+          productProfile: 'basic',
+          optParams: { _id: dummyid }
+        })
+        model['exec'] = () => {
+          return expected
+        }
+        model['lean'] = () => {
+          return expected
+        }
+
+        let actual = null
+        try {
+          const repos = new ProductRepos(model)
+          actual = await repos.getById(dummyid, { lean: true })
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.not.be.null
+        expect(err).to.be.an.instanceof(ApplicationError)  
+      })
+
+      it('should throw ApplicationError with null product id', async () => {
+        const dummyid = undefined
+        const expected = generateProductParams({
+          productProfile: 'basic',
+          optParams: { _id: dummyid }
+        })
+        model['exec'] = () => {
+          return expected
+        }
+        model['lean'] = () => {
+          return expected
+        }
+
+        let actual = null
+        try {
+          const repos = new ProductRepos(model)
+          actual = await repos.getById(dummyid, { lean: true })
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.not.be.null
+        expect(err).to.be.an.instanceof(ApplicationError)  
+      })
+
+      it('should throw DatabaseError when product find in db unsuccessful', async () => {
+        const dummyid = 'dummyid'
+        const expected = generateProductParams({
+          productProfile: 'basic',
+          optParams: { _id: dummyid }
+        })
+        model['exec'] = sandbox.stub().throws(new DatabaseError())
+        model['lean'] = sandbox.stub().throws(new DatabaseError())
+
+        let actual = null
+        try {
+          const repos = new ProductRepos(model)
+          actual = await repos.getById(dummyid, { lean: true })
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.not.be.null
+        expect(err).to.be.an.instanceof(DatabaseError)  
+      })
+    })
+  })
+
   context('Create product', () => {
     let docParams = null
-    let err = null
     let model = null
     let createSpy = null
     let actualDoc = null
 
-    const sandbox = sinon.createSandbox()
-
     beforeEach(() => {
       actualDoc = null
-      err = null
       docParams = {
         name: 'product1',
         description: 'dummydesc',
@@ -34,10 +155,6 @@ describe('Product repository', () => {
       model = sandbox.stub()
       model.prototype.save = sandbox.stub().resolves()
       createSpy = model.prototype.save
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     it('should create product successfully with valid params', async () => {

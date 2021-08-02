@@ -7,6 +7,10 @@ import { MAX_ITEMS_PER_PRODUCT_PER_TRANSACTION } from './product.constants.js'
 
 const router = express.Router()
 
+router.param('productId', productController.getProductById)
+
+router.get('/products/:productId', productController.readProductById)
+
 router.post('/product',
   validateJwt,
   authController.isAdmin,

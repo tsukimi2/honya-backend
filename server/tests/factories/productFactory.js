@@ -1,3 +1,5 @@
+import Product from '../../src/product/product.model.js'
+
 export const generateProductParams = ({ productProfile='basic', optParams={}}) => {
   let initProductParams = {
     name: 'product1',
@@ -18,4 +20,18 @@ export const generateProductParams = ({ productProfile='basic', optParams={}}) =
   }
 
   return Object.assign({}, initProductParams, optParams)
+}
+
+export const generateProduct = async ({ productProfile='basic', optParams={}}) => {
+  const productParams = generateProductParams({ productProfile, optParams })
+
+  let product = null
+  try {
+    product = new Product(productParams)
+    await product.save()
+  } catch(err) {
+    console.log(err)
+  }
+
+  return product
 }

@@ -36,6 +36,9 @@ export default class Repos {
 
     try {
       let query = this.model.findOne(filterParams)
+      if(opts.populatePath) {
+        query.populuate(opts.populatePath)
+      }
       if(Array.isArray(opts.selectParams) && opts.selectParams.length !== 0) {
         query.select(opts.selectParams)
       }

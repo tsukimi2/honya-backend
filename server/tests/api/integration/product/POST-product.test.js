@@ -11,11 +11,6 @@ import { generateProductParams } from '../../../factories/productFactory.js'
 const API_PREFIX = config.get('app:api_prefix')
 
 describe(API_PREFIX + '/product', () => {
-  let product = {
-    name: 'product1',
-
-  }
-
   before(async () => {
     await Category.deleteMany({ "name": /^category*/ })
     await Category.create({ "name": 'category1' })
