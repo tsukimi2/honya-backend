@@ -1,5 +1,7 @@
 import BadRequestError from '../errors/BadRequestError.js'
+import NotFoundError from '../errors/NotFoundError.js'
 import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
+import { attachObjToReqLocal } from '../libs/util.js'
 
 const productController = ({ productService, IncomingForm }) => {
   const validateProductInput = (fields) => {
@@ -16,6 +18,38 @@ const productController = ({ productService, IncomingForm }) => {
       isValid: true,
       errmsg: ''
     }
+  }
+
+  const getProductById = async (req, res, next, id) => {
+    let product = null
+
+    if(!id) {
+      return next(new BadRequestError('invalid product id'))
+    }
+
+    try {
+      product = await productService.getProductById(id, { populatePath: 'category', lean: true })
+    } catch(err) {
+      return next(new NotFoundError('product not found'))
+    }
+
+    // attach product to req.local
+    attachObjToReqLocal(req, 'product', product)
+
+    next()
+  }
+
+  const readProductById = async (req, res, next) => {
+    if(!(req.local && req.local.product)) {
+      return next(new NotFoundError('product not found'))
+    }
+
+    req.local.product.photo = undefined
+    return res.status(200).json({
+      data: {
+        product: req.local.product
+      }
+    })
   }
 
   const createProduct = async (req, res, next) => {
@@ -72,6 +106,8 @@ const productController = ({ productService, IncomingForm }) => {
   }
 
   return {
+    getProductById,
+    readProductById,
     createProduct
   }
 }

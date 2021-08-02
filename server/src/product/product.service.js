@@ -4,6 +4,10 @@ import BadRequestError from '../errors/BadRequestError.js'
 import BaseError from '../errors/BaseError.js'
 
 const productService = ({ productRepos, categoryRepos, config, fs }) => {
+  const getProductById = async (id, opts={}) => {
+    return productRepos.getById(id, opts)
+  }
+
   const createProduct = async (params, files) => {
     try {
       const { category } = params
@@ -43,6 +47,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
   }
 
   return {
+    getProductById,
     createProduct
   }
 }

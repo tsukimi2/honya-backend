@@ -5,7 +5,6 @@ import sinonChai from 'sinon-chai'
 import _ from 'lodash'
 import UserRepos from '../../../../src/user/user.repos.js'
 import { generateUserParams } from '../../../factories/userFactory.js'
-import NotFoundError from '../../../../src/errors/NotFoundError.js'
 import ApplicationError from '../../../../src/errors/ApplicationError.js'
 import DatabaseError from '../../../../src/errors/DatabaseError.js'
 
@@ -69,8 +68,13 @@ describe('User repository', () => {
           return expectedUser
         }
 
-        const userRepos = new UserRepos(model)
-        const resultUser = await userRepos.getById(dummyid, { lean: true })
+        let resultUser = null
+        try {
+          const userRepos = new UserRepos(model)
+          resultUser = await userRepos.getById(dummyid, { lean: true })
+        } catch(e) {
+          err = e
+        }
 
         expect(resultUser).to.exist
         expect(resultUser).to.have.property('_id').to.equal(expectedUser._id)
@@ -107,7 +111,7 @@ describe('User repository', () => {
         expect(err).to.be.an.instanceof(ApplicationError)
       })
 
-      it('should throw ApplicationError with empty user id', async () => {
+      it('should throw ApplicationError with null user id', async () => {
         const dummyid = null
         const expectedUser = generateUserParams({
           userProfile: 'validUser1',

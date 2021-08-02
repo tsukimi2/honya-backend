@@ -5,16 +5,26 @@ import sinonChai from 'sinon-chai'
 import _ from 'lodash'
 import ProductService from '../../../../src/product/product.service.js'
 import ApplicationError from '../../../../src/errors/ApplicationError.js'
+import { generateProductParams } from '../../../factories/productFactory.js'
 
 chai.use(sinonChai)
 const sandbox = sinon.createSandbox()
 
 describe('Product service', () => {
   const dummyid = 'dummyid'
+  let productParams = generateProductParams({})
+  let actualProduct = null
+
   const productRepos = {
+    getById: (id) => {
+      if(!id) {
+        throw new ApplicationError('Invalid product id')
+      }
+      return Object.assign({}, productParams, { _id: dummyid, sold: 0 })
+    },
     create: async (params) => {
       if(!params || _.isEmpty(params)) {
-        throw new ApplicationError('Invalid user params')
+        throw new ApplicationError('Invalid product params')
       }
   
       return Object.assign({}, params, { _id: dummyid })
@@ -24,7 +34,7 @@ describe('Product service', () => {
   const categoryRepos = {
     getOne: (params) => {
       if(!params || _.isEmpty(params)) {
-        throw new ApplicationError('Invalid user params')
+        throw new ApplicationError('Invalid category params')
       }
       //return Object.assign({}, params, { _id: dummyid })
       return dummyCategoryName
@@ -37,21 +47,74 @@ describe('Product service', () => {
     readFile: async () => ({})
   }
   const productService = ProductService({ productRepos, categoryRepos, config, fs })
-  let productParams = null
+  // let productParams = null
   let err = null
 
   beforeEach(() => {
+    /*
     productParams = {
       name: 'product1',
       description: 'dummydesc',
       price: 65.00,
       category: dummyCategoryName,
     }
+    */
+    productParams = generateProductParams({})
     err = null
   })
 
   afterEach(() => {
     sandbox.restore()
+  })
+
+  context('Get product', () => {
+    context('getProductById', () => {
+      it('hould get product with valid product id', async () => {
+        const expectedProduct = productParams
+        const productService = ProductService({ productRepos, categoryRepos, config, fs })
+
+        try {
+          actualProduct = await productService.getProductById(dummyid)
+        } catch(e) {
+          err = e
+        }
+   
+        expect(actualProduct).to.not.be.null
+        expect(actualProduct).to.have.property('_id').to.equal(dummyid)
+        expect(actualProduct).to.have.property('name').to.equal(expectedProduct.name)
+        expect(actualProduct).to.have.property('description').to.equal(expectedProduct.description)
+        expect(actualProduct).to.have.property('category').to.equal(expectedProduct.category)
+        expect(actualProduct).to.have.property('price').to.equal(expectedProduct.price)
+      })
+
+      it('should throw ApplicationError with empty product id', async () => {
+        const dummyid = ''
+        const productService = ProductService({ productRepos, categoryRepos, config, fs })
+
+        try {
+          actualProduct = await productService.getProductById(dummyid)
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(ApplicationError)
+      })
+
+      it('should throw ApplicationError with null product id', async () => {
+        const dummyid = undefined
+        const productService = ProductService({ productRepos, categoryRepos, config, fs })
+
+        try {
+          actualProduct = await productService.getProductById(dummyid)
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(ApplicationError)
+      })
+    })
   })
 
   context('Create product', () => {
