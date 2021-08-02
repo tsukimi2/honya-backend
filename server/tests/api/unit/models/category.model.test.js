@@ -1,7 +1,4 @@
 import chai from 'chai'
-// import sinon from 'sinon'
-// import sinonChai from 'sinon-chai'
-// chai.use(sinonChai)
 import Category from '../../../../src/category/category.model.js'
 
 const expect = chai.expect
@@ -84,21 +81,3 @@ describe('Category model', () => {
 
   })
 })
-
-
-
-/*
-
-const categorySchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            trim: true,
-            required: true,
-            maxlength: 32,
-            unique: true
-        }
-    },
-    { timestamps: true }
-);
-*/

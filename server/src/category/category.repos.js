@@ -1,23 +1,10 @@
 import _ from 'lodash'
 import ApplicationError from '../errors/ApplicationError.js'
+import DatabaseError from '../errors/DatabaseError.js'
+import Repos from '../repos/index.js'
 
-export default class CategoryRepos {
+export default class CategoryRepos extends Repos {
   constructor(model) {
-    this.model = model
-  }
-
-  async createCategory(params) {
-    if(!params || _.isEmpty(params)) {
-      throw new ApplicationError('Invalid user params')
-    }
-
-    const category = new this.model
-    for (const [key, value] of Object.entries(params)) {
-      category[key] = value
-    }
-
-    await category.save()
-
-    return category
+    super(model)
   }
 }

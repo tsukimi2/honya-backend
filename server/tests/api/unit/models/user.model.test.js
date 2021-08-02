@@ -13,22 +13,6 @@ const sandbox = sinon.createSandbox()
 let user = null
 
 describe('User model', () => {
-  /*
-  beforeEach(async () => {
-    try {
-      */
-      //await User.deleteMany({ "username": /^user*/ })
-      /*
-    } catch(err) {
-      console.log(err)
-    }
-  })
-  */
-
-  afterEach(() => {
-    // sandbox.restore()
-  })
-
   context('Testing model validations', async () => {
     let userParams = null
 

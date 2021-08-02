@@ -1,6 +1,6 @@
 const categoryService = ({ categoryRepos }) => {
   const createCategory = async (params) => {
-    return categoryRepos.createCategory(params)
+    return categoryRepos.create(params)
   }
 
   return {

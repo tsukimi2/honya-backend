@@ -42,8 +42,6 @@ export const validateJwt = async (req, res, next) => {
   try {
     if(!req.cookies.accessToken) {
       logger.warn('Missing access token')
-      // next(new ForbiddenError('Forbidden access'))
-      // return
       throw new TokenNotFoundError('access token cookie not found')
     }
     const accessToken = req.cookies.accessToken
