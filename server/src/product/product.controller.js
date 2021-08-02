@@ -2,6 +2,7 @@ import BadRequestError from '../errors/BadRequestError.js'
 import NotFoundError from '../errors/NotFoundError.js'
 import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
 import { attachObjToReqLocal } from '../libs/util.js'
+import userService from '../user/user.service.js'
 
 const productController = ({ productService, IncomingForm }) => {
   const validateProductInput = (fields) => {
@@ -105,10 +106,26 @@ const productController = ({ productService, IncomingForm }) => {
     return
   }
 
+
+  const deleteProduct = async (req, res, next) => {
+    const { productId } = req.params
+
+    try {
+      await productService.deleteProduct({  _id: productId })
+    } catch(err) {
+console.log('err')      
+console.log(err)
+      return next(new NotFoundError('failed to delete product'))
+    }
+    
+    return res.status(204).end()
+  }
+
   return {
     getProductById,
     readProductById,
-    createProduct
+    createProduct,
+    deleteProduct,
   }
 }
 
