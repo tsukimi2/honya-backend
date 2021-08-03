@@ -5,14 +5,14 @@ export const generateProductParams = ({ productProfile='basic', optParams={}}) =
   let initProductParams = {
     name: 'product1',
     description: 'product description',
-    category: 'category1',
+    category: mongoose.Types.ObjectId().toString(),
     price: 0,
   }
 
   if(productProfile === 'empty') {
     initProductParams = {
       name: '',
-      category: '',
+      description: '',
     }
   } else if(productProfile === 'full') {
     initProductParams['quantity'] = 0
@@ -25,8 +25,7 @@ export const generateProductParams = ({ productProfile='basic', optParams={}}) =
 
 export const generateProduct = async ({ productProfile='basic', optParams={}}) => {
   let productParams = generateProductParams({ productProfile, optParams })
-  productParams['category'] = mongoose.Types.ObjectId()
-
+  productParams['category'] = mongoose.Types.ObjectId(productParams['category'])
   let product = null
   try {
     product = new Product(productParams)

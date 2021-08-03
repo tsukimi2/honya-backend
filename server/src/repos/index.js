@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import ApplicationError from '../errors/ApplicationError.js'
 import DatabaseError from '../errors/DatabaseError.js'
+import NotFoundError from '../errors/NotFoundError.js'
 
 export default class Repos {
   constructor(model) {
@@ -67,6 +68,32 @@ export default class Repos {
         doc[key] = value
       }
 
+      await doc.save()
+    } catch(err) {
+      throw new DatabaseError('DatabaseError', { err })
+    }
+
+    return doc
+  }
+
+  async updateOne(filterParams, updateParams) {
+    if(!filterParams || _.isEmpty(filterParams)) {
+      throw new ApplicationError('Invalid repos create params')
+    }
+
+    let doc = null
+    try {
+      doc = await this.getOne(filterParams)
+    } catch(err) {
+      throw new DatabaseError('DatabaseError', { err })
+    }
+
+    if(!doc) {
+      throw new NotFoundError('document to update is not found')
+    }
+
+    try {
+      doc = _.extend(doc, updateParams)
       await doc.save()
     } catch(err) {
       throw new DatabaseError('DatabaseError', { err })

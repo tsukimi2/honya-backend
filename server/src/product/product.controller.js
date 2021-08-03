@@ -82,13 +82,13 @@ const productController = ({ productService, IncomingForm }) => {
           return next(new UnprocessableEntityError('failed to create product'), { err: e })
         }
         
-        const { _id, name, description, price, quantity, sold, shipping } = product
+        const { _id, name, description, price, category, quantity, sold, shipping } = product
         let result = {
           _id,
           name,
           description,
           price,
-          category: fields.category,
+          category,
         }
         if('quantity' in product) {
           result['quantity'] = quantity
@@ -114,6 +114,62 @@ const productController = ({ productService, IncomingForm }) => {
     return
   }
 
+  const updateProduct = async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const form = new IncomingForm({ keepExtensions: true })
+      form.parse(req, async (err, fields, files) => {
+        if(err) {
+          return next(new UnprocessableEntityError('failed to update product'), { err })
+        }
+
+        // validate product input
+        /*
+        const validationResult = validateProductInput(fields)
+        if(!validationResult.isValid) {
+          return next(new BadRequestError(validationResult.errmsg))
+        }
+        */
+  
+        let product = null
+        const updateParams = Object.assign({}, fields)
+        try {
+          product = await productService.updateProduct({ _id: id }, updateParams, files)
+        } catch(e) {
+          return next(new UnprocessableEntityError('failed to update product'), { err: e })
+        }
+        
+        const { _id, name, description, price, quantity, sold, shipping } = product
+        let result = {
+          _id,
+          name,
+          description,
+          price,
+          category: fields.category,
+        }
+        if('quantity' in product) {
+          result['quantity'] = quantity
+        }
+        if('sold' in product) {
+          result['sold'] = sold
+        }
+        if('shipping' in product) {
+          result['shipping'] = shipping
+        }
+        if('photo' in product) {
+          result['photo'] = product.photo.data
+        }
+
+        return res.status(200).json({
+          data: result
+        })
+      })
+    } catch(err) {
+      return next(new UnprocessableEntityError('failed to update product'), { err })
+    }
+
+    return   
+  }
 
   const deleteProduct = async (req, res, next) => {
     const { productId } = req.params
@@ -136,6 +192,7 @@ const productController = ({ productService, IncomingForm }) => {
     getProductById,
     // readProductById,
     createProduct,
+    updateProduct,
     deleteProduct,
   }
 }
