@@ -47,9 +47,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     }
   }
 
-  const deleteProduct = async (params) => {
-    return productRepos.deleteOne(params)
-  }
+  const deleteProduct = async (params) => productRepos.deleteOne(params)
 
   return {
     getProductById,

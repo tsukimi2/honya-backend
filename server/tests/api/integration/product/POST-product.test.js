@@ -10,7 +10,7 @@ import { generateProductParams } from '../../../factories/productFactory.js'
 
 const API_PREFIX = config.get('app:api_prefix')
 
-describe(API_PREFIX + '/product', () => {
+describe(`POST $(API_PREFIX}/product`, () => {
   before(async () => {
     await Category.deleteMany({ "name": /^category*/ })
     await Category.create({ "name": 'category1' })
@@ -221,7 +221,7 @@ describe(API_PREFIX + '/product', () => {
   })
 
   context('User not logged in', () => {
-    it('should receive ForbiddenError if user is logged in with insufficient privilege level', async () => {
+    it('should receive ForbiddenError if user is not logged in', async () => {
       const product = generateProductParams({})
 
       const res = await request(app)

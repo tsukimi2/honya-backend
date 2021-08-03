@@ -20,7 +20,9 @@ describe('Product repository', () => {
     findOne: (filterParams) => {
       return model
     },
-    // deleteOne: (filterParams) => {},
+    deleteOne: (filterParams) => {
+      return { n: 1, ok: 1, deletedCount: 1 }
+    },
     select: (filterParams) => {
       return model
     }
@@ -212,6 +214,68 @@ describe('Product repository', () => {
 
       expect(createSpy).to.be.calledOnce
       expect(err).to.exist
+      expect(err).to.be.an.instanceof(DatabaseError)
+    })
+  })
+
+  context('Delete product', () => {
+    let actualResult = null
+
+    beforeEach(() => {
+      actualResult = null
+    })
+
+    it('should delete product successfully and return number of deleted items with valid product params', async () => {
+      const filterParams = { _id: 'dummyid' }
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.deleteOne(filterParams)
+      } catch(e) {
+        err = e
+      }
+
+      expect(err).to.be.null
+      expect(actualResult).to.be.not.null
+    })
+
+    it('should throw ApplicationError with empty product params', async () => {
+      const filterParams = {}
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.deleteOne(filterParams)
+      } catch(e) {
+        err = e
+      }
+
+      expect(err).to.be.an.instanceof(ApplicationError)
+    })
+
+    it('should throw ApplicationError with null product params', async () => {
+      const filterParams = null
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.deleteOne(filterParams)
+      } catch(e) {
+        err = e
+      }
+
+      expect(err).to.be.an.instanceof(ApplicationError)
+    })
+
+    it('should throw DatabaseError when db throws error', async () => {
+      const filterParams = { _id: 'dummyid' }
+      model['deleteOne'] = (filterParams) => { throw new Error() }
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.deleteOne(filterParams)
+      } catch(e) {
+        err = e
+      }
+
       expect(err).to.be.an.instanceof(DatabaseError)
     })
   })

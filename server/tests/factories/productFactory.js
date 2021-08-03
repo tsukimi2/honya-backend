@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Product from '../../src/product/product.model.js'
 
 export const generateProductParams = ({ productProfile='basic', optParams={}}) => {
@@ -23,7 +24,8 @@ export const generateProductParams = ({ productProfile='basic', optParams={}}) =
 }
 
 export const generateProduct = async ({ productProfile='basic', optParams={}}) => {
-  const productParams = generateProductParams({ productProfile, optParams })
+  let productParams = generateProductParams({ productProfile, optParams })
+  productParams['category'] = mongoose.Types.ObjectId()
 
   let product = null
   try {

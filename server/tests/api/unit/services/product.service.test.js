@@ -28,6 +28,13 @@ describe('Product service', () => {
       }
   
       return Object.assign({}, params, { _id: dummyid })
+    },
+    deleteOne: async (params) => {
+      if(!params || _.isEmpty(params)) {
+        throw new ApplicationError('Invalid product params')
+      }
+
+      return { n: 1, ok: 1, deletedCount: 1 }
     }
   }
   const dummyCategoryName = 'category1'
@@ -60,6 +67,7 @@ describe('Product service', () => {
     }
     */
     productParams = generateProductParams({})
+    actualProduct = null
     err = null
   })
 
@@ -162,6 +170,43 @@ describe('Product service', () => {
         expect(actualProduct).to.have.property('shipping').to.eq(productParams.shipping)
         expect(actualProduct).to.not.have.property('photo')
       })
+    })
+  })
+
+  context('Delete product', () => {
+    it('should delete product successfully with valid params', async () => {
+      const params = { _id: 'dummyid' }
+      try {
+        actualProduct = productService.deleteProduct(params)
+      } catch(e) {
+        err = e
+      }
+
+      expect(actualProduct).to.be.not.null
+    })
+
+    it('should throw ApplicationError with empty params', async () => {
+      const params = {}
+
+      try {
+        actualProduct = await productService.deleteProduct(params)
+      } catch(e) {
+        err = e
+      }
+
+      expect(err).to.be.an.instanceof(ApplicationError)
+    })
+
+    it('should throw ApplicationError with null params', async () => {
+      const params = null
+
+      try {
+        actualProduct = await productService.deleteProduct(params)
+      } catch(e) {
+        err = e
+      }
+
+      expect(err).to.be.an.instanceof(ApplicationError)
     })
   })
 })

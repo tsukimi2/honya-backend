@@ -6,9 +6,9 @@ import { authController, productController } from '../di-container.js'
 
 const router = express.Router()
 
-router.param('productId', productController.getProductById)
+// router.param('productId', productController.getProductById)
 
-router.get('/products/:productId', productController.readProductById)
+router.get('/products/:id', productController.getProductById)
 
 router.post('/product',
   validateJwt,
@@ -43,9 +43,6 @@ router.post('/product',
 router.delete('/products/:productId',
   validateJwt,
   authController.isAdmin,
-  param('productId')
-    .notEmpty().withMessage('product id is required'),
-  validator,  
   productController.deleteProduct
 )
 
