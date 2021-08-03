@@ -6,6 +6,8 @@ import { authController, categoryController } from '../di-container.js'
 
 const router = express.Router()
 
+router.get('/categories/:id', categoryController.getCategoryById)
+
 router.post('/category',
   validateJwt,
   authController.isAdmin,

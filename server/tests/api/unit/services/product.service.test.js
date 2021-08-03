@@ -79,7 +79,7 @@ describe('Product service', () => {
 
   context('Get product', () => {
     context('getProductById', () => {
-      it('hould get product with valid product id', async () => {
+      it('should get product with valid product id', async () => {
         const expectedProduct = productParams
         const productService = ProductService({ productRepos, categoryRepos, config, fs })
 
