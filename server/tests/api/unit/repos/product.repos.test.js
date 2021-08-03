@@ -45,7 +45,6 @@ describe('Product repository', () => {
         return model
       }
     }
-    // model['deleteOne'] = (filterParams) => {}
   })
 
   afterEach(() => {

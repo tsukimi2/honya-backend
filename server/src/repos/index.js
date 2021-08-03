@@ -56,6 +56,30 @@ export default class Repos {
     return doc
   }
 
+  async get(filterParams={}, opts={}) {
+    let docs = null
+
+    try {
+      let query = this.model.find(filterParams)
+      if(opts.populatePath) {
+        query.populuate(opts.populatePath)
+      }
+      if(Array.isArray(opts.selectParams) && opts.selectParams.length !== 0) {
+        query.select(opts.selectParams)
+      }
+
+      if(opts.lean) {
+        docs = await query.lean()
+      } else {
+        docs = await query.exec()
+      }
+    } catch(err) {
+      throw new DatabaseError('cannot find documents', { err })
+    }
+
+    return docs
+  }
+
   async create(params) {  
     if(!params || _.isEmpty(params)) {
       throw new ApplicationError('Invalid repos create params')
