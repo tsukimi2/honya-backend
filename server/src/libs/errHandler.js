@@ -28,13 +28,26 @@ const errHandler = ({ logger }) => {
     return null
   }
 
-  const process = (err, req, res, next) => {   
+  const recursivePrintErr = (err) => { 
+    for (const [key, value] of Object.entries(err)) {
+      if(key === 'err' && value !== null) {
+        logger.error(err)
+        logger.error(err.name)
+        logger.error(err.message)
+        logger.error(err.stack)
+        return recursiveFindInErr(value)
+      }
+    }
+  }
+
+  const process = (err, req, res, next) => {
     logger.error(err)
     logger.error(err.name)
     logger.error(err.message)
     logger.error(err.stack)
 
-    if(err instanceof UserFacingError) {
+    if(err instanceof UserFacingError) {    
+      recursivePrintErr(err)
       return res.status(err.statusCode).json({
         err: err.name,
         errmsg: err.message

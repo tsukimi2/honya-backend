@@ -40,6 +40,12 @@ router.post('/product',
   productController.createProduct
 )
 
+router.put('/products/:id',
+  validateJwt,
+  authController.isAdmin,
+  productController.updateProduct
+)
+
 router.delete('/products/:productId',
   validateJwt,
   authController.isAdmin,

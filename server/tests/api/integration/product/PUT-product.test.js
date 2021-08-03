@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import { expect } from 'chai'
 import request from 'supertest'
 import app from '../../../../src/app.js'
@@ -6,13 +7,16 @@ import User from '../../../../src/user/user.model.js'
 import Product from '../../../../src/product/product.model.js'
 import Category from '../../../../src/category/category.model.js'
 import { generateUserParams } from '../../../factories/userFactory.js'
-import { generateProductParams } from '../../../factories/productFactory.js'
+import { generateProductParams, generateProduct } from '../../../factories/productFactory.js'
+import { generateCategory } from '../../../factories/categoryFactory.js'
 
 const API_PREFIX = config.get('app:api_prefix')
 
-describe(`POST $(API_PREFIX}/product`, () => {
+describe(`PUT $(API_PREFIX}/product`, () => {
   let category1 = null
   let category1_id = null
+  let storedProduct = null
+  let productParams = null
 
   before(async () => {
     try {
@@ -44,7 +48,6 @@ describe(`POST $(API_PREFIX}/product`, () => {
     before(async () => {
       try {
         await User.deleteMany({ "username": /^admin*/ })
-        await Product.deleteMany({ "name": /^product*/ })
   
         // register a test admin
         const res0 = await request(app)
@@ -70,104 +73,92 @@ describe(`POST $(API_PREFIX}/product`, () => {
 
     after(async () => {
       await User.deleteMany({ "username": /^admin*/ })
-      await Product.deleteMany({ "name": /^product*/  })
       await request(app)
         .get(API_PREFIX + '/logout')
         .set('Accept', 'application/json')
     })
 
     beforeEach(async () => {
+      productParams = generateProductParams({})
+
       try {
-        await Product.deleteMany({ "name": /^product*/  })     
-      } catch(err) {
-        console.log(err)
+        storedProduct = await generateProduct({ 
+          optParams: {
+            category: category1_id
+          }
+        })
+      } catch(e) {
+        console.log(e)
       }
     })
 
-    it('should create product successfully with valid product params', async () => {
-      const product = generateProductParams({})
+    afterEach(async () => {
+      try {
+        await Product.deleteMany({ "name": /^product*/ })
+      } catch(e) {
+        console.log(e)
+      }
+    })
+
+    it('should update product successfully with valid product params', async () => {
+      let category2 = null
+      try {
+        category2 = await generateCategory({
+          optParams: {
+            name: 'category2'
+          }
+        })
+      } catch(e) {
+        console.log(e)
+      }
+
+      productParams['name'] = 'product2'
+      productParams['category'] = category2._id.toString()
+      productParams['quantity'] = 3
 
       const res = await request(app)
-        .post(API_PREFIX + '/product')
+        .put(`${API_PREFIX}/products/${storedProduct._id}`)
         .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
-        .field('name', product.name)
-        .field('description', product.description)
-        .field('price', product.price)
-        .field('category', category1_id)
+        .field('name', productParams.name)
+        .field('category', productParams.category)
+        .field('quantity', productParams.quantity)
         //.attach('image1', 'path/to/felix.jpeg')
         //.attach('image2', imageBuffer, 'luna.jpeg')
-        .expect(201)
+        .expect(200)
 
       expect(res.body.data).to.exist
-      expect(res.body.data).to.have.property('name').to.eq(product.name)
-      expect(res.body.data).to.have.property('description').to.eq(product.description)
-      expect(res.body.data).to.have.property('price').to.eq(product.price)
-      expect(res.body.data).to.have.property('category').to.eq(category1_id)
-      expect(res.body.data).to.not.have.property('quantity')
+      expect(res.body.data).to.have.property('name').to.eq(productParams.name)
+      expect(res.body.data).to.have.property('description').to.eq(storedProduct.description)
+      expect(res.body.data).to.have.property('price').to.eq(storedProduct.price)
+      expect(res.body.data).to.have.property('category').to.eq(productParams.category)
+      expect(res.body.data).to.have.property('quantity').to.eq(productParams.quantity)
       expect(res.body.data).to.have.property('sold').to.eq(0)
       expect(res.body.data).to.not.have.property('shipping')
       expect(res.body.data).to.not.have.property('photo')
+
+      try {
+        await Category.deleteOne({ _id: category2._id })
+      } catch(e) {
+        console.log(e)
+      }
     })
 
-    it('should create product successfully with full valid product params', async () => {
-      const product = generateProductParams({ productProfile: 'full' })
-      const res = await request(app)
-        .post(API_PREFIX + '/product')
-        .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
-        .field('name', product.name)
-        .field('description', product.description)
-        .field('price', product.price)
-        .field('category', category1_id)
-        .field('quantity', product.quantity)
-        .field('sold', product.sold)
-        .field('shipping', product.shipping)
-        //.attach('image1', 'path/to/felix.jpeg')
-        //.attach('image2', imageBuffer, 'luna.jpeg')
-        .expect(201)
-
-      expect(res.body.data).to.exist
-      expect(res.body.data).to.have.property('name').to.eq(product.name)
-      expect(res.body.data).to.have.property('description').to.eq(product.description)
-      expect(res.body.data).to.have.property('price').to.eq(product.price)
-      expect(res.body.data).to.have.property('category').to.eq(category1_id)
-      expect(res.body.data).to.have.property('quantity').to.eq(product.quantity)
-      expect(res.body.data).to.property('sold').to.eq(product.sold)
-      expect(res.body.data).to.have.property('shipping').to.eq(product.shipping)
-      expect(res.body.data).to.not.have.property('photo')  
-    })
-
-    it('should receive BadRequestError with empty product name, description, price, or cateogory name', async () => {
-      const product = generateProductParams({ productProfile: 'empty' })
-      const res = await request(app)
-        .post(API_PREFIX + '/product')
-        .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
-        //.send({ name: categoryName1 })
-        //.set('Accept', 'application/json')
-        .field('name', product.name)
-        .field('description', '')
-        //.attach('image1', 'path/to/felix.jpeg')
-        //.attach('image2', imageBuffer, 'luna.jpeg')
-        .expect(400)
-
-      expect(res.body).to.have.property('err').to.eq('BadRequestError')
-    })
-
-    it('should receive BadRequestError with valid product params with cateogory id not found in db', async () => {
-      const product = generateProductParams({})
-      product['category'] = 'category2'
+    it('should receive UnprocessableEntityError with valid product params with cateogory id not found in db', async () => {
+      productParams['name'] = 'product2'
+      productParams['category'] = mongoose.Types.ObjectId().toString()
+      productParams['quantity'] = 3
 
       const res = await request(app)
-        .post(API_PREFIX + '/product')
+        .put(`${API_PREFIX}/products/${storedProduct._id}`)
         .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
-        .field('name', product.name)
-        .field('description', product.description)
-        .field('price', product.price)
-        .field('category', product.category)
+        .field('name', productParams.name)
+        .field('category', productParams.category)
+        .field('quantity', productParams.quantity)
         //.attach('image1', 'path/to/felix.jpeg')
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(422)
 
-      expect(res.body).to.have.property('err').to.eq('UnprocessableEntityError')
+        expect(res.body).to.have.property('err').to.eq('UnprocessableEntityError')    
     })
   })
 
@@ -180,7 +171,6 @@ describe(`POST $(API_PREFIX}/product`, () => {
     before(async () => {
       try {
         await User.deleteMany({ "username": /^user*/ })
-        await Product.deleteMany({ "name": /^product*/  })
   
         // register a test user
         await request(app)
@@ -205,7 +195,6 @@ describe(`POST $(API_PREFIX}/product`, () => {
 
     after(async () => {
       await User.deleteMany({ "username": /^user*/ })
-      await Product.deleteMany({ "name": /^product*/  })
 
       await request(app)
         .get(API_PREFIX + '/logout')
@@ -213,40 +202,38 @@ describe(`POST $(API_PREFIX}/product`, () => {
     })
 
     it('should receive ForbiddenError if user is logged in with insufficient privilege level', async () => {
-      const product = generateProductParams({})
+      const productParams = generateProductParams({})
+      const dummyProductId = mongoose.Types.ObjectId().toString()
 
       const res = await request(app)
-        .post(API_PREFIX + '/product')
+        .put(`${API_PREFIX}/products/${dummyProductId}`)
         .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
-        .field('name', product.name)
-        .field('description', product.description)
-        .field('price', product.price)
-        .field('category', product.category)
+        .field('name', productParams.name)
+        .field('category', productParams.description)
         //.attach('image1', 'path/to/felix.jpeg')
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(403)
 
       expect(res.body).to.have.property('err').to.eq('ForbiddenError')
-      expect(res.body).to.not.have.property('data')
+      expect(res.body).to.have.property('errmsg').to.eq('User is not admin')
     })
   })
 
-  context('User not logged in', () => {
-    it('should receive ForbiddenError if user is not logged in', async () => {
-      const product = generateProductParams({})
+  context('Not logged in', () => {
+    it('should receive ForbiddenError if user is logged in with insufficient privilege level', async () => {
+      const productParams = generateProductParams({})
+      const dummyProductId = mongoose.Types.ObjectId().toString()
 
       const res = await request(app)
-        .post(API_PREFIX + '/product')
-        .field('name', product.name)
-        .field('description', product.description)
-        .field('price', product.price)
-        .field('category', product.category)
+        .put(`${API_PREFIX}/products/${dummyProductId}`)
+        .field('name', productParams.name)
+        .field('category', productParams.description)
         //.attach('image1', 'path/to/felix.jpeg')
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(403)
 
       expect(res.body).to.have.property('err').to.eq('ForbiddenError')
-      expect(res.body).to.not.have.property('data')
+      expect(res.body).to.have.property('errmsg').to.eq('Forbidden access')
     })
   })
 })
