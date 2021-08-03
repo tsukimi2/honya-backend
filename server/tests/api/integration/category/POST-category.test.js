@@ -69,7 +69,8 @@ describe(API_PREFIX + '/category', () => {
         .expect(201)
 
       expect(res.body.data).to.exist
-      expect(res.body.data).to.have.property('name').to.eq(categoryName1)
+      expect(res.body.data.category).to.exist
+      expect(res.body.data.category).to.have.property('name').to.eq(categoryName1)
     })
 
     it('should receive BadRequestError with empty category name', async () => {
@@ -80,6 +81,7 @@ describe(API_PREFIX + '/category', () => {
         .send({ name: categoryName })
         .set('Accept', 'application/json')
         .expect(400)
+
       expect(res.body).to.have.property('err').to.eq('BadRequestError')
       expect(res.body).to.have.property('errmsg').to.eq('Category name must have length between 1 and 50')
     })
