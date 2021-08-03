@@ -46,21 +46,6 @@ const productController = ({ productService, IncomingForm }) => {
     })
   }
 
-  /*
-  const readProductById = async (req, res, next) => {
-    if(!(req.local && req.local.product)) {
-      return next(new NotFoundError('product not found'))
-    }
-
-    req.local.product.photo = undefined
-    return res.status(200).json({
-      data: {
-        product: req.local.product
-      }
-    })
-  }
-  */
-
   const createProduct = async (req, res, next) => {
     try {
       const form = new IncomingForm({ keepExtensions: true })
@@ -190,7 +175,6 @@ const productController = ({ productService, IncomingForm }) => {
 
   return {
     getProductById,
-    // readProductById,
     createProduct,
     updateProduct,
     deleteProduct,
