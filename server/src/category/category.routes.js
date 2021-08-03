@@ -8,6 +8,8 @@ const router = express.Router()
 
 router.get('/categories/:id', categoryController.getCategoryById)
 
+router.get('/categories', categoryController.getCategories)
+
 router.post('/category',
   validateJwt,
   authController.isAdmin,

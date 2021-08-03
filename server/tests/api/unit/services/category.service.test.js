@@ -20,6 +20,9 @@ describe('Category service', () => {
     getById: (id) => {
       return Object.assign({}, categoryParams, { _id: dummyid })
     },
+    get: (filterParams) => {
+      return []
+    },
     create: async (params) => {
       if(!params || _.isEmpty(params)) {
         throw new ApplicationError('Invalid category params')
@@ -48,6 +51,20 @@ describe('Category service', () => {
         expect(actualCategory).to.not.be.null
         expect(actualCategory).to.have.property('_id').to.equal(dummyid)
         expect(actualCategory).to.have.property('name').to.equal(categoryParams.name)
+      })
+    })
+
+    context('getCategories', () => {
+      it('should get categories with valid filter params', async () => {
+        const filterParams = {}
+
+        try {
+          actualCategory = await categoryService.getCategories(filterParams)
+        } catch(e) {
+          err = e
+        }
+
+        expect(actualCategory).to.be.an('array')
       })
     })
   })
