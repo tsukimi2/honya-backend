@@ -75,15 +75,26 @@ export default class Repos {
     return doc
   }
 
+  /*
+api_1    | result
+api_1    | { n: 0, ok: 1, deletedCount: 0 }
+
+api_1    | result
+api_1    | { n: 1, ok: 1, deletedCount: 1 }
+  */
   async deleteOne(filterParams) {
+    let result = null
+
     if(!filterParams || _.isEmpty(filterParams)) {
-      throw new ApplicationError('Empty filter params when deleting doc')
+      throw new ApplicationError('empty filter params when deleting doc')
     }
 
     try {
-      await this.model.deleteOne(filterParams)
-    } catch(err) {
+      result = await this.model.deleteOne(filterParams)
+    } catch(err) { 
       throw new DatabaseError('failed to delete doc', { err })
     }
+
+    return result
   }
 }

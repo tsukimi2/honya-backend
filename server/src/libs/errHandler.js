@@ -17,6 +17,10 @@ const errHandler = ({ logger }) => {
           }
         }
       } else if(key === 'err' && value !== null) {
+        logger.error(err)
+        logger.error(err.name)
+        logger.error(err.message)
+        logger.error(err.stack)
         return recursiveFindInErr(value)
       }
     }

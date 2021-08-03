@@ -2,6 +2,7 @@ import BadRequestError from '../errors/BadRequestError.js'
 import NotFoundError from '../errors/NotFoundError.js'
 import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
 import { attachObjToReqLocal } from '../libs/util.js'
+import userService from '../user/user.service.js'
 
 const productController = ({ productService, IncomingForm }) => {
   const validateProductInput = (fields) => {
@@ -20,7 +21,8 @@ const productController = ({ productService, IncomingForm }) => {
     }
   }
 
-  const getProductById = async (req, res, next, id) => {
+  const getProductById = async (req, res, next) => {
+    const { id } = req.params
     let product = null
 
     if(!id) {
@@ -29,16 +31,22 @@ const productController = ({ productService, IncomingForm }) => {
 
     try {
       product = await productService.getProductById(id, { populatePath: 'category', lean: true })
-    } catch(err) {
+      product.photo = undefined
+    } catch(err) {      
       return next(new NotFoundError('product not found'))
     }
 
     // attach product to req.local
-    attachObjToReqLocal(req, 'product', product)
+    // attachObjToReqLocal(req, 'product', product)
 
-    next()
+    return res.status(200).json({
+      data: {
+        product
+      }
+    })
   }
 
+  /*
   const readProductById = async (req, res, next) => {
     if(!(req.local && req.local.product)) {
       return next(new NotFoundError('product not found'))
@@ -51,6 +59,7 @@ const productController = ({ productService, IncomingForm }) => {
       }
     })
   }
+  */
 
   const createProduct = async (req, res, next) => {
     try {
@@ -105,10 +114,29 @@ const productController = ({ productService, IncomingForm }) => {
     return
   }
 
+
+  const deleteProduct = async (req, res, next) => {
+    const { productId } = req.params
+    let result = null
+
+    try {
+      result = await productService.deleteProduct({  _id: productId })
+    } catch(err) {
+      return next(new NotFoundError('failed to delete product'), { err })
+    }
+    
+    if(!result || !(result && result.deletedCount !== 0)) {
+      return next(new NotFoundError('failed to delete product'))
+    }
+
+    return res.status(204).end()
+  }
+
   return {
     getProductById,
-    readProductById,
-    createProduct
+    // readProductById,
+    createProduct,
+    deleteProduct,
   }
 }
 

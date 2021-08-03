@@ -10,7 +10,7 @@ import { generateCategory } from '../../../factories/categoryFactory.js'
 
 const API_PREFIX = config.get('app:api_prefix')
 
-describe('Get products', () => {
+describe('Get products', () => {  
   let product = null
 
   before(async () => {
@@ -30,7 +30,7 @@ describe('Get products', () => {
     await Category.deleteMany({ "name": /^category*/ })
   })
 
-  describe(API_PREFIX + '/product/:productId', () => {
+  describe(API_PREFIX + '/products/:productId', () => {
     it('should return product with valid productId', async () => {
       const res = await request(app)
         .get(`${API_PREFIX}/products/${product._id}`)

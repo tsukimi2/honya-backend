@@ -1,15 +1,14 @@
 import express from 'express'
-import { body } from 'express-validator'
+import { param } from 'express-validator'
 import validator from '../libs/validator.js'
 import { validateJwt } from '../auth/jwt.js'
 import { authController, productController } from '../di-container.js'
-import { MAX_ITEMS_PER_PRODUCT_PER_TRANSACTION } from './product.constants.js'
 
 const router = express.Router()
 
-router.param('productId', productController.getProductById)
+// router.param('productId', productController.getProductById)
 
-router.get('/products/:productId', productController.readProductById)
+router.get('/products/:id', productController.getProductById)
 
 router.post('/product',
   validateJwt,
@@ -39,6 +38,12 @@ router.post('/product',
   validator,
   */
   productController.createProduct
+)
+
+router.delete('/products/:productId',
+  validateJwt,
+  authController.isAdmin,
+  productController.deleteProduct
 )
 
 export default router

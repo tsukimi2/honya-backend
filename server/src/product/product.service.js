@@ -2,6 +2,7 @@ import util from 'util'
 import ApplicationError from '../errors/ApplicationError.js'
 import BadRequestError from '../errors/BadRequestError.js'
 import BaseError from '../errors/BaseError.js'
+import DatabaseError from '../errors/DatabaseError.js'
 
 const productService = ({ productRepos, categoryRepos, config, fs }) => {
   const getProductById = async (id, opts={}) => {
@@ -46,9 +47,12 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     }
   }
 
+  const deleteProduct = async (params) => productRepos.deleteOne(params)
+
   return {
     getProductById,
-    createProduct
+    createProduct,
+    deleteProduct,
   }
 }
 
