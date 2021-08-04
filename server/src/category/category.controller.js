@@ -59,15 +59,60 @@ const categoryController = ({ categoryService }) => {
 
     res.status(201).json({
       data: {
-        name: newCategory.name
+        category: {
+          _id: newCategory._id,
+          name: newCategory.name
+        }
       }
     })
+  }
+
+  const updateCategory = async (req, res, next) => {
+    const { id } = req.params
+    const { name } = req.body
+    let updatedCategory = null
+    const filterParams = { _id: id }
+    const updateParams = { name }
+
+    try {
+      updatedCategory = await categoryService.updateCategory(filterParams, updateParams)
+    } catch(err) {
+      return next(new UnprocessableEntityError('failed to update category', { err }))
+    }
+
+    res.status(200).json({
+      data: {
+        category: {
+          _id: updatedCategory._id,
+          name: updatedCategory.name
+        }
+      }
+    })
+  }
+
+  const deleteCategory = async (req, res, next) => {
+    const { id } = req.params
+    let result = null
+
+    try {
+      result = await categoryService.deleteCategory({  _id: id })
+    } catch(err) {
+      return next(new NotFoundError('failed to delete category'), { err })
+    }
+    
+    if(!result || !(result && result.deletedCount !== 0)) {
+      return next(new NotFoundError('failed to delete category'))
+    }
+
+    return res.status(204).end()
   }
 
   return {
     getCategoryById,
     getCategories,
-    createCategory
+    createCategory,
+    updateCategory,
+    deleteCategory,
   }
 }
 

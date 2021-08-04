@@ -20,4 +20,16 @@ router.post('/category',
   categoryController.createCategory
 )
 
+router.put('/categories/:id',
+  validateJwt,
+  authController.isAdmin,
+  body('name')
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Category name must have length between 1 and 50'),
+  validator,
+  categoryController.updateCategory
+)
+
+router.delete('/categories/:id', categoryController.deleteCategory)
+
 export default router
