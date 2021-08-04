@@ -16,10 +16,17 @@ export default class Repos {
     let doc = null
     try {
       let query = this.model.findById(id)
-      if(Array.isArray(opts.selectParams) && opts.selectParams.length !== 0) {
+
+      if(opts.populatePath) {
+        if(!opts.populateSelect) {
+          query.populate(opts.populatePath)
+        } else {
+          query.populate(opts.populatePath, opts.populateSelect)
+        }
+      }
+      if(opts.selectParams) {
         query.select(opts.selectParams)
       }
-
       if(opts.lean) {
         doc = await query.lean()
       } else {
@@ -37,13 +44,17 @@ export default class Repos {
 
     try {
       let query = this.model.findOne(filterParams)
+
       if(opts.populatePath) {
-        query.populuate(opts.populatePath)
+        if(!opts.populateSelect) {
+          query.populate(opts.populatePath)
+        } else {
+          query.populate(opts.populatePath, opts.populateSelect)
+        }
       }
-      if(Array.isArray(opts.selectParams) && opts.selectParams.length !== 0) {
+      if(opts.selectParams) {
         query.select(opts.selectParams)
       }
-
       if(opts.lean) {
         doc = await query.lean()
       } else {
@@ -56,28 +67,32 @@ export default class Repos {
     return doc
   }
 
-  async get(filterParams={}, opts={}) {
+  async get(filterParams={}, opts={}) {    
     let docs = null
     let arrSort = []
 
-    try {
+    try {    
       let query = this.model.find(filterParams)
+      
       if(opts.populatePath) {
-        query.populate(opts.populatePath)
-      }   
+        if(!opts.populateSelect) {
+          query.populate(opts.populatePath)
+        } else {
+          query.populate(opts.populatePath, opts.populateSelect)
+        }
+      }
       if(opts.selectParams) {
         query.select(opts.selectParams)
       }
       if(opts.sortBy) {
         arrSort = await this.createSortArray(opts.sortBy, opts.order)
       }
-      if(arrSort.length !== 0) {
+      if(arrSort.length !== 0) {      
         query.sort(arrSort)
       }
       if(opts.limit > 0) {
         query.limit(opts.limit)
       }
-
       if(opts.lean) {
         docs = await query.lean()
       } else {

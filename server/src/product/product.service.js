@@ -3,6 +3,8 @@ import _ from 'lodash'
 import ApplicationError from '../errors/ApplicationError.js'
 import BadRequestError from '../errors/BadRequestError.js'
 import BaseError from '../errors/BaseError.js'
+import DatabaseError from '../errors/DatabaseError.js'
+import NotFoundError from '../errors/NotFoundError.js'
 
 const productService = ({ productRepos, categoryRepos, config, fs }) => {
   const getProductById = async (id, opts={}) => {
@@ -11,6 +13,34 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
 
   const getProducts = async (filterParams, opts={}) => {
     return productRepos.get(filterParams, opts)
+  }
+
+  const getRelatedProducts = async (productId, opts={}) => {
+    let products = []
+    let relatedCategoryId = null
+    let result = null
+
+    try {
+      // find category id of current book
+      result = await productRepos.getById(productId, { selectParams: 'category', lean: true })
+    } catch(err) {
+      throw new DatabaseError('DatabaseError', { err })
+    }
+
+    if(!result || (!(result && result.category))) {
+      throw new NotFoundError('no related products found')
+    }
+    relatedCategoryId = result.category
+
+    try {
+      // construct filterParams and opts, and
+      // find related books
+      products = await productRepos.getRelatedProducts(productId, relatedCategoryId, opts)
+    } catch(err) {
+      throw new DatabaseError('DatabaseError', { err })
+    }
+
+    return products
   }
 
   const createProduct = async (params, files) => {
@@ -100,6 +130,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
   return {
     getProductById,
     getProducts,
+    getRelatedProducts,
     createProduct,
     updateProduct,
     deleteProduct,

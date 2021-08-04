@@ -8,8 +8,6 @@ import { DISPLAY } from '../libs/constants.js'
 
 const router = express.Router()
 
-// router.param('productId', productController.getProductById)
-
 router.get('/products/:id', productController.getProductById)
 
 router.get('/products',
@@ -26,6 +24,14 @@ router.get('/products',
     .isInt({ min: 1, max: DISPLAY.LIMIT.MAX }),
   validator,
   productController.getProducts
+)
+
+router.get('/products/related/:productId',
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: DISPLAY.LIMIT.MAX }),
+  validator,
+  productController.getRelatedProducts
 )
 
 router.post('/product',
