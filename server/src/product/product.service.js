@@ -43,6 +43,10 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     return products
   }
 
+  const listCategories = async () => {
+    return productRepos.listCategories({ lean: true })
+  }
+
   const createProduct = async (params, files) => {
     try {
       const { category } = params
@@ -131,6 +135,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     getProductById,
     getProducts,
     getRelatedProducts,
+    listCategories,
     createProduct,
     updateProduct,
     deleteProduct,
