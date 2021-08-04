@@ -44,7 +44,16 @@ describe('Product repository', () => {
       },
       limit: (param) => {
         return model
-      }
+      },
+      distinct: () => {
+        return []
+      },
+      lean: () => {
+        return null
+      },
+      exec: () => {
+        return null
+      },
     }
   })
 
@@ -323,6 +332,43 @@ describe('Product repository', () => {
       expect(actualResult).to.be.an('array')
       expect(actualResult[0]).to.exist
       expect(actualResult[0]).to.have.property('name').to.eq(expectedResult.name)
+    })
+
+    context('getProductCategories', () => {
+      it('should return prodcut categories when products are present in db', async () => {
+        const dummyid = 'dummy1'
+        const expectedResult = generateProductParams({
+          productProfile: 'basic',
+          optParams: { _id: dummyid }
+        })
+        model['distinct'] = () => {
+          return [ expectedResult ]
+        }
+
+        try {
+          const repos = new ProductRepos(model)
+          actualResult = await repos.listCategories()
+        } catch(e) {
+          err = e
+        }
+
+        expect(actualResult).to.be.an('array')
+        expect(actualResult[0]).to.exist
+        expect(actualResult[0]).to.have.property('_id').to.eq(expectedResult._id)
+        expect(actualResult[0]).to.have.property('name').to.eq(expectedResult.name)
+      })
+
+      it('should throw NotFoundError when no product in db', async () => {
+        try {
+          const repos = new ProductRepos(model)
+          actualResult = await repos.listCategories()
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.not.be.null
+        expect(err).to.be.an.instanceof(NotFoundError)  
+      })
     })
   })
 

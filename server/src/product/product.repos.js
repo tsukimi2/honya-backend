@@ -1,5 +1,6 @@
 import Repos from '../repos/index.js'
 import mongoose from 'mongoose'
+import NotFoundError from '../errors/NotFoundError.js'
 
 export default class ProductRepos extends Repos {
   constructor(model) {
@@ -23,6 +24,17 @@ export default class ProductRepos extends Repos {
 
     // get related products    
     docs = await this.get(filterParams, optsParams)
+
+    return docs
+  }
+
+  async listCategories(opts={}) {
+    let docs = []
+
+    docs = await this.model.distinct('category', {})
+    if(!docs || (docs && Array.isArray(docs) && docs.length === 0)) {
+      throw new NotFoundError('product categories not found')
+    }
 
     return docs
   }

@@ -101,6 +101,22 @@ const productController = ({ productService, IncomingForm }) => {
     })
   }
 
+  const listCategories = async (req, res, next) => {
+    let categories = []
+
+    try {
+      categories = await productService.listCategories()
+    } catch(err) {
+      return next(new NotFoundError('product categories not found'))
+    }
+
+    return res.status(200).json({
+      data: {
+        categories
+      }
+    })
+  }
+
   const createProduct = async (req, res, next) => {
     try {
       const form = new IncomingForm({ keepExtensions: true })
@@ -232,6 +248,7 @@ const productController = ({ productService, IncomingForm }) => {
     getProductById,
     getProducts,
     getRelatedProducts,
+    listCategories,
     createProduct,
     updateProduct,
     deleteProduct,

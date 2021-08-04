@@ -8,6 +8,8 @@ import { DISPLAY } from '../libs/constants.js'
 
 const router = express.Router()
 
+
+router.get('/products/categories', productController.listCategories)
 router.get('/products/:id', productController.getProductById)
 
 router.get('/products',
@@ -33,6 +35,8 @@ router.get('/products/related/:productId',
   validator,
   productController.getRelatedProducts
 )
+
+
 
 router.post('/product',
   validateJwt,

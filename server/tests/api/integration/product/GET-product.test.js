@@ -283,7 +283,7 @@ describe('Get products', () => {
       expect(res.body.data.products[1]).to.have.property('category')
     })
 
-    it('shoudl throw NotFoundError if no related product is found', async () => {
+    it('should throw NotFoundError if no related product is found', async () => {
       try {
         res = await request(app)
           .get(`${API_PREFIX}/products/related/${product3._id}`)
@@ -294,6 +294,40 @@ describe('Get products', () => {
 
       expect(res.body).to.have.property('err').to.eq('NotFoundError')
       expect(res.body).to.have.property('errmsg').to.eq('product not found')
+    })
+  })
+
+  describe(API_PREFIX + '/products/categories', () => {
+    it('should list all distinct categories in products collection if products exist in db', async () => {
+      try {
+        res = await request(app)
+          .get(`${API_PREFIX}/products/categories`)
+          .expect(200)
+      } catch(e) {
+        console.log(e)
+      }
+
+      expect(res.body.data).to.exist
+      expect(res.body.data.categories).to.be.an('array').to.have.length(3)
+    })
+
+    it('should throw NotFoundError if no product in db', async () => {
+      try {
+        await Product.deleteMany({ "name": /^product*/ })
+      } catch(e) {
+        console.log(e)
+      }
+
+      try {
+        res = await request(app)
+          .get(`${API_PREFIX}/products/categories`)
+          .expect(404)
+      } catch(e) {
+        console.log(e)
+      }
+
+      expect(res.body).to.have.property('err').to.eq('NotFoundError')
+      expect(res.body).to.have.property('errmsg').to.eq('product categories not found')
     })
   })
 })
