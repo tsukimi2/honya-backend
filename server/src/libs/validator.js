@@ -12,4 +12,24 @@ const validator = (req, res, next) => {
   next()
 }
 
+export const isInEnum = (searchStr, arrEnum) => {
+  let arrSearchStr = []
+
+  if(searchStr && searchStr.indexOf(',') !== -1) {
+    if(searchStr.indexOf(',') === -1) {
+      arrSearchStr.push(searchStr)
+    } else {
+      arrSearchStr = searchStr.split(',')
+    }
+
+    for(let i = 0; i < arrSearchStr.length; i++) {
+      if(!arrEnum.includes(arrSearchStr[i].trim())) {
+        return false
+      }
+    }
+  }
+
+  return true
+}
+
 export default validator

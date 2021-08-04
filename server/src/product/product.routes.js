@@ -1,14 +1,32 @@
 import express from 'express'
-import { param } from 'express-validator'
+import { query } from 'express-validator'
 import validator from '../libs/validator.js'
+import { isInEnum } from '../libs/validator.js'
 import { validateJwt } from '../auth/jwt.js'
 import { authController, productController } from '../di-container.js'
+import { DISPLAY } from '../libs/constants.js'
 
 const router = express.Router()
 
 // router.param('productId', productController.getProductById)
 
 router.get('/products/:id', productController.getProductById)
+
+router.get('/products',
+  query('sortBy')
+    .optional()
+    .custom((value) => isInEnum(value, [ '_id', 'name', 'price', 'sold', 'createdAt' ]))
+    .withMessage('only fields sold and createdAt is allowed to sortby'),
+  query('order')
+    .optional()
+    .custom((value) => isInEnum(value, [ DISPLAY.ORDER.ASC.toString(), DISPLAY.ORDER.DESC.toString() ]))
+    .withMessage(`incorrecct orderby value`),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: DISPLAY.LIMIT.MAX }),
+  validator,
+  productController.getProducts
+)
 
 router.post('/product',
   validateJwt,

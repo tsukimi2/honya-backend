@@ -14,20 +14,7 @@ const sandbox = sinon.createSandbox()
 
 describe('Product repository', () => {
   let err = null
-  let model = {
-    findById: (id) => {
-      return model
-    },
-    findOne: (filterParams) => {
-      return model
-    },
-    deleteOne: (filterParams) => {
-      return { n: 1, ok: 1, deletedCount: 1 }
-    },
-    select: (filterParams) => {
-      return model
-    }
-  }
+  let model = null
 
   beforeEach(() => {
     err = null
@@ -38,10 +25,22 @@ describe('Product repository', () => {
       findOne: (filterParams) => {
         return model
       },
+      find: (filterParams) => {
+        return model
+      },
       deleteOne: (filterParams) => {
         return { n: 1, ok: 1, deletedCount: 1 }
       },
       select: (filterParams) => {
+        return model
+      },
+      populate: (params) => {
+        return model
+      },
+      sort: (params) => {
+        return model
+      },
+      limit: (param) => {
         return model
       }
     }
@@ -217,6 +216,76 @@ describe('Product repository', () => {
         try {
           const repos = new ProductRepos(model)
           actual = await repos.getOne(dummyid, { lean: true })
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.not.be.null
+        expect(err).to.be.an.instanceof(DatabaseError)  
+      })
+    })
+
+    context('get', () => {
+      it('should get product with valid filter params and opts params', async () => {
+        const dummyid = 'dummy1'
+        const expected = generateProductParams({
+          productProfile: 'basic',
+          optParams: { _id: dummyid }
+        })
+        model['exec'] = () => {
+          return [ expected ]
+        }
+        model['lean'] = () => {
+          return [ expected ]
+        }
+        const filterParams = {}
+        const opts = {
+          selectParams: '-photo',
+          populatePath: 'category',
+          sortBy: 'name,sold',
+          order: '1,1',
+          limit: 1,
+        }
+
+        let actual = null
+        try {
+          const repos = new ProductRepos(model)
+          actual = await repos.get(filterParams, opts)
+        } catch(e) {
+          err = e
+        }
+
+        expect(actual).to.be.an('array')
+        expect(actual[0]).to.exist
+        expect(actual[0]).to.have.property('_id').to.eq(dummyid)
+        expect(actual[0]).to.have.property('name').to.eq(expected.name)
+      })
+
+      it('should throw DatabaseError when product find in db unsuccessful', async () => {
+        const dummyid = 'dummy1'
+        const expected = generateProductParams({
+          productProfile: 'basic',
+          optParams: { _id: dummyid }
+        })
+        model['exec'] = () => {
+          throw new Error()
+        }
+        model['lean'] = () => {
+          throw new Error()
+        }
+        const filterParams = {}
+        const opts = {
+          selectParams: '-photo',
+          populatePath: 'category',
+          sortBy: 'name,sold',
+          order: '1,1',
+          limit: 1,
+        }
+
+        let actual = null
+        try {
+          const repos = new ProductRepos(model)
+          actual = await repos.get(filterParams, opts)
         } catch(e) {
           err = e
         }
@@ -497,6 +566,114 @@ describe('Product repository', () => {
       }
 
       expect(err).to.be.an.instanceof(DatabaseError)
+    })
+  })
+
+  context('createSortArray', () => {
+    let actualResult = null
+
+    beforeEach(() => {
+      actualResult = null
+    })
+
+    it('should return sort array for mongoose sort query with valid sortBy and order params', async () => {
+      /*
+        expectedResult = [ [ 'name', 1 ], [ 'sold', -1 ] ]
+      */
+      const sortBy = 'name,sold'
+      const order = '1,-1'
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.createSortArray(sortBy, order)
+      } catch(e) {
+        err = e
+      }
+
+      expect(actualResult).to.be.an('array')
+      expect(actualResult.length).to.eq(2)
+      expect(actualResult[0]).to.be.an('array')
+      expect(actualResult[0].length).to.eq(2)
+      expect(actualResult[0][0]).to.eq('name')
+      expect(actualResult[0][1]).to.eq(1)
+      expect(actualResult[1][0]).to.eq('sold')
+      expect(actualResult[1][1]).to.eq(-1)
+    })
+
+    it('should return sort array for mongoose sort query with valid sortBy but no order params', async () => {
+      const sortBy = 'name,sold'
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.createSortArray(sortBy)
+      } catch(e) {
+        err = e
+      }
+
+      expect(actualResult).to.be.an('array')
+      expect(actualResult.length).to.eq(2)
+      expect(actualResult[0]).to.be.an('array')
+      expect(actualResult[0].length).to.eq(2)
+      expect(actualResult[0][0]).to.eq('name')
+      expect(actualResult[0][1]).to.eq(1)
+      expect(actualResult[1][0]).to.eq('sold')
+      expect(actualResult[1][1]).to.eq(1)
+    })
+
+    it('should return sort array for mongoose sort query with valid sortBy but order params of length less than sortBy param', async () => {
+      const sortBy = 'name,sold'
+      const order = '1'
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.createSortArray(sortBy, order)
+      } catch(e) {
+        err = e
+      }
+
+      expect(actualResult).to.be.an('array')
+      expect(actualResult.length).to.eq(2)
+      expect(actualResult[0]).to.be.an('array')
+      expect(actualResult[0].length).to.eq(2)
+      expect(actualResult[0][0]).to.eq('name')
+      expect(actualResult[0][1]).to.eq(1)
+      expect(actualResult[1][0]).to.eq('sold')
+      expect(actualResult[1][1]).to.eq(1)
+    })
+
+    it('should return sort array for mongoose sort query with valid sortBy but order params of length greater than sortBy param', async () => {
+      const sortBy = 'name,sold'
+      const order = '1, -1, 1'
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.createSortArray(sortBy, order)
+      } catch(e) {
+        err = e
+      }
+
+      expect(actualResult).to.be.an('array')
+      expect(actualResult.length).to.eq(2)
+      expect(actualResult[0]).to.be.an('array')
+      expect(actualResult[0].length).to.eq(2)
+      expect(actualResult[0][0]).to.eq('name')
+      expect(actualResult[0][1]).to.eq(1)
+      expect(actualResult[1][0]).to.eq('sold')
+      expect(actualResult[1][1]).to.eq(-1)
+    })
+
+    it('should return empty sort array for mongoose sort query with no sortBy', async () => {
+      const sortBy = ''
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.createSortArray(sortBy)
+      } catch(e) {
+        err = e
+      }
+
+      expect(actualResult).to.be.an('array')
+      expect(actualResult.length).to.eq(0)
     })
   })
 })

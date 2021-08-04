@@ -9,6 +9,10 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     return productRepos.getById(id, opts)
   }
 
+  const getProducts = async (filterParams, opts={}) => {
+    return productRepos.get(filterParams, opts)
+  }
+
   const createProduct = async (params, files) => {
     try {
       const { category } = params
@@ -95,6 +99,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
 
   return {
     getProductById,
+    getProducts,
     createProduct,
     updateProduct,
     deleteProduct,

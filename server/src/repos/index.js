@@ -58,14 +58,24 @@ export default class Repos {
 
   async get(filterParams={}, opts={}) {
     let docs = null
+    let arrSort = []
 
     try {
       let query = this.model.find(filterParams)
       if(opts.populatePath) {
-        query.populuate(opts.populatePath)
-      }
-      if(Array.isArray(opts.selectParams) && opts.selectParams.length !== 0) {
+        query.populate(opts.populatePath)
+      }   
+      if(opts.selectParams) {
         query.select(opts.selectParams)
+      }
+      if(opts.sortBy) {
+        arrSort = await this.createSortArray(opts.sortBy, opts.order)
+      }
+      if(arrSort.length !== 0) {
+        query.sort(arrSort)
+      }
+      if(opts.limit > 0) {
+        query.limit(opts.limit)
       }
 
       if(opts.lean) {
@@ -147,5 +157,30 @@ api_1    | { n: 1, ok: 1, deletedCount: 1 }
     }
 
     return result
+  }
+
+  async createSortArray(sortBy, order) {  
+    let arrSort = []
+    let arrSortBy = []
+    let arrOrder = []
+    let i = 0
+    const DEFAULT_ORDER_VAL = 1
+
+    if(!sortBy) {    
+      return arrSort
+    }
+    if(sortBy && !Array.isArray(sortBy)) {
+      arrSortBy = sortBy.split(',')
+    }   
+    if(order && !Array.isArray(order)) {    
+      arrOrder = order.split(',')
+    }
+
+    for(i = 0; i < arrSortBy.length; i++) {
+      const orderVal = arrOrder[i] ? arrOrder[i].toString() : DEFAULT_ORDER_VAL
+      arrSort.push([ arrSortBy[i].trim(), parseInt(orderVal) ])
+    }
+
+    return arrSort
   }
 }
