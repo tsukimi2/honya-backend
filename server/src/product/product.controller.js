@@ -49,7 +49,7 @@ const productController = ({ productService, IncomingForm }) => {
  * by arrival = /products?sortBy=createdAt&order=desc&limit=4
  * if no params are sent, then all products are returned
  */
-  const getProducts = async (req, res, next) => {
+  const getProducts = async (req, res, next) => { 
     const order = req.query.order ? req.query.order : ''
     const sortBy = req.query.sortBy ? req.query.sortBy : '_id'
     const limit = req.query.limit ? parseInt(req.query.limit) : DISPLAY.LIMIT.DEFAULT
@@ -65,6 +65,28 @@ const productController = ({ productService, IncomingForm }) => {
       })
     } catch(err) {
       logger.error(err)
+      return next(new NotFoundError('product not found'), { err })
+    }
+
+    if(!products || (Array.isArray(products) && products.length === 0)) {
+      return next(new NotFoundError('product not found'))
+    }
+
+    return res.status(200).json({
+      data: {
+        products
+      }
+    })
+  }
+
+  const getRelatedProducts = async (req, res, next) => {
+    const { productId }  = req.params
+    const limit = req.query.limit ? parseInt(req.query.limit) : DISPLAY.LIMIT.DEFAULT
+    let products = []
+
+    try {
+      products = await productService.getRelatedProducts(productId, { limit, lean: true })
+    } catch(err) {
       return next(new NotFoundError('product not found'), { err })
     }
 
@@ -209,6 +231,7 @@ const productController = ({ productService, IncomingForm }) => {
   return {
     getProductById,
     getProducts,
+    getRelatedProducts,
     createProduct,
     updateProduct,
     deleteProduct,

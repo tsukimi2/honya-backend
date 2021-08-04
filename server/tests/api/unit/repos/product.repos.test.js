@@ -13,10 +13,12 @@ chai.use(sinonChai)
 const sandbox = sinon.createSandbox()
 
 describe('Product repository', () => {
+  let actualResult =  null
   let err = null
   let model = null
 
   beforeEach(() => {
+    actualResult = null
     err = null
     model = {
       findById: (id) => {
@@ -293,6 +295,34 @@ describe('Product repository', () => {
         expect(err).to.not.be.null
         expect(err).to.be.an.instanceof(DatabaseError)  
       })
+    })
+  })
+
+  context('getRelatedProducts', () => {
+    it('should get product with valid filter params and opts params', async () => {
+      const productId = 'dummyProductId'
+      const categoryId = '610a858ba63b900029bb90f8'
+      const expectedResult = generateProductParams({
+        productProfile: 'basic',
+        optParams: { _id: productId }
+      })
+      model['exec'] = () => {
+        return [ expectedResult ]
+      }
+      model['lean'] = () => {
+        return [ expectedResult ]
+      }
+
+      try {
+        const repos = new ProductRepos(model)
+        actualResult = await repos.getRelatedProducts(productId, categoryId)
+      } catch(e) {
+        err = e
+      }
+
+      expect(actualResult).to.be.an('array')
+      expect(actualResult[0]).to.exist
+      expect(actualResult[0]).to.have.property('name').to.eq(expectedResult.name)
     })
   })
 

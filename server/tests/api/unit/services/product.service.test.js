@@ -7,6 +7,8 @@ import _ from 'lodash'
 import ProductService from '../../../../src/product/product.service.js'
 import ApplicationError from '../../../../src/errors/ApplicationError.js'
 import { generateProductParams } from '../../../factories/productFactory.js'
+import NotFoundError from '../../../../src/errors/NotFoundError.js'
+import DatabaseError from '../../../../src/errors/DatabaseError.js'
 
 chai.use(sinonChai)
 const sandbox = sinon.createSandbox()
@@ -14,63 +16,72 @@ const sandbox = sinon.createSandbox()
 describe('Product service', () => {
   const dummyid = 'dummyid'
   let productParams = generateProductParams({})
-  let actualProduct = null
+  let actualResult = null
 
-  const productRepos = {
-    getById: (id) => {
-      if(!id) {
-        throw new ApplicationError('Invalid product id')
-      }
-      return Object.assign({}, productParams, { _id: dummyid, sold: 0 })
-    },
-    create: async (params) => {
-      if(!params || _.isEmpty(params)) {
-        throw new ApplicationError('Invalid product params')
-      }
-  
-      return Object.assign({}, params, { _id: dummyid })
-    },
-    updateOne: async (filterParams, updateParams) => {
-      return Object.assign({}, filterParams, updateParams)
-    },
-    deleteOne: async (params) => {
-      if(!params || _.isEmpty(params)) {
-        throw new ApplicationError('Invalid product params')
-      }
-
-      return { n: 1, ok: 1, deletedCount: 1 }
-    }
-  }
+  let productRepos = null
   const dummyCategoryId = mongoose.Types.ObjectId()
-  const categoryRepos = {
-    getById: (params) => {
-      if(!params || _.isEmpty(params)) {
-        throw new ApplicationError('Invalid category params')
-      }
-      return Object.assign({}, params, { _id: dummyCategoryId })
-      //return dummyCategoryName
-    },
-    getOne: (params) => {
-      if(!params || _.isEmpty(params)) {
-        throw new ApplicationError('Invalid category params')
-      }
-      return Object.assign({}, params, { _id: dummyCategoryId })
-      //return dummyCategoryName
-    },
-  }
+  let categoryRepos = null
   const config = {
     get: () => config.get('app:img:max_img_size')
   }
   const fs = {
     readFile: async () => ({})
   }
-  const productService = ProductService({ productRepos, categoryRepos, config, fs })
+  let productService = null
   let err = null
 
   beforeEach(() => {
     productParams = generateProductParams({})
-    actualProduct = null
+    actualResult = null
     err = null
+
+    productRepos = {
+      getById: (id) => {
+        if(!id) {
+          throw new ApplicationError('Invalid product id')
+        }
+        return Object.assign({}, productParams, { _id: dummyid, sold: 0 })
+      },
+      getRelatedProducts: (productId, opts={}) => {
+        return [ Object.assign({}, productParams, { _id: dummyid, sold: 0 }) ]
+      },
+      create: async (params) => {
+        if(!params || _.isEmpty(params)) {
+          throw new ApplicationError('Invalid product params')
+        }
+    
+        return Object.assign({}, params, { _id: dummyid })
+      },
+      updateOne: async (filterParams, updateParams) => {
+        return Object.assign({}, filterParams, updateParams)
+      },
+      deleteOne: async (params) => {
+        if(!params || _.isEmpty(params)) {
+          throw new ApplicationError('Invalid product params')
+        }
+  
+        return { n: 1, ok: 1, deletedCount: 1 }
+      }
+    }
+
+    categoryRepos = {
+      getById: (params) => {
+        if(!params || _.isEmpty(params)) {
+          throw new ApplicationError('Invalid category params')
+        }
+        return Object.assign({}, params, { _id: dummyCategoryId })
+        //return dummyCategoryName
+      },
+      getOne: (params) => {
+        if(!params || _.isEmpty(params)) {
+          throw new ApplicationError('Invalid category params')
+        }
+        return Object.assign({}, params, { _id: dummyCategoryId })
+        //return dummyCategoryName
+      },
+    }
+
+    productService = ProductService({ productRepos, categoryRepos, config, fs })
   })
 
   afterEach(() => {
@@ -84,17 +95,17 @@ describe('Product service', () => {
         const productService = ProductService({ productRepos, categoryRepos, config, fs })
 
         try {
-          actualProduct = await productService.getProductById(dummyid)
+          actualResult = await productService.getProductById(dummyid)
         } catch(e) {
           err = e
         }
    
-        expect(actualProduct).to.not.be.null
-        expect(actualProduct).to.have.property('_id').to.equal(dummyid)
-        expect(actualProduct).to.have.property('name').to.equal(expectedProduct.name)
-        expect(actualProduct).to.have.property('description').to.equal(expectedProduct.description)
-        expect(actualProduct).to.have.property('category').to.equal(expectedProduct.category)
-        expect(actualProduct).to.have.property('price').to.equal(expectedProduct.price)
+        expect(actualResult).to.not.be.null
+        expect(actualResult).to.have.property('_id').to.equal(dummyid)
+        expect(actualResult).to.have.property('name').to.equal(expectedProduct.name)
+        expect(actualResult).to.have.property('description').to.equal(expectedProduct.description)
+        expect(actualResult).to.have.property('category').to.equal(expectedProduct.category)
+        expect(actualResult).to.have.property('price').to.equal(expectedProduct.price)
       })
 
       it('should throw ApplicationError with empty product id', async () => {
@@ -102,7 +113,7 @@ describe('Product service', () => {
         const productService = ProductService({ productRepos, categoryRepos, config, fs })
 
         try {
-          actualProduct = await productService.getProductById(dummyid)
+          actualResult = await productService.getProductById(dummyid)
         } catch(e) {
           err = e
         }
@@ -116,7 +127,7 @@ describe('Product service', () => {
         const productService = ProductService({ productRepos, categoryRepos, config, fs })
 
         try {
-          actualProduct = await productService.getProductById(dummyid)
+          actualResult = await productService.getProductById(dummyid)
         } catch(e) {
           err = e
         }
@@ -125,28 +136,66 @@ describe('Product service', () => {
         expect(err).to.be.an.instanceof(ApplicationError)
       })
     })
+
+    context('getRelatedProducts', () => {
+      it('should get related products with valid product id', async () => {
+        try {
+          actualResult = await productService.getRelatedProducts(dummyid)
+        } catch(e) {
+          err = e
+        }
+
+        expect(actualResult).to.be.an('array').to.have.length(1)
+      })
+
+      it('should throw NotFoundError when current book not found', async () => {
+        productRepos['getById'] = (params) => { return null }
+
+        try {
+          actualResult = await productService.getRelatedProducts(dummyid)
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(NotFoundError)
+        expect(err).to.have.property('message').to.eq('no related products found')
+      })
+
+      it('should throw DatabaseError with db error', async () => {
+        productRepos['getById'] = (params) => { throw new Error() }
+
+        try {
+          actualResult = await productService.getRelatedProducts(dummyid)
+        } catch(e) {
+          err = e
+        }
+
+        expect(err).to.be.not.null
+        expect(err).to.be.an.instanceof(DatabaseError)
+      })
+    })
   })
 
   context('Create product', () => {
     context('create', () => {
       it('should create product without photo successfully and return created product with valid params', async () => {
-        let actualProduct = null
         try {
-          actualProduct = await productService.createProduct(productParams)
+          actualResult = await productService.createProduct(productParams)
         } catch(e) {
           err = e
         }
 
-        expect(actualProduct).to.be.not.null
-        expect(actualProduct).to.have.property('_id')
-        expect(actualProduct).to.have.property('name').to.eq(productParams.name)
-        expect(actualProduct).to.have.property('description').to.eq(productParams.description)
-        expect(actualProduct).to.have.property('price').to.eq(productParams.price)
-        expect(actualProduct).to.have.property('category')
-        expect(actualProduct).to.not.have.property('quantity')
-        expect(actualProduct).to.not.have.property('sold')
-        expect(actualProduct).to.not.have.property('shipping')
-        expect(actualProduct).to.not.have.property('photo')
+        expect(actualResult).to.be.not.null
+        expect(actualResult).to.have.property('_id')
+        expect(actualResult).to.have.property('name').to.eq(productParams.name)
+        expect(actualResult).to.have.property('description').to.eq(productParams.description)
+        expect(actualResult).to.have.property('price').to.eq(productParams.price)
+        expect(actualResult).to.have.property('category')
+        expect(actualResult).to.not.have.property('quantity')
+        expect(actualResult).to.not.have.property('sold')
+        expect(actualResult).to.not.have.property('shipping')
+        expect(actualResult).to.not.have.property('photo')
       })
 
       it('should create product without photo successfully and return created product with valid full params', async () => {     
@@ -154,49 +203,47 @@ describe('Product service', () => {
         productParams['sold'] = 3
         productParams['shipping'] = true
         
-        let actualProduct = null
         try {
-          actualProduct = await productService.createProduct(productParams)     
+          actualResult = await productService.createProduct(productParams)     
         } catch(e) {
           err = e
         }
 
-        expect(actualProduct).to.be.not.null
-        expect(actualProduct).to.have.property('_id')
-        expect(actualProduct).to.have.property('name').to.eq(productParams.name)
-        expect(actualProduct).to.have.property('description').to.eq(productParams.description)
-        expect(actualProduct).to.have.property('price').to.eq(productParams.price)
-        expect(actualProduct).to.have.property('category')
-        expect(actualProduct).to.have.property('quantity').to.eq(productParams.quantity)
-        expect(actualProduct).to.have.property('sold').to.eq(productParams.sold)
-        expect(actualProduct).to.have.property('shipping').to.eq(productParams.shipping)
-        expect(actualProduct).to.not.have.property('photo')
+        expect(actualResult).to.be.not.null
+        expect(actualResult).to.have.property('_id')
+        expect(actualResult).to.have.property('name').to.eq(productParams.name)
+        expect(actualResult).to.have.property('description').to.eq(productParams.description)
+        expect(actualResult).to.have.property('price').to.eq(productParams.price)
+        expect(actualResult).to.have.property('category')
+        expect(actualResult).to.have.property('quantity').to.eq(productParams.quantity)
+        expect(actualResult).to.have.property('sold').to.eq(productParams.sold)
+        expect(actualResult).to.have.property('shipping').to.eq(productParams.shipping)
+        expect(actualResult).to.not.have.property('photo')
       })
     })
   })
 
   context('Update product', () => {
     it('should update product successfully and return created product with valid filter and update params', async () => {
-      let actualProduct = null
       const filterParams = { _id: 'dummy1' }
       const updateParams = productParams
 
       try {
-        actualProduct = await productService.updateProduct(filterParams, updateParams)
+        actualResult = await productService.updateProduct(filterParams, updateParams)
       } catch(e) {
         err = e
       }
 
-      expect(actualProduct).to.be.not.null
-      expect(actualProduct).to.have.property('_id')
-      expect(actualProduct).to.have.property('name').to.eq(productParams.name)
-      expect(actualProduct).to.have.property('description').to.eq(productParams.description)
-      expect(actualProduct).to.have.property('price').to.eq(productParams.price)
-      expect(actualProduct).to.have.property('category')
-      expect(actualProduct).to.not.have.property('quantity')
-      expect(actualProduct).to.not.have.property('sold')
-      expect(actualProduct).to.not.have.property('shipping')
-      expect(actualProduct).to.not.have.property('photo')      
+      expect(actualResult).to.be.not.null
+      expect(actualResult).to.have.property('_id')
+      expect(actualResult).to.have.property('name').to.eq(productParams.name)
+      expect(actualResult).to.have.property('description').to.eq(productParams.description)
+      expect(actualResult).to.have.property('price').to.eq(productParams.price)
+      expect(actualResult).to.have.property('category')
+      expect(actualResult).to.not.have.property('quantity')
+      expect(actualResult).to.not.have.property('sold')
+      expect(actualResult).to.not.have.property('shipping')
+      expect(actualResult).to.not.have.property('photo')      
     })
   })
 
@@ -204,19 +251,19 @@ describe('Product service', () => {
     it('should delete product successfully with valid params', async () => {
       const params = { _id: 'dummyid' }
       try {
-        actualProduct = productService.deleteProduct(params)
+        actualResult = productService.deleteProduct(params)
       } catch(e) {
         err = e
       }
 
-      expect(actualProduct).to.be.not.null
+      expect(actualResult).to.be.not.null
     })
 
     it('should throw ApplicationError with empty params', async () => {
       const params = {}
 
       try {
-        actualProduct = await productService.deleteProduct(params)
+        actualResult = await productService.deleteProduct(params)
       } catch(e) {
         err = e
       }
@@ -228,7 +275,7 @@ describe('Product service', () => {
       const params = null
 
       try {
-        actualProduct = await productService.deleteProduct(params)
+        actualResult = await productService.deleteProduct(params)
       } catch(e) {
         err = e
       }

@@ -16,6 +16,9 @@ describe('Get products', () => {
   let product2 = null
   let product2sold6 = null
   let product3 = null
+  let category = null
+  let category2 = null
+  let category3 = null
   let res = null
 
   before(async () => {
@@ -25,7 +28,17 @@ describe('Get products', () => {
       await Product.deleteMany({ "name": /^product*/ })
       await Category.deleteMany({ "name": /^category*/ })
 
-      const category = await generateCategory({})
+      category = await generateCategory({})
+      category2 = await generateCategory({
+        optParams: {
+          name: 'category2'
+        }
+      })
+      category3 = await generateCategory({
+        optParams: {
+          name: 'category3'
+        }
+      })
       product = await generateProduct({ optParams: { category: category._id } })
       product1sold6 = await generateProduct({
         optParams: {
@@ -43,14 +56,14 @@ describe('Get products', () => {
       product2sold6 = await generateProduct({
         optParams: {
           name: 'product2',
-          category: category._id,
+          category: category2._id,
           sold: 6,
         }
       })
       product3 = await generateProduct({
         optParams: {
           name: 'product2',
-          category: category._id,
+          category: category3._id,
         }
       })
     } catch(e) { 
@@ -75,21 +88,13 @@ describe('Get products', () => {
       expect(res.body.data.product).to.have.property('name').to.eq(product.name)
       expect(res.body.data.product).to.have.property('description').to.eq(product.description)
       expect(res.body.data.product).to.have.property('price').to.eq(product.price)
-      expect(res.body.data.product).to.have.property('category').to.eq(product.category.toString())
+      expect(res.body.data.product).to.have.property('category')
+      expect(res.body.data.product.category).to.have.property('_id').to.eq(product.category.toString())
+      expect(res.body.data.product.category).to.have.property('name')
       expect(res.body.data.product).to.not.have.property('quantity')
       expect(res.body.data.product).to.have.property('sold').to.eq(product.sold)
       expect(res.body.data.product).to.not.have.property('shipping')
       expect(res.body.data.product).to.not.have.property('photo')
-    })
-  
-    it('should throw NotFoundError with missing productId', async () => {
-      try {
-        res = await request(app)
-          .get(`${API_PREFIX}/products/`)
-          .expect(404)
-      } catch(e) {
-        console.log(e)
-      }
     })
 
     it('should throw NotFoundError when product not found', async () => {
@@ -214,6 +219,74 @@ describe('Get products', () => {
         await Product.deleteMany({ "name": /^product*/ })
         res = await request(app)
           .get(`${API_PREFIX}/products?sortBy=${sortBy}&order=${order},1&limit=${limit}`)
+          .expect(404)
+      } catch(e) {
+        console.log(e)
+      }
+
+      expect(res.body).to.have.property('err').to.eq('NotFoundError')
+      expect(res.body).to.have.property('errmsg').to.eq('product not found')
+
+      try {
+        product = await generateProduct({ optParams: { category: category._id } })
+        product1sold6 = await generateProduct({
+          optParams: {
+            name: 'product1',
+            category: category._id,
+            sold: 6,
+          }
+        })
+        product2 = await generateProduct({
+          optParams: {
+            name: 'product2',
+            category: category._id,
+          }
+        })
+        product2sold6 = await generateProduct({
+          optParams: {
+            name: 'product2',
+            category: category2._id,
+            sold: 6,
+          }
+        })
+        product3 = await generateProduct({
+          optParams: {
+            name: 'product2',
+            category: category3._id,
+          }
+        })
+      } catch(e) {
+        console.log(e)
+      }
+    })
+  })
+
+  describe(API_PREFIX + '/products/related/:productId', () => {
+    it('should return related products with valid product id and query limit param', async () => {
+      const limit = 3
+
+      try {
+        res = await request(app)
+          .get(`${API_PREFIX}/products/related/${product._id}?limit=${limit}`)
+          .expect(200)
+      } catch(e) {
+        console.log(e)
+      }
+
+      expect(res.body.data).to.exist
+      expect(res.body.data.products).to.be.an('array').to.have.length(2)
+      expect(res.body.data.products[0]).to.have.property('_id').to.eq(product1sold6._id.toString())
+      expect(res.body.data.products[0]).to.have.property('name').to.eq(product1sold6.name)
+      expect(res.body.data.products[0]).to.have.property('category')
+      expect(res.body.data.products[1]).to.have.property('_id').to.eq(product2._id.toString())
+      expect(res.body.data.products[1]).to.have.property('name').to.eq(product2.name)
+      expect(res.body.data.products[1]).to.have.property('category')
+    })
+
+    it('shoudl throw NotFoundError if no related product is found', async () => {
+      try {
+        res = await request(app)
+          .get(`${API_PREFIX}/products/related/${product3._id}`)
           .expect(404)
       } catch(e) {
         console.log(e)
