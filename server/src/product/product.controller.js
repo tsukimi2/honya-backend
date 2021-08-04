@@ -1,8 +1,8 @@
 import BadRequestError from '../errors/BadRequestError.js'
 import NotFoundError from '../errors/NotFoundError.js'
 import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
-import { attachObjToReqLocal } from '../libs/util.js'
-import userService from '../user/user.service.js'
+import { DISPLAY } from '../libs/constants.js'
+import logger from '../libs/logger/index.js'
 
 const productController = ({ productService, IncomingForm }) => {
   const validateProductInput = (fields) => {
@@ -36,12 +36,45 @@ const productController = ({ productService, IncomingForm }) => {
       return next(new NotFoundError('product not found'))
     }
 
-    // attach product to req.local
-    // attachObjToReqLocal(req, 'product', product)
-
     return res.status(200).json({
       data: {
         product
+      }
+    })
+  }
+
+  /**
+ * sell / arrival
+ * by sell = /products?sortBy=sold,name&order=desc,asc&limit=4
+ * by arrival = /products?sortBy=createdAt&order=desc&limit=4
+ * if no params are sent, then all products are returned
+ */
+  const getProducts = async (req, res, next) => {
+    const order = req.query.order ? req.query.order : ''
+    const sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    const limit = req.query.limit ? parseInt(req.query.limit) : DISPLAY.LIMIT.DEFAULT
+    let products = null
+
+    try {
+      products = await productService.getProducts({}, {
+        selectParams: '-photo',
+        populatePath: 'category',
+        sortBy,
+        order,
+        limit: parseInt(limit),
+      })
+    } catch(err) {
+      logger.error(err)
+      return next(new NotFoundError('product not found'), { err })
+    }
+
+    if(!products || (Array.isArray(products) && products.length === 0)) {
+      return next(new NotFoundError('product not found'))
+    }
+
+    return res.status(200).json({
+      data: {
+        products
       }
     })
   }
@@ -175,6 +208,7 @@ const productController = ({ productService, IncomingForm }) => {
 
   return {
     getProductById,
+    getProducts,
     createProduct,
     updateProduct,
     deleteProduct,
