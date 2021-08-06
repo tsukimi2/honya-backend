@@ -14,9 +14,11 @@ export default class Repos {
     }
 
     let doc = null
+    let arrSort = []
+
     try {
       let query = this.model.findById(id)
-
+/*
       if(opts.populatePath) {
         if(!opts.populateSelect) {
           query.populate(opts.populatePath)
@@ -31,7 +33,35 @@ export default class Repos {
         doc = await query.lean()
       } else {
         doc = await query.exec()
-      } 
+      }
+*/
+      if(opts.populatePath) {
+        if(!opts.populateSelect) {
+          query.populate(opts.populatePath)
+        } else {
+          query.populate(opts.populatePath, opts.populateSelect)
+        }
+      }
+      if(opts.selectParams) {
+        query.select(opts.selectParams)
+      }
+      if(opts.sortBy) {
+        arrSort = await this.createSortArray(opts.sortBy, opts.order)
+      }
+      if(arrSort.length !== 0) {      
+        query.sort(arrSort)
+      }
+      if(opts.skip) {
+        query.skip(opts.skip)
+      }
+      if(opts.limit > 0) {
+        query.limit(opts.limit)
+      }
+      if(opts.lean) {
+        doc = await query.lean()
+      } else {
+        doc = await query.exec()
+      }
     } catch(err) {
       throw new DatabaseError('cannot find document', { err })
     }
@@ -41,10 +71,11 @@ export default class Repos {
 
   async getOne(filterParams={}, opts={}) {
     let doc = null
+    let arrSort = []
 
     try {
       let query = this.model.findOne(filterParams)
-
+/*
       if(opts.populatePath) {
         if(!opts.populateSelect) {
           query.populate(opts.populatePath)
@@ -60,6 +91,34 @@ export default class Repos {
       } else {
         doc = await query.exec()
       }
+*/
+      if(opts.populatePath) {
+        if(!opts.populateSelect) {
+          query.populate(opts.populatePath)
+        } else {
+          query.populate(opts.populatePath, opts.populateSelect)
+        }
+      }
+      if(opts.selectParams) {
+        query.select(opts.selectParams)
+      }
+      if(opts.sortBy) {
+        arrSort = await this.createSortArray(opts.sortBy, opts.order)
+      }
+      if(arrSort.length !== 0) {      
+        query.sort(arrSort)
+      }
+      if(opts.skip) {
+        query.skip(opts.skip)
+      }
+      if(opts.limit > 0) {
+        query.limit(opts.limit)
+      }
+      if(opts.lean) {
+        doc = await query.lean()
+      } else {
+        doc = await query.exec()
+      }      
     } catch(err) {
       throw new DatabaseError('cannot find document', { err })
     }
@@ -89,6 +148,9 @@ export default class Repos {
       }
       if(arrSort.length !== 0) {      
         query.sort(arrSort)
+      }
+      if(opts.skip) {
+        query.skip(opts.skip)
       }
       if(opts.limit > 0) {
         query.limit(opts.limit)
