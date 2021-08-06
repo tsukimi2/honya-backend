@@ -47,6 +47,61 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     return productRepos.listCategories({ lean: true })
   }
 
+  const listBySearch = async (filters, opts) => {
+    let products = []
+    let findArgs = {}
+    const { sortBy, order, limit, skip, lean } = opts
+
+    for (let key in filters) {
+      if (filters[key].length > 0) {
+        if (key === 'price') {
+            // gte -  greater than price [0-10]
+            // lte - less than
+            findArgs[key] = {
+                $gte: filters[key][0],
+                $lte: filters[key][1]
+            };
+        } else {
+            findArgs[key] = filters[key];
+        }
+      }
+    }
+
+    try {
+      products = await productRepos.get(findArgs, {
+        selectParams: '-photo',
+        populatePath: 'category',
+        sortBy,
+        order,
+        skip,
+        limit,
+        lean,
+      })
+    } catch(err) {
+      throw new DatabaseError('DatabaseError', { err })
+    }
+
+    return products
+  }
+
+  const getPhoto = async (productId, opts) => {
+    let photo = null
+    const optParams = Object.assign({}, {
+      selectParams: 'photo',
+    }, opts)
+
+    try {
+      const product = await productRepos.getById(productId, optParams)
+      if(product && product.photo) {
+        photo = product.photo
+      }
+    } catch(err) {
+      throw new DatabaseError('DatabaseError', { err })
+    }
+
+    return photo
+  }
+
   const createProduct = async (params, files) => {
     try {
       const { category } = params
@@ -136,6 +191,8 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     getProducts,
     getRelatedProducts,
     listCategories,
+    listBySearch,
+    getPhoto,
     createProduct,
     updateProduct,
     deleteProduct,

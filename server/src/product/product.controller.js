@@ -49,6 +49,38 @@ const productController = ({ productService, IncomingForm }) => {
  * by arrival = /products?sortBy=createdAt&order=desc&limit=4
  * if no params are sent, then all products are returned
  */
+/*
+  const getProducts = async (req, res, next) => { 
+    const order = req.query.order ? req.query.order : ''
+    const sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    const limit = req.query.limit ? parseInt(req.query.limit) : DISPLAY.LIMIT.DEFAULT
+    let products = null
+
+    try {
+      products = await productService.getProducts({}, {
+        selectParams: '-photo',
+        populatePath: 'category',
+        sortBy,
+        order,
+        limit: parseInt(limit),
+      })
+    } catch(err) {
+      logger.error(err)
+      return next(new NotFoundError('product not found'), { err })
+    }
+
+    if(!products || (Array.isArray(products) && products.length === 0)) {
+      return next(new NotFoundError('product not found'))
+    }
+
+    return res.status(200).json({
+      data: {
+        products
+      }
+    })
+  }
+  */
+
   const getProducts = async (req, res, next) => { 
     const order = req.query.order ? req.query.order : ''
     const sortBy = req.query.sortBy ? req.query.sortBy : '_id'
@@ -115,6 +147,53 @@ const productController = ({ productService, IncomingForm }) => {
         categories
       }
     })
+  }
+
+  const listBySearch = async (req, res, next) => {
+    let products = []
+    const{ filters } = req.body
+    const opts = {
+      order: req.body.order ? req.body.order : DISPLAY.ORDER.DESC,
+      sortBy: req.body.sortBy ? req.body.sortBy : '_id',
+      limit: req.body.limit ? parseInt(req.body.limit) : DISPLAY.LIMIT.DEFAULT,
+      skip: req.body.skip ? parseInt(req.body.skip) : 0,
+      lean: true,
+    }
+
+    try {
+      products = await productService.listBySearch(filters, opts)
+    } catch(err) {
+      return next(new NotFoundError('product meeting search criteria not found'), { err })
+    }
+
+    if(!products || !(products && Array.isArray(products) && products.length !== 0)) {
+      return next(new NotFoundError('product meeting search criteria not found'))
+    }
+
+    return res.status(200).json({
+      data: {
+        products
+      }
+    })
+  }
+
+  const getPhoto = async (req, res, next) => {
+    const { productId } = req.params
+    let photo = null
+    const opts = { lean: true }
+
+    try {
+      photo = await productService.getPhoto(productId, opts)
+    } catch(err) {
+      return next(new NotFoundError('product photo not found'), { err })
+    }
+
+    if(!photo || (photo && (!photo.data || !photo.contentType))) {
+      return next(new NotFoundError('product photo not found'))
+    }
+
+    res.set('Content-Type', photo.contentType)
+    return res.status(200).send(photo.data)
   }
 
   const createProduct = async (req, res, next) => {
@@ -249,6 +328,8 @@ const productController = ({ productService, IncomingForm }) => {
     getProducts,
     getRelatedProducts,
     listCategories,
+    listBySearch,
+    getPhoto,
     createProduct,
     updateProduct,
     deleteProduct,
