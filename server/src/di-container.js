@@ -23,7 +23,7 @@ import ProductController from './product/product.controller.js'
 export const errHandler = ErrHandler({ logger })
 export const database = Database({ mongoose, logger })
 export const userRepos = new UserRepos(User)
-export const userService = UserService({ userRepos })
+export const userService = UserService({ userRepos, config })
 export const categoryRepos = new CategoryRepos(Category)
 export const categoryService = CategoryService({ categoryRepos })
 export const categoryController = CategoryController({ categoryService })

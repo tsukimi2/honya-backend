@@ -8,7 +8,7 @@ export default class Repos {
     this.model = model
   }
 
-  async getById(id, opts={}) {
+  async getById(id, opts={}) {  
     if(!id) {
       throw new ApplicationError('Invalid document id')
     }
@@ -18,23 +18,7 @@ export default class Repos {
 
     try {
       let query = this.model.findById(id)
-/*
-      if(opts.populatePath) {
-        if(!opts.populateSelect) {
-          query.populate(opts.populatePath)
-        } else {
-          query.populate(opts.populatePath, opts.populateSelect)
-        }
-      }
-      if(opts.selectParams) {
-        query.select(opts.selectParams)
-      }
-      if(opts.lean) {
-        doc = await query.lean()
-      } else {
-        doc = await query.exec()
-      }
-*/
+
       if(opts.populatePath) {
         if(!opts.populateSelect) {
           query.populate(opts.populatePath)
@@ -69,29 +53,13 @@ export default class Repos {
     return doc
   }
 
-  async getOne(filterParams={}, opts={}) {
+  async getOne(filterParams={}, opts={}) {  
     let doc = null
     let arrSort = []
 
     try {
       let query = this.model.findOne(filterParams)
-/*
-      if(opts.populatePath) {
-        if(!opts.populateSelect) {
-          query.populate(opts.populatePath)
-        } else {
-          query.populate(opts.populatePath, opts.populateSelect)
-        }
-      }
-      if(opts.selectParams) {
-        query.select(opts.selectParams)
-      }
-      if(opts.lean) {
-        doc = await query.lean()
-      } else {
-        doc = await query.exec()
-      }
-*/
+
       if(opts.populatePath) {
         if(!opts.populateSelect) {
           query.populate(opts.populatePath)
@@ -104,7 +72,7 @@ export default class Repos {
       }
       if(opts.sortBy) {
         arrSort = await this.createSortArray(opts.sortBy, opts.order)
-      }
+      }     
       if(arrSort.length !== 0) {      
         query.sort(arrSort)
       }

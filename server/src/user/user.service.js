@@ -1,6 +1,8 @@
+import bcrypt from 'bcrypt'
 import ApplicationError from "../errors/ApplicationError.js"
+import BadRequestError from "../errors/BadRequestError.js"
 
-const userService = ({ userRepos }) => {
+const userService = ({ userRepos, config }) => {
   const getUserById = async (id, opts={}) => {
     return userRepos.getById(id, opts)
   }
@@ -11,6 +13,28 @@ const userService = ({ userRepos }) => {
 
   const createUser = async (params) => {
     return userRepos.create(params)
+  }
+
+  const updateUserById = async (_id, updateParams) => {
+    // if one of the params to update is user, check to ensure that it is different
+    // from the existing password
+    if(updateParams.password) {
+      const user = await userRepos.getById(_id, {
+        selectParams: '-_id hashedPassword',
+        lean: true
+      })
+
+      if(!user) {
+        throw new BadRequestError('user to be updated not found')
+      }
+
+      const newHashedPassword = await bcrypt.hash(updateParams.password, config.get('security:password:saltrounds'))
+      if(newHashedPassword === user.hashedPassword) {
+        throw new BadRequestError('password to update is the same as the existing password')
+      }
+    }
+
+    return userRepos.updateOne({ _id }, updateParams)
   }
 
   const deleteUser = async (filterParams) => {
@@ -41,6 +65,7 @@ const userService = ({ userRepos }) => {
     getUserById,
     getUser,
     createUser,
+    updateUserById,
     deleteUser,
     getOneOrCreateByGoogleDetails,
     updateLoginHashAndRefreshToken

@@ -26,7 +26,7 @@ const authController = ({ config, logger, userService }) => {
     })
   }
 
-  const login = async (req, res, next) => {
+  const login = async (req, res, next) => {   
     const bcryptHash = util.promisify(bcrypt.hash)
     const ACCESS_TOKEN_EXPIRES_IN = config.get('security:jwt:access_token_expires_in')
 
