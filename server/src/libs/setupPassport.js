@@ -66,7 +66,7 @@ passport.use(
       usernameField: 'username',
       passwordField: 'password',
     },
-    async (username, password, next) => {
+    async (username, password, next) => {     
       try {
         // find user
         const user = await userService.getUser({ username })

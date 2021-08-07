@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import _ from 'lodash'
 import DatabaseError from '../errors/DatabaseError.js'
 import { ROLE } from './user.constants.js'
+import config from '../libs/config/index.js'
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -88,6 +89,16 @@ UserSchema.virtual('password')
     const saltRounds = 10
     this.hashedPassword = bcrypt.hashSync(password, saltRounds)
   })
+  /*
+  .set(async function(password) {
+    this._password = password
+    // const saltRounds = config.get('security:password:saltrounds')
+    const saltRounds = 10
+console.log('saltRounds')
+console.log(saltRounds)
+    this.hashedPassword = await bcrypt.hash(password, saltRounds)
+  })
+  */
   .get(function() {
     return this.hashedPassword
     // return this._password

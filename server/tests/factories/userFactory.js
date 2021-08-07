@@ -1,7 +1,7 @@
 import User from '../../src/user/user.model.js'
 import { ROLE } from '../../src/user/user.constants.js'
 
-export const generateUserParams = ({ userProfile, hasHashedPassword=false, optParams={}}) => {
+export const generateUserParams = ({ userProfile='validUser1', hasHashedPassword=false, optParams={}}) => {
   let username = 'user'
   let initUserParams = {}
   const password = 'testing1'
@@ -22,10 +22,14 @@ export const generateUserParams = ({ userProfile, hasHashedPassword=false, optPa
     }
   }
 
+  if(optParams && optParams.username) {
+    optParams['email'] = `${optParams.username}@gmail.com`
+  }
+
   return Object.assign({}, initUserParams, optParams)
 }
 
-export const generateUser = async ({ userProfile }) => {
-  const userParams = generateUserParams({ userProfile })
+export const generateUser = async ({ userProfile, optParams={}, providedUserParams=null}) => {
+  const userParams = providedUserParams ? providedUserParams : generateUserParams({ userProfile, optParams })
   return new User(userParams).save()
 }
