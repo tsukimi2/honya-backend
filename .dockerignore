@@ -1,5 +1,9 @@
 server/.env
 server/node_modules/
+web/.env
+web/node_modules/
+web/.next/                # Existing Next.js builds
+nginx/
 LICENSE
 README.md
 .gitignore
@@ -7,4 +11,6 @@ README.md
 .travis.yml
 Dockerfile
 Dockerfile.*
+.dockerignore
+docker-compose.yml
 docker-compose.*
