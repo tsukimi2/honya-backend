@@ -28,8 +28,10 @@ const userService = ({ userRepos, config }) => {
         throw new BadRequestError('user to be updated not found')
       }
 
-      const newHashedPassword = await bcrypt.hash(updateParams.password, config.get('security:password:saltrounds'))
-      if(newHashedPassword === user.hashedPassword) {
+      //const newHashedPassword = await bcrypt.hash(updateParams.password, config.get('security:password:saltrounds'))
+      //if(newHashedPassword === user.hashedPassword) {
+      const isSamePassword = await bcrypt.compare(updateParams.password, user.hashedPassword)
+      if(isSamePassword) {
         throw new BadRequestError('password to update is the same as the existing password')
       }
     }

@@ -2,6 +2,7 @@ import _ from 'lodash'
 import BadRequestError from '../errors/BadRequestError.js'
 import NotFoundError from '../errors/NotFoundError.js'
 import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
+import UserFacingError from '../errors/UserFacingError.js'
 
 const userController = ({ logger, userService }) => {
   const getUserById = async (req, res, next) => {
@@ -47,10 +48,14 @@ const userController = ({ logger, userService }) => {
 
     try {
       user = await userService.updateUserById(_id, updateParams)
-    } catch(err) {    
+    } catch(err) {
+      if(err instanceof UserFacingError) {
+        return next(err)
+      }
       return next(new UnprocessableEntityError('failed to update user', { err }))
     }
-    if(!user) {
+
+    if(!user) {      
       return next(new UnprocessableEntityError('failed to update user'))
     }
 
