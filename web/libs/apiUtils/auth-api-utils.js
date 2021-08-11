@@ -1,5 +1,7 @@
-export const register = async (username, password, email) => {
-  const response = await fetch('/api/v1/register', {
+import { API } from '../../config'
+
+export const signup = async (username, password, email) => {
+  const response = await fetch(`${API}/register`, {
     method: 'POST',
     body: JSON.stringify({ username, password, email }),
     headers: {
@@ -10,8 +12,26 @@ export const register = async (username, password, email) => {
 
   const data = await response.json()
   if (!response.ok) {
-    throw new Error(data.errmsg);
+    throw new Error(data.errmsg)
   }
 
-  return data;
+  return data
+}
+
+export const signin = async (user) => {
+  const response = await fetch(`${API}/login`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(user)
+  })
+
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.errmsg)
+  }
+
+  return data
 }

@@ -1,30 +1,34 @@
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/router'
 import ShowError from '../ui/show-error'
-import { signup } from '../../libs/apiUtils/auth-api-utils'
+import { signin } from '../../libs/apiUtils/auth-api-utils'
 
-const SignupForm = () => {
+
+const SigninForm = () => {
   const usernameRef = useRef()
   const passwordRef = useRef()
-  const emailRef = useRef()
-  const [success, setSuccess] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const router = useRouter()
 
   const submitHandler = async (event) => {
     event.preventDefault()
 
     const username = usernameRef.current.value
     const password = passwordRef.current.value
-    const email = emailRef.current.value
+    setError(null)
+    setLoading(true)
 
     // ToDo: validation
 
     try {
-      const result = await signup(username, password, email)
+      const result = await signin({username, password})
       console.log('result')
       console.log(result)
-      // setSuccess(true)
+      router.replace('/')
     } catch(err) {
       setError(err.message)
+      setLoading(false)
     }
   }
 
@@ -47,11 +51,6 @@ const SignupForm = () => {
           <input type="password" className="form-control" id="password" required ref={passwordRef} />
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label text-muted">Email</label>
-          <input type="email" className="form-control" id="email" required ref={emailRef} />
-        </div>
-
         <button type="submit" className="btn btn-primary">
             Submit
         </button>
@@ -60,4 +59,4 @@ const SignupForm = () => {
   )
 }
 
-export default SignupForm
+export default SigninForm
