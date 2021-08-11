@@ -48,7 +48,7 @@ const authController = ({ config, logger, userService }) => {
       const loginHash = await bcryptHash(username, config.get('security:password:saltrounds'))
 
       // set user hash cookie
-      let loginHashCookieOptions = generateTokenCookieOptions(config.get('app:node_env'))
+      let loginHashCookieOptions = generateTokenCookieOptions(config.get('app:node_env'), { httpOnly: false })
       res.cookie('loginHash', loginHash, loginHashCookieOptions)
 
       // generate new access token

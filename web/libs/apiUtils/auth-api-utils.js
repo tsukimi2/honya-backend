@@ -1,3 +1,4 @@
+import cookie from 'cookie-cutter'
 import { API } from '../../config'
 
 export const signup = async (username, password, email) => {
@@ -35,3 +36,7 @@ export const signin = async (user) => {
 
   return data
 }
+
+export const signout = async () => fetch(`${API}/logout`)
+
+export const isAuthenticated = () => cookie.get('loginHash') ? true : false

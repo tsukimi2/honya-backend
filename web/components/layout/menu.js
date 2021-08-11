@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { signout, isAuthenticated } from '../../libs/apiUtils/auth-api-utils'
 
 const isActive = (routerPath, href) => {
   if(routerPath === href) {
@@ -11,6 +12,11 @@ const isActive = (routerPath, href) => {
 
 const Menu = () => {
   const router = useRouter()
+
+  const signoutHandler = () => {  
+    signout()
+    router.push('/')
+  }
 
   return (
     <div>
@@ -24,16 +30,7 @@ const Menu = () => {
             </a>
           </Link>
         </li>
-        <li className="nav-item">
-          <Link href="/signin">
-            <a
-              className="nav-link"
-              style={isActive(router.asPath, '/signin')}
-            >
-              Sign In
-            </a>
-          </Link>
-        </li>
+
         <li className="nav-item">
           <Link href="/signup">
             <a
@@ -44,6 +41,35 @@ const Menu = () => {
             </a>
           </Link>
         </li>
+        
+        {
+          !isAuthenticated() && (
+            <li className="nav-item">
+              <Link href="/signin">
+                <a
+                  className="nav-link"
+                  style={isActive(router.asPath, '/signin')}
+                >
+                  Sign In
+                </a>
+              </Link>
+            </li>
+          )
+        }
+
+        {
+          isAuthenticated() && (
+            <li className="nav-item">
+              <button
+                className="nav-link"
+                style={{ cursor: "pointer", color: "#ffffff" }}
+                onClick={signoutHandler}
+              >
+                Sign Out
+              </button>
+            </li>
+          )
+        }
       </ul>
     </div>
   )
