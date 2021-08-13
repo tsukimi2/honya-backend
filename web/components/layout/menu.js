@@ -1,9 +1,11 @@
+import { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { signout } from '../../libs/apiUtils/auth-api-utils'
 import { isAuthenticated } from '../../libs/utils/auth-utils'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import styles from './menu.module.css'
+import { AuthContext } from '../../contexts/AuthContext'
 
 
 const isActive = (routerPath, href) => {
@@ -16,9 +18,11 @@ const isActive = (routerPath, href) => {
 
 const Menu = () => {
   const router = useRouter()
+  const { clearAuthContext } = useContext(AuthContext)
 
   const signoutHandler = () => {  
     signout()
+    clearAuthContext()
     router.push('/')
   }
 

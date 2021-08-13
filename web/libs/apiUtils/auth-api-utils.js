@@ -36,4 +36,11 @@ export const signin = async (user) => {
   return data
 }
 
-export const signout = async () => fetch(`${API}/logout`)
+export const signout = async () => {
+  fetch(`${API}/logout`)
+  try {
+    localStorage.clear()
+  } catch(e) {
+
+  }
+}
