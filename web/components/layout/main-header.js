@@ -1,8 +1,28 @@
+import { useContext, useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import styles from './main-header.module.css'
+import { AuthContext } from "../../contexts/AuthContext"
+import { localStorage_get } from "../../libs/utils/localStorage-utils"
 
 const MainHeader = () => {
   const router = useRouter()
+  let { user } = useContext(AuthContext)
+  let storedUser = null
+  let [username, setUsername] = useState('')
+
+  useEffect(() => {
+    if(!user) {
+      user = localStorage_get('user')
+    }
+
+    if(user) {
+      setUsername(user.username)
+    }
+  })
+
+  if(user) {
+    username = user.username
+  }
   const pageToTitleDescriptionMapping = {
     '/': {
       title: 'Home',
@@ -16,6 +36,14 @@ const MainHeader = () => {
       title: 'Sign In',
       description: 'Honya App'
     },
+    '/user/dashboard': {
+      title: 'Dashboard',
+      description: `Konnichiwa, ${username}`,
+    },
+    '/admin/dashboard': {
+      title: 'Admin Dashboard',
+      description: `Konnichiwa, ${username}`,
+    }
   }
 
   const getTitle = (currPath) => !pageToTitleDescriptionMapping[currPath] ? null : pageToTitleDescriptionMapping[currPath].title

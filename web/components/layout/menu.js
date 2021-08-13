@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { signout, isAuthenticated } from '../../libs/apiUtils/auth-api-utils'
+import { signout } from '../../libs/apiUtils/auth-api-utils'
+import { isAuthenticated } from '../../libs/utils/auth-utils'
+import { localStorage_get } from '../../libs/utils/localStorage-utils'
+import styles from './menu.module.css'
+
 
 const isActive = (routerPath, href) => {
   if(routerPath === href) {
@@ -18,6 +22,15 @@ const Menu = () => {
     router.push('/')
   }
 
+  const getUserRole = () => { 
+    const user = localStorage_get('user')
+    if(!user || (user && !user.role)) {
+      return null
+    }
+
+    return user.role
+  }
+
   return (
     <div>
       <ul className="nav nav-tabs bg-primary">
@@ -31,11 +44,37 @@ const Menu = () => {
           </Link>
         </li>
 
+        {isAuthenticated() && getUserRole() === 'user' && (
+          <li className="nav-item">
+            <Link href="/user/dashboard">
+              <a
+                className="nav-link"
+                style={isActive(router.asPath, '/user/dashboard')}
+              >
+                Dashboard
+              </a>
+            </Link>
+          </li>
+        )}
+
+        {isAuthenticated() && getUserRole() === 'admin' && (
+          <li className="nav-item">
+            <Link href="/admin/dashboard">
+              <a
+                className="nav-link"
+                style={isActive(router.asPath, '/admin/dashboard')}
+              >
+                Dashboard
+              </a>
+            </Link>
+          </li>
+        )}
+
         <li className="nav-item">
           <Link href="/signup">
             <a
               className="nav-link"
-              style={isActive(router.asPath, '/signout')}
+              style={isActive(router.asPath, '/signup')}
             >
               Sign Up
             </a>
@@ -61,8 +100,8 @@ const Menu = () => {
           isAuthenticated() && (
             <li className="nav-item">
               <button
+                className={styles.signoutBtn}
                 className="nav-link"
-                style={{ cursor: "pointer", color: "#ffffff" }}
                 onClick={signoutHandler}
               >
                 Sign Out
@@ -76,27 +115,3 @@ const Menu = () => {
 }
 
 export default Menu
-
-
-/*
-function ActiveLink({ children, href }) {
-  const router = useRouter()
-  const style = {
-    marginRight: 10,
-    color: router.asPath === href ? 'red' : 'black',
-  }
-
-  const handleClick = (e) => {
-    e.preventDefault()
-    router.push(href)
-  }
-
-  return (
-    <a href={href} onClick={handleClick} style={style}>
-      {children}
-    </a>
-  )
-}
-
-export default ActiveLink
-*/

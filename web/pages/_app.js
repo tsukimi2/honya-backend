@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Layout from '../components/layout/layout'
 import '../styles/globals.css'
 import 'bootstrap/dist/css/bootstrap.css'
+import AuthContextProvider from '../contexts/AuthContext'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -9,9 +10,11 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <AuthContextProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </AuthContextProvider>
     </>
   )
 }

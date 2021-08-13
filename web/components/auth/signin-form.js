@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
 import ShowError from '../ui/show-error'
 import { signin } from '../../libs/apiUtils/auth-api-utils'
+import { localStorage_set } from '../../libs/utils/localStorage-utils'
+import { AuthContext } from '../../contexts/AuthContext'
 
 
 const SigninForm = () => {
@@ -10,6 +12,8 @@ const SigninForm = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const router = useRouter()
+
+  const { setUserInAuthContext } = useContext(AuthContext)
 
   const submitHandler = async (event) => {
     event.preventDefault()
@@ -25,7 +29,18 @@ const SigninForm = () => {
       const result = await signin({username, password})
       console.log('result')
       console.log(result)
-      router.replace('/')
+
+      if(result.user) {
+        setUserInAuthContext(result.user)     
+        localStorage_set('user', result.user)
+      }
+console.log('role')
+console.log(result.user.role)
+      if(result.user.role === 'admin') {
+        router.replace('/admin/dashboard')
+      } else {
+        router.replace('/user/dashboard')
+      }
     } catch(err) {
       setError(err.message)
       setLoading(false)

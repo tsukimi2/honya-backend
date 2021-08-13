@@ -44,7 +44,7 @@ const authController = ({ config, logger, userService }) => {
 
     try {
       // generate login hash from username
-      const { id: uid, username, role } = req.user
+      const { id: uid, username, email, role } = req.user
       const loginHash = await bcryptHash(username, config.get('security:password:saltrounds'))
 
       // set user hash cookie
@@ -76,11 +76,15 @@ const authController = ({ config, logger, userService }) => {
       })
 
       res.status(200).json({
-        message: 'Log in successful',
         access_token: accessToken,
         refresh_token: refreshToken,
         token_type: 'bearer',
         expires_in: config.get('security:jwt:access_token_expires_in_sec'),
+        user: {
+          username,
+          email,
+          role,
+        }
       })
     } catch(err) {
       logger.warn(err)      
