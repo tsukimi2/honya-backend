@@ -6,23 +6,22 @@ import { localStorage_get } from "../../libs/utils/localStorage-utils"
 
 const MainHeader = () => {
   const router = useRouter()
-  let { user } = useContext(AuthContext)
-  let storedUser = null
+  const { user } = useContext(AuthContext)
   let [username, setUsername] = useState('')
 
   useEffect(() => {
+    let storedUser = null
     if(!user) {
-      user = localStorage_get('user')
+      storedUser = localStorage_get('user')
+    } else {
+      storedUser = { ...user }
     }
 
-    if(user) {
-      setUsername(user.username)
+    if(storedUser) {
+      setUsername(storedUser.username)
     }
-  })
+  }, [user])
 
-  if(user) {
-    username = user.username
-  }
   const pageToTitleDescriptionMapping = {
     '/': {
       title: 'Home',
