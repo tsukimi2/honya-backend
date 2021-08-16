@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { signout } from '../../libs/apiUtils/auth-api-utils'
 import { isAuthenticated } from '../../libs/utils/auth-utils'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
-import styles from './menu.module.css'
+//import styles from './menu.module.css'
 import { AuthContext } from '../../contexts/AuthContext'
 
 
@@ -104,8 +104,7 @@ const Menu = () => {
           isAuthenticated() && (
             <li className="nav-item">
               <button
-                className={styles.signoutBtn}
-                className="nav-link"
+                className="{styles.signoutBtn} nav-link"
                 onClick={signoutHandler}
               >
                 Sign Out

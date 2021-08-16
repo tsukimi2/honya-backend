@@ -19,21 +19,23 @@ const AdminDashboard = () => {
       router.replace('/signin')
     }
 
+    let storedUser = null
     if(!user) {
-      user = localStorage_get('user')
+      storedUser = localStorage_get('user')
+    } else {
+      storedUser = { ...user }
     }
-console.log('user')
-console.log(user)
-    if(user) {
-      if(user.role !== 'admin') {
+
+    if(storedUser) {
+      if(storedUser.role !== 'admin') {
         router.replace('/user/dashboard')
       }
 
-      setUsername(user.username)
-      setEmail(user.email)
-      setRole(user.role)
+      setUsername(storedUser.username)
+      setEmail(storedUser.email)
+      setRole(storedUser.role)
     }
-  })
+  }, [user, router])
 
   return (
     <div className="container-fluid">

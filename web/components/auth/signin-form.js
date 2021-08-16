@@ -9,7 +9,7 @@ import { AuthContext } from '../../contexts/AuthContext'
 const SigninForm = () => {
   const usernameRef = useRef()
   const passwordRef = useRef()
-  const [loading, setLoading] = useState(false)
+  //const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const router = useRouter()
 
@@ -21,21 +21,18 @@ const SigninForm = () => {
     const username = usernameRef.current.value
     const password = passwordRef.current.value
     setError(null)
-    setLoading(true)
+    //setLoading(true)
 
     // ToDo: validation
 
     try {
       const result = await signin({username, password})
-      console.log('result')
-      console.log(result)
 
       if(result.user) {
         setUserInAuthContext(result.user)     
         localStorage_set('user', result.user)
       }
-console.log('role')
-console.log(result.user.role)
+
       if(result.user.role === 'admin') {
         router.replace('/admin/dashboard')
       } else {
@@ -43,7 +40,7 @@ console.log(result.user.role)
       }
     } catch(err) {
       setError(err.message)
-      setLoading(false)
+      //setLoading(false)
     }
   }
 

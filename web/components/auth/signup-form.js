@@ -6,7 +6,7 @@ const SignupForm = () => {
   const usernameRef = useRef()
   const passwordRef = useRef()
   const emailRef = useRef()
-  const [success, setSuccess] = useState(false)
+  // const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
 
   const submitHandler = async (event) => {
@@ -19,9 +19,7 @@ const SignupForm = () => {
     // ToDo: validation
 
     try {
-      const result = await signup(username, password, email)
-      console.log('result')
-      console.log(result)
+      await signup(username, password, email)
       // setSuccess(true)
     } catch(err) {
       setError(err.message)
