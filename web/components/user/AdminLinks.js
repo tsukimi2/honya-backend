@@ -1,32 +1,31 @@
 import Link from 'next/link'
+import Card from 'react-bootstrap/Card'
+import ListGroup from 'react-bootstrap/ListGroup'
+import Nav from 'react-bootstrap/Nav'
+
+const arrAdminLinks = [
+  { link: '/create/category', text: 'Create Category' },
+  { link: '/create/product', text: 'Create Product' },
+  { link: '/admin/orders', text: 'View Orders' },
+  { link: '/admin/products', text: 'Manage Products' }
+]
 
 const AdminLinks = () => {
   return (
-    <div className="card">
-      <h4 className="card-header">Admin Links</h4>
-      <ul className="list-group">
-        <li className="list-group-item">
-          <Link href="/create/category">
-            <a className="nav-link">Create Category</a>
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link href="/create/product">
-            <a className="nav-link">Create Product</a>
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link href="/admin/orders">
-            <a className="nav-link">View Orders</a>
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link href="/admin/products">
-            <a className="nav-link">Manage Products</a>
-          </Link>
-        </li>
-      </ul>
-    </div>
+    <Card>
+      <Card.Header>Admin Links</Card.Header>
+      {
+        arrAdminLinks.map(elem => {
+          return (
+            <ListGroup.Item key={elem.link}>
+              <Link href={elem.link} passHref>
+                <Nav.Link>{elem.text}</Nav.Link>
+              </Link>
+            </ListGroup.Item>
+          )
+        })
+      }
+    </Card>
   )
 }
 

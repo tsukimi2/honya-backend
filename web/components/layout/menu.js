@@ -50,7 +50,7 @@ const Menu = () => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav justify sticky="top" className="me-auto">
+        <Nav sticky="top" className="me-auto">
           {isAuthenticated() && getUserRole() === 'user' && (
             <Link href="/user/dashboard">
              <a
@@ -99,7 +99,7 @@ const Menu = () => {
             isAuthenticated() && (
               <Button
                 className={styles.signoutBtn}
-                variant="outline-primary"
+                variant="outline-light"
                 onClick={signoutHandler}
               >
                 Sign Out

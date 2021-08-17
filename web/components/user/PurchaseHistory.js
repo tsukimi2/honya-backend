@@ -1,13 +1,14 @@
+import Card from 'react-bootstrap/Card'
+import ListGroup from 'react-bootstrap/ListGroup'
+
 const PurchaseHistory = () => {
-
-
   return (
-    <div className="card mb-5">
-      <h3 className="card-header">Purchase history</h3>
-      <ul className="list-group">
-        <li className="list-group-item">history</li>
-      </ul>
-  </div>
+    <Card>
+      <Card.Header>Purchase history</Card.Header>
+      <ListGroup>
+        <ListGroup.Item>history</ListGroup.Item>
+      </ListGroup>
+    </Card>
   )
 }
 

@@ -1,6 +1,9 @@
 import { useState, useRef, useContext } from 'react'
 import { useRouter } from 'next/router'
-import ShowError from '../ui/show-error'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import ShowAlert from '../ui/ShowAlert'
 import { signin } from '../../libs/apiUtils/auth-api-utils'
 import { localStorage_set } from '../../libs/utils/localStorage-utils'
 import { AuthContext } from '../../contexts/AuthContext'
@@ -45,29 +48,29 @@ const SigninForm = () => {
   }
 
   return (
-    <div className="container col-md-8 offset-md-2">
+    <Container md={{ span: 8, offset: 2 }}>
       {
         error && (
-          <ShowError>{error}</ShowError>
+          <ShowAlert alertLevel="danger">{error}</ShowAlert>
         )
       }
 
-      <form onSubmit={submitHandler}>
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label text-muted">Username</label>
-          <input type="text" className="form-control" id="username" required ref={usernameRef} />
-        </div>
+      <Form onSubmit={submitHandler}>
+        <Form.Group className="mb-3" controlId="username">
+          <Form.Label>Username</Form.Label>
+          <Form.Control type="text" required ref={usernameRef} />
+        </Form.Group>
 
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label text-muted">Password</label>
-          <input type="password" className="form-control" id="password" required ref={passwordRef} />
-        </div>
+        <Form.Group className="mb-3" controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" required ref={passwordRef} />
+        </Form.Group>
 
-        <button type="submit" className="btn btn-primary">
-            Submit
-        </button>
-      </form>
-    </div>
+        <Button type="submit" variant="primary">
+          Submit
+        </Button>
+      </Form>
+    </Container>
   )
 }
 
