@@ -1,12 +1,14 @@
+import Navbar from 'react-bootstrap/Navbar'
+import Button from 'react-bootstrap/Button'
 import { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { signout } from '../../libs/apiUtils/auth-api-utils'
 import { isAuthenticated } from '../../libs/utils/auth-utils'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
-//import styles from './menu.module.css'
+import styles from './menu.module.css'
 import { AuthContext } from '../../contexts/AuthContext'
-
+import { Nav } from 'react-bootstrap'
 
 const isActive = (routerPath, href) => {
   if(routerPath === href) {
@@ -36,34 +38,32 @@ const Menu = () => {
   }
 
   return (
-    <div>
-      <ul className="nav nav-tabs bg-primary">
-        <li className="nav-item">
-          <Link href="/">
-            <a
-              className="nav-link"
-              style={isActive(router.asPath, '/')}>
-                Home
-            </a>
-          </Link>
-        </li>
-
-        {isAuthenticated() && getUserRole() === 'user' && (
-          <li className="nav-item">
+    <Navbar bg="primary" collapseOnSelect expand="lg" variant="dark">
+      <Navbar.Brand>
+        <Link href="/">
+          <a
+            className="nav-link"
+            style={isActive(router.asPath, '/')}>
+              Honya
+          </a>
+        </Link>
+      </Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav justify sticky="top" className="me-auto">
+          {isAuthenticated() && getUserRole() === 'user' && (
             <Link href="/user/dashboard">
-              <a
+             <a
                 className="nav-link"
                 style={isActive(router.asPath, '/user/dashboard')}
               >
                 Dashboard
               </a>
             </Link>
-          </li>
-        )}
+          )}
 
-        {isAuthenticated() && getUserRole() === 'admin' && (
-          <li className="nav-item">
-            <Link href="/admin/dashboard">
+          {isAuthenticated() && getUserRole() === 'admin' && (
+            <Link href="/admin/dashboard" passHref>
               <a
                 className="nav-link"
                 style={isActive(router.asPath, '/admin/dashboard')}
@@ -71,11 +71,9 @@ const Menu = () => {
                 Dashboard
               </a>
             </Link>
-          </li>
-        )}
+          )}
 
-        <li className="nav-item">
-          <Link href="/signup">
+          <Link href="/signup" passHref>
             <a
               className="nav-link"
               style={isActive(router.asPath, '/signup')}
@@ -83,12 +81,10 @@ const Menu = () => {
               Sign Up
             </a>
           </Link>
-        </li>
-        
-        {
-          !isAuthenticated() && (
-            <li className="nav-item">
-              <Link href="/signin">
+
+          {
+            !isAuthenticated() && (
+              <Link href="/signin" passHref>
                 <a
                   className="nav-link"
                   style={isActive(router.asPath, '/signin')}
@@ -96,24 +92,23 @@ const Menu = () => {
                   Sign In
                 </a>
               </Link>
-            </li>
-          )
-        }
+            )
+          }
 
-        {
-          isAuthenticated() && (
-            <li className="nav-item">
-              <button
-                className="{styles.signoutBtn} nav-link"
+          {
+            isAuthenticated() && (
+              <Button
+                className={styles.signoutBtn}
+                variant="outline-primary"
                 onClick={signoutHandler}
               >
                 Sign Out
-              </button>
-            </li>
-          )
-        }
-      </ul>
-    </div>
+              </Button>
+            )
+          }
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   )
 }
 
