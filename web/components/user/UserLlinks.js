@@ -1,22 +1,25 @@
 import Link from 'next/link'
+import Card from 'react-bootstrap/Card'
+import ListGroup from 'react-bootstrap/ListGroup'
+import Nav from 'react-bootstrap/Nav'
 
 const UserLinks = () => {
   return (
-    <div className="card">
-      <h4 className="card-header">User Links</h4>
-      <ul className="list-group">
-        <li className="list-group-item">
-          <Link href="/cart">
-            <a className="nav-link">My Cart</a>
+    <Card>
+      <Card.Header>User Links</Card.Header>
+      <ListGroup>
+        <ListGroup.Item>
+          <Link href="/cart" passHref>
+            <Nav.Link>My Cart</Nav.Link>
           </Link>
-        </li>
-        <li className="list-group-item">
-          <Link href="/profile/update">
-            <a className="nav-link">Update Profile</a>
+        </ListGroup.Item>
+        <ListGroup.Item>
+          <Link href="/profile/update" passHref>
+            <Nav.Link>Update Profile</Nav.Link>
           </Link>
-        </li>
-      </ul>
-    </div>
+        </ListGroup.Item>
+      </ListGroup>
+    </Card>
   )
 }
 

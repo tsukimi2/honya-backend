@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from "react"
 import { useRouter } from 'next/router'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from "./UserInfo"
@@ -38,12 +41,12 @@ const AdminDashboard = () => {
   }, [user, router])
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-3"><AdminLinks /></div>
-        <div className="col-9"><UserInfo username={username} email={email} role={role} /></div>
-      </div>
-    </div>
+    <Container md={{ span: 8, offset: 2 }}>
+      <Row>
+        <Col md={3}><AdminLinks /></Col>
+        <Col md={9}><UserInfo username={username} email={email} role={role} /></Col>
+      </Row>
+    </Container>
   )
 }
 

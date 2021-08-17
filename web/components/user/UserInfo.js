@@ -1,15 +1,16 @@
+import Card from 'react-bootstrap/Card'
+import ListGroup from 'react-bootstrap/ListGroup'
+
 const UserInfo = ({ username, email, role }) => {
-
-
   return (
-    <div className="card mb-5">
-      <h3 className="card-header">User Information</h3>
-      <ul className="list-group">
-          <li className="list-group-item">{ username }</li>
-          <li className="list-group-item">{ email }</li>
-          <li className="list-group-item">{ role === 'admin' ? 'Admin' : 'Registered User' }</li>
-      </ul>
-    </div>
+    <Card className="mb-5">
+      <Card.Header>User Information</Card.Header>
+      <ListGroup>
+        <ListGroup.Item>{ username }</ListGroup.Item>
+        <ListGroup.Item>{ email }</ListGroup.Item>
+        <ListGroup.Item>{ role === 'admin' ? 'Admin' : 'Registered User' }</ListGroup.Item>
+      </ListGroup>
+    </Card>
   )
 }
 
