@@ -9,7 +9,8 @@ import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from './UserInfo'
 import PurchaseHistory from './PurchaseHistory'
 import UserLinks from "./UserLlinks"
-import { isAuthenticated } from '../../libs/utils/auth-utils'
+// import { isAuthenticated } from '../../libs/utils/auth-utils'
+import cookie from 'cookie-cutter'
 
 const UserDashboard = () => {
   let [username, setUsername] = useState('')
@@ -23,7 +24,8 @@ const UserDashboard = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if(!isAuthenticated()) {
+    const loginHash = cookie.get('loginHash')
+    if(!loginHash) {
       router.replace('/signin')
     }
 

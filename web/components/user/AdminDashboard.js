@@ -8,12 +8,14 @@ import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from "./UserInfo"
 import AdminLinks from "./AdminLinks"
-import { isAuthenticated } from '../../libs/utils/auth-utils'
+// import { isAuthenticated } from '../../libs/utils/auth-utils'
+import cookie from 'cookie-cutter'
 
 const AdminDashboard = () => {
   let [username, setUsername] = useState('')
   let [email, setEmail] = useState('')
   let [role, setRole] = useState('')
+  let [isAuthenticated, setIsAuthenticated] = useState(false)
 
   //let { user } = useContext(AuthContext)
   const { userInAuthContext } = useContext(AuthContext)
@@ -22,7 +24,14 @@ const AdminDashboard = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if(!isAuthenticated()) {
+    const loginHash = cookie.get('loginHash')
+    if(loginHash) {  
+      setIsAuthenticated(true)        
+    } else {
+      setIsAuthenticated(false)
+    }
+
+    if(!loginHash) {
       router.replace('/signin')
     }
 
@@ -42,7 +51,7 @@ const AdminDashboard = () => {
       setEmail(storedUser.email)
       setRole(storedUser.role)
     }
-  }, [userInAuthContext, router])
+  }, [isAuthenticated, userInAuthContext, router])
 
   return (
     <Container md={{ span: 8, offset: 2 }}>
