@@ -174,7 +174,7 @@ const SigninForm = () => {
               .required('Required')
               .min(3, 'Must be between 3 and 20 characters')
               .max(20, 'Must be between 3 and 20 characters')
-              .matches(/^[a-zA-Z0-9_\-]+$/, { 
+              .matches(/^[a-zA-Z0-9_-]+$/, { 
                 excludeEmptyString: true,
                 message: 'Only alphanumeric characters and - and _'
               }),
@@ -182,7 +182,7 @@ const SigninForm = () => {
               .required('Required')
               .min(8, 'Must be between 8 and 20 characters')
               .max(20, 'Must be between 8 and 20 characters')
-              .matches(/^[a-zA-Z0-9_\-]+$/, { 
+              .matches(/^[a-zA-Z0-9_-]+$/, { 
                 excludeEmptyString: true,
                 message: 'Only alphanumeric characters and - and _'
               })

@@ -1,9 +1,10 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
+import _ from 'lodash-core'
 import { ToastContainer, toast } from 'react-toastify'
 import ShowAlert from '../ui/ShowAlert'
 import { signup } from '../../libs/apiUtils/auth-api-utils'
@@ -113,7 +114,7 @@ const SignupForm = () => {
               .required('Required')
               .min(3, 'Must be between 3 and 20 characters')
               .max(20, 'Must be between 3 and 20 characters')
-              .matches(/^[a-zA-Z0-9_\-]+$/, { 
+              .matches(/^[a-zA-Z0-9_-]+$/, { 
                 excludeEmptyString: true,
                 message: 'Only alphanumeric characters and - and _'
               }),
@@ -121,7 +122,7 @@ const SignupForm = () => {
               .required('Required')
               .min(8, 'Must be between 8 and 20 characters')
               .max(20, 'Must be between 8 and 20 characters')
-              .matches(/^[a-zA-Z0-9_\-]+$/, { 
+              .matches(/^[a-zA-Z0-9_-]+$/, { 
                 excludeEmptyString: true,
                 message: 'Only alphanumeric characters and - and _'
               }),
@@ -155,7 +156,7 @@ const SignupForm = () => {
                 className="mb-4"
               />
     
-              <Button type="submit" variant="primary">
+              <Button type="submit" variant="primary" disabled={isSubmitting || !(_.isEmpty(errors))}>
                 Submit
               </Button>
             </Form>
