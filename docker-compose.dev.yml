@@ -8,6 +8,8 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
+    image: osiris65/honya-nginx-0-1-0
+    container_name: honya-nginx
     restart: always
     ports:
       - '80:80'
@@ -17,6 +19,8 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile.dev
+    image: osiris65/honya-web-0-1-0
+    container_name: honya-web
     volumes:
       - /app/node_modules
       - ./web:/app      
@@ -24,6 +28,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
+    image: osiris65/honya-server-0-1-0
+    container_name: honya-server
     volumes:
       - /app/node_modules
       - ./server:/app
@@ -40,7 +46,8 @@ services:
       - ACCESS_TOKEN_EXPIRES_IN_SEC=86400
       - REFRESH_TOKEN_EXPIRES_IN=60d
       - REFRESH_TOKEN_EXPIRES_IN_SEC=5184000
-      - SALTROUNDS=10      
+      - SALTROUNDS=10
+      - NEXT_PUBLIC_API_PREFIX=/api/v1
     depends_on:
       - redis
       - mongo
