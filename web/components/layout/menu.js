@@ -1,10 +1,11 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import cookie from 'cookie-cutter'
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { signout } from '../../libs/apiUtils/auth-api-utils'
-import { isAuthenticated } from '../../libs/utils/auth-utils'
+// import { isAuthenticated } from '../../libs/utils/auth-utils'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import styles from './menu.module.css'
 // import { useAuthContext } from '../../contexts/AuthContext'
@@ -25,6 +26,16 @@ const Menu = () => {
   const { userInAuthContext, updateUserInAuthContext } = useContext(AuthContext)
   // const [userInAuthContext, updateUserInAuthContext] = useAuthContext()
   // const { userInAuthContext, updateUserInAuthContext } = useAuthContext()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    const loginHash = cookie.get('loginHash')
+    if(loginHash) {
+      setIsAuthenticated(true)
+    } else {
+      setIsAuthenticated(false)
+    }
+  })
 
   const signoutHandler = () => {  
     signout()
@@ -53,15 +64,16 @@ const Menu = () => {
         <Link href="/">
           <a
             className="nav-link"
-            style={isActive(router.asPath, '/')}>
-              Honya
+            style={isActive(router.asPath, '/')}
+          >
+            Honya
           </a>
         </Link>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav sticky="top" className="me-auto">
-          {isAuthenticated() && getUserRole() === 'user' && (
+          {isAuthenticated && getUserRole() === 'user' && (
             <Link href="/user/dashboard">
              <a
                 className="nav-link"
@@ -72,7 +84,7 @@ const Menu = () => {
             </Link>
           )}
 
-          {isAuthenticated() && getUserRole() === 'admin' && (
+          {isAuthenticated && getUserRole() === 'admin' && (
             <Link href="/admin/dashboard" passHref>
               <a
                 className="nav-link"
@@ -93,7 +105,7 @@ const Menu = () => {
           </Link>
 
           {
-            !isAuthenticated() && (
+            !isAuthenticated && (
               <Link href="/signin" passHref>
                 <a
                   className="nav-link"
@@ -106,7 +118,7 @@ const Menu = () => {
           }
 
           {
-            isAuthenticated() && (
+            isAuthenticated && (
               <Button
                 className={styles.signoutBtn}
                 variant="outline-light"

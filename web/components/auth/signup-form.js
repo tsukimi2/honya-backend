@@ -6,6 +6,7 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import _ from 'lodash-core'
 import { ToastContainer, toast } from 'react-toastify'
+import Skeleton from 'react-loading-skeleton'
 import ShowAlert from '../ui/ShowAlert'
 import { signup } from '../../libs/apiUtils/auth-api-utils'
 import FormikInput from '../ui/FormikInput'
@@ -77,6 +78,7 @@ const SignupForm = () => {
 
   const submitHandler = async (values) => {
     const { username, password, email } = values
+    let submitSuccess = false
 
     try {
       await signup(username, password, email)
@@ -85,6 +87,7 @@ const SignupForm = () => {
       toast.success('User registration successful', {
         toastId: 'userRegSucessToastId',
       })
+      submitSuccess = true
     } catch(err) {
       if(err.message === 'duplicate key') {    
         setError('Username or email already registered')
@@ -92,6 +95,8 @@ const SignupForm = () => {
         setError(err.message)
       }
     }
+
+    return submitSuccess
   }
 
   return (
@@ -130,8 +135,11 @@ const SignupForm = () => {
               .required('Required')
           })
         }
-        onSubmit={async (values) => {
-          await submitHandler(values)
+        onSubmit={async (values, {resetForm}) => {
+          const isSubmitSuccess = await submitHandler(values)
+          if(isSubmitSuccess) {         
+            resetForm()
+          }
         }}
       >
         {
@@ -159,13 +167,13 @@ const SignupForm = () => {
               <Button type="submit" variant="primary" disabled={isSubmitting || !(_.isEmpty(errors))}>
                 Submit
               </Button>
-            </Form>
+            </Form> || <Skeleton count={10} />
           )
         }
       </Formik>
       <ToastContainer
         position="bottom-center"
-        autoClose={false}
+        autoClose={6000}
         limit={1}
         hideProgressBar
         draggable={false}
