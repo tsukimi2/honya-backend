@@ -1,9 +1,10 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { useRouter } from 'next/router'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
+// import { useAuthContext } from "../../contexts/AuthContext"
 import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from "./UserInfo"
 import AdminLinks from "./AdminLinks"
@@ -14,7 +15,10 @@ const AdminDashboard = () => {
   let [email, setEmail] = useState('')
   let [role, setRole] = useState('')
 
-  let { user } = useContext(AuthContext)
+  //let { user } = useContext(AuthContext)
+  const { userInAuthContext } = useContext(AuthContext)
+  // const [userInAuthContext, updateUserInAuthContext] = useAuthContext()
+  // const { userInAuthContext }= useAuthContext()
   const router = useRouter()
 
   useEffect(() => {
@@ -23,10 +27,10 @@ const AdminDashboard = () => {
     }
 
     let storedUser = null
-    if(!user) {
+    if(!userInAuthContext) {
       storedUser = localStorage_get('user')
     } else {
-      storedUser = { ...user }
+      storedUser = { ...userInAuthContext }
     }
 
     if(storedUser) {
@@ -38,7 +42,7 @@ const AdminDashboard = () => {
       setEmail(storedUser.email)
       setRole(storedUser.role)
     }
-  }, [user, router])
+  }, [userInAuthContext, router])
 
   return (
     <Container md={{ span: 8, offset: 2 }}>

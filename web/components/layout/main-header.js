@@ -1,26 +1,30 @@
-import { useContext, useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useRouter } from "next/router"
 import styles from './main-header.module.css'
+// import { useAuthContext } from "../../contexts/AuthContext"
 import { AuthContext } from "../../contexts/AuthContext"
 import { localStorage_get } from "../../libs/utils/localStorage-utils"
 
 const MainHeader = () => {
   const router = useRouter()
-  const { user } = useContext(AuthContext)
+  // const { user } = useContext(AuthContext)
+  const { userInAuthContext } = useContext(AuthContext)
+  // const [ userInAuthContext, updateUserInAuthContext ]= useAuthContext()
+  // const { userInAuthContext } = useAuthContext()
   let [username, setUsername] = useState('')
 
   useEffect(() => {
     let storedUser = null
-    if(!user) {
+    if(!userInAuthContext) {
       storedUser = localStorage_get('user')
     } else {
-      storedUser = { ...user }
+      storedUser = { ...userInAuthContext }
     }
 
     if(storedUser) {
       setUsername(storedUser.username)
     }
-  }, [user])
+  }, [userInAuthContext])
 
   const pageToTitleDescriptionMapping = {
     '/': {

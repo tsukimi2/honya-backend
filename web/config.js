@@ -1,1 +1,1 @@
-export const API = process.env.NEXT_PUBLIC_API
+export const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1'
