@@ -8,10 +8,11 @@ import { generateUserParams } from '../../../factories/userFactory.js'
 const API_PREFIX = config.get('app:api_prefix')
 
 describe(API_PREFIX + '/login', () => {
-  let user = generateUserParams({ userProfile: 'validUser1' })
+  let user = null
 
   before(async () => {
     try {
+      user = await generateUserParams({ userProfile: 'validUser1' })
       await User.deleteMany({ "username": /^user*/ })
 
       request(app)
@@ -28,8 +29,8 @@ describe(API_PREFIX + '/login', () => {
     }
   })
 
-  beforeEach(() => {
-    user = generateUserParams({ userProfile: 'validUser1' })
+  beforeEach(async () => {
+    user = await generateUserParams({ userProfile: 'validUser1' })
   })
 
   it('should login successfully with valid username and password', async () => {

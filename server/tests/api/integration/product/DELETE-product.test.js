@@ -11,13 +11,14 @@ const API_PREFIX = config.get('app:api_prefix')
 
 describe(`DELETE $(API_PREFIX}/product/:productId`, () => {
   context('Admin logged in', () => {
-    const admin = generateUserParams({ userProfile: 'validAdmin1' })
+    let admin = null
     let accessToken = ''
     let refreshToken = ''
     const loginHash = 'admindummyhash'
 
     before(async () => {
       try {
+        admin = await generateUserParams({ userProfile: 'validAdmin1' })
         await User.deleteMany({ "username": /^admin*/ })
   
         // register a test admin
@@ -83,13 +84,14 @@ describe(`DELETE $(API_PREFIX}/product/:productId`, () => {
   })
 
   context('User logged in', () => {
-    const user = generateUserParams({ userProfile: 'validUser1' })
+    let user = null
     let accessToken = ''
     let refreshToken = ''
     const loginHash = 'userdummyhash'
 
     before(async () => {
       try {
+        user = await generateUserParams({ userProfile: 'validUser1' })
         await User.deleteMany({ "username": /^user*/ })
         await Product.deleteMany({ "name": /^product*/  })
   

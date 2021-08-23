@@ -1,7 +1,9 @@
+import bcrypt from 'bcrypt'
 import User from '../../src/user/user.model.js'
 import { ROLE } from '../../src/user/user.constants.js'
+import config from '../../src/libs/config/index.js'
 
-export const generateUserParams = ({ userProfile='validUser1', hasHashedPassword=false, optParams={}}) => {
+export const generateUserParams = async ({ userProfile='validUser1', hasHashedPassword=false, optParams={}}) => {
   let username = 'user'
   let initUserParams = {}
   const password = 'testing1'
@@ -16,10 +18,11 @@ export const generateUserParams = ({ userProfile='validUser1', hasHashedPassword
     initUserParams['email'] = `${username}@gmail.com`
 
     if(hasHashedPassword) {
-      initUserParams['hashedPassword'] = password
-    } else {
-      initUserParams['password'] = password
+      initUserParams['hashedPassword'] = await bcrypt.hash(password, config.get('security:password:saltrounds'))
+    } else {      
+      // initUserParams['password'] = password
     }
+    initUserParams['password'] = password
   }
 
   if(optParams && optParams.username) {
@@ -30,6 +33,6 @@ export const generateUserParams = ({ userProfile='validUser1', hasHashedPassword
 }
 
 export const generateUser = async ({ userProfile, optParams={}, providedUserParams=null}) => {
-  const userParams = providedUserParams ? providedUserParams : generateUserParams({ userProfile, optParams })
+  const userParams = providedUserParams ? providedUserParams : await generateUserParams({ userProfile, optParams })
   return new User(userParams).save()
 }
