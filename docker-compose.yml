@@ -1,11 +1,17 @@
 version: '3.9'
 services:
+  redis:
+    image: 'redis'
+    networks:
+      - honya
   mongo:
     image: 'mongo:4.4.7'
     restart: always
     mem_limit: 128m
     volumes:
       - db-data:/data/db
+    networks:
+      - honya
   nginx:
     image: 'osiris65/honya-nginx-0-1-0'
     restart: always
@@ -16,9 +22,15 @@ services:
       - api
     depends_on:
       - api
+    networks:
+      honya:
+        aliases:
+          - honya.co.jp
   web:
     image: 'osiris65/honya-web-0-1-0'
     mem_limit: 128m
+    networks:
+      - honya
   api:
     image: 'osiris65/honya-server-0-1-0'
     mem_limit: 128m
@@ -35,6 +47,11 @@ services:
       - SALTROUNDS=10
     depends_on:
       - mongo
+    networks:
+      - honya
 
 volumes:
   db-data:
+networks:
+  honya:
+    driver: bridge
