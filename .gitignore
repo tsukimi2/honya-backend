@@ -67,3 +67,7 @@ typings/
 
 # next.js build output
 .next
+
+# snapshots
+server/tests/snapshots/__tests__/auth/__image_snapshots__
+server/tests/snapshots/__tests__/auth/__image_snapshots__/*.png
