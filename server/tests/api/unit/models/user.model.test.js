@@ -16,8 +16,8 @@ describe('User model', () => {
   context('Testing model validations', async () => {
     let userParams = null
 
-    beforeEach(() => {
-      userParams = generateUserParams({ userProfile: 'validUser1' })
+    beforeEach(async () => {
+      userParams = await generateUserParams({ userProfile: 'validUser1' })
     })
 
     it('should be valid with valid username, password, and email', (done) => {
@@ -150,7 +150,7 @@ describe('User model', () => {
       })
 
       it('should call findOneAndUpdate() once with valid filterParams and updateParams', async () => {
-        const userParams = generateUserParams({ userProfile: 'validUser1' })
+        const userParams = await generateUserParams({ userProfile: 'validUser1' })
         const filterParams = {
           _id: mongoose.Types.ObjectId('60ebfd75f5bd8614a45162b9'),
           username: userParams.username
@@ -182,7 +182,7 @@ describe('User model', () => {
       })
 
       it('should call findOneAndUpdate() once with empty filterParams', async () => {
-        const userParams = generateUserParams({ userProfile: 'validUser1' })
+        const userParams = await generateUserParams({ userProfile: 'validUser1' })
         const filterParams = {}
         const updateParams = {
           loginHash: 'dummyHash',
@@ -211,5 +211,3 @@ describe('User model', () => {
     
   })
 })
-
-

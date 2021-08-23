@@ -173,7 +173,7 @@ const SignupForm = () => {
       </Formik>
       <ToastContainer
         position="bottom-center"
-        autoClose={6000}
+        autoClose={false}
         limit={1}
         hideProgressBar
         draggable={false}

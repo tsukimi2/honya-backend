@@ -2,8 +2,12 @@ version: '3.9'
 services:
   redis:
     image: 'redis'
+    networks:
+      - honya
   mongo:
     image: 'mongo:4.4.7'
+    networks:
+      - honya
   nginx:
     build:
       context: ./nginx
@@ -15,6 +19,10 @@ services:
       - '80:80'
     depends_on:
       - api
+    networks:
+      honya:
+        aliases:
+          - honya.co.jp
   web:
     build:
       context: ./web
@@ -23,7 +31,9 @@ services:
     container_name: honya-web
     volumes:
       - /app/node_modules
-      - ./web:/app      
+      - ./web:/app
+    networks:
+      - honya
   api:
     build:
       context: ./server
@@ -51,3 +61,8 @@ services:
     depends_on:
       - redis
       - mongo
+    networks:
+      - honya
+networks:
+  honya:
+    driver: bridge      

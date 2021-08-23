@@ -17,10 +17,11 @@ describe(API_PREFIX + '/logout', () => {
   }
   */
 
-  const user = generateUserParams({ userProfile: 'validUser1' })
+  let user = null
 
   before(async () => {
     try {
+      user = await generateUserParams({ userProfile: 'validUser1' })
       await User.deleteMany({ "username": /^user*/ })
     } catch(err) {
       console.log(err)

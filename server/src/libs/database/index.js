@@ -48,7 +48,7 @@ const database = ({ mongoose, logger }) => {
 
   let connections = {}
 
-  const connect = dburi => {
+  const connect = (dburi) => {
     // connections[dburi] = mongoose.createConnection(dburi, clientOptions)
     connections[dburi] = mongoose.connect(dburi, clientOptions)
     

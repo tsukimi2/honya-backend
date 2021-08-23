@@ -18,8 +18,8 @@ describe(API_PREFIX + '/users/:uid', () => {
     res = null
 
     try {
-      userParams = generateUserParams({})
-      user2Params = generateUserParams({ optParams: {
+      userParams = await generateUserParams({})
+      user2Params = await generateUserParams({ optParams: {
         username: 'user2'
       }})
       await User.deleteMany({ "username": /^user*/ })

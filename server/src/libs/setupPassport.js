@@ -5,6 +5,7 @@ import DatabaseError from '../errors/DatabaseError.js'
 import UnauthorizedError from '../errors/UnauthorizedError.js'
 import config from '../libs/config/index.js'
 import { userService } from '../di-container.js'
+import User from '../user/user.model.js'
 
 /*
 passport.serializeUser(function(user, next) {
@@ -35,8 +36,9 @@ passport.use(
       passwordField: 'password',
       passReqToCallback: true
     },
-    async (req, username, password, next) => {
+    async (req, username, password, next) => {   
       const email = req.body.email
+
       let userParams = {
         username,
         password,
@@ -46,9 +48,8 @@ passport.use(
         userParams['role'] = req.body.role
       }
 
-      try {
+      try { 
         const user = await userService.createUser(userParams)
-
         return next(null, user)
       } catch(err) {
         next(new DatabaseError('Failed to create user', {
@@ -66,7 +67,7 @@ passport.use(
       usernameField: 'username',
       passwordField: 'password',
     },
-    async (username, password, next) => {     
+    async (username, password, next) => {  
       try {
         // find user
         const user = await userService.getUser({ username })
@@ -82,6 +83,8 @@ passport.use(
 
         return next(null, user)
       } catch(err) {
+console.log('err')
+console.log(err)
         return next(new DatabaseError('Log in error', {
           err
         }))

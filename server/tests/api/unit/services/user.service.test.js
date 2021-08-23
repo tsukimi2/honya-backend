@@ -14,13 +14,17 @@ const sandbox = sinon.createSandbox()
 describe('User service', () => {
   let err = null
   const dummyid = 'dummy1'
-  const generatedUser = generateUserParams({
-    userProfile: 'validUser1',
-    hasHashedPassword: true,
-    optParams: { _id: dummyid }
-  })
+  let generatedUser = null
   let actualUser = null
   let userRepos = null
+
+  before(async () => {
+    generatedUser = await generateUserParams({
+      userProfile: 'validUser1',
+      hasHashedPassword: true,
+      optParams: { _id: dummyid }
+    })
+  })
 
   beforeEach(() => {
     actualUser = null

@@ -8,11 +8,11 @@ import { generateTokenCookieOptions } from '../libs/cookies.js'
 
 const authController = ({ config, logger, userService }) => {
   const register = (req, res) => {
-    if(!req || (req && !req.user)) {
+    if(!req || (req && !req.user)) {    
       logger.warn('Missing user profile in request')
       throw new UnauthorizedError('User registration failed')
     }
-  
+
     const { username, email, role } = req.user
   
     res.status(201).json({

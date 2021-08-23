@@ -1,9 +1,12 @@
 {
   "db": {
     "mongo": {
-      "host": "localhost",
+      "host": "mongo",
       "port": 27017,
       "schema": "honya-test"
     }
+  },
+  "uri": {
+    "test_base_href": "http://honya.co.jp"
   }
 }

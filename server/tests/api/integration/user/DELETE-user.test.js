@@ -20,8 +20,8 @@ describe('Delete user', () => {
   
       try {
         await User.deleteMany({ "username": /^user*/ })
-        userParams = generateUserParams({})
-        user2Params = generateUserParams({ optParams: {
+        userParams = await generateUserParams({})
+        user2Params = await generateUserParams({ optParams: {
           username: 'user2'
         }})
         user = await generateUser({ providedUserParams: userParams })

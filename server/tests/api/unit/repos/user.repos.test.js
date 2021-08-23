@@ -56,7 +56,7 @@ describe('User repository', () => {
 
       it('should get user with valid user id', async () => {
         const dummyid = 'dummy1'
-        const expectedUser = generateUserParams({
+        const expectedUser = await generateUserParams({
           userProfile: 'validUser1',
           hasHashedPassword: true,
           optParams: { _id: dummyid }
@@ -85,7 +85,7 @@ describe('User repository', () => {
 
       it('should throw ApplicationError with empty user id', async () => {
         const dummyid = ''
-        const expectedUser = generateUserParams({
+        const expectedUser = await generateUserParams({
           userProfile: 'validUser1',
           hasHashedPassword: true,
           optParams: { _id: dummyid }
@@ -113,7 +113,7 @@ describe('User repository', () => {
 
       it('should throw ApplicationError with null user id', async () => {
         const dummyid = null
-        const expectedUser = generateUserParams({
+        const expectedUser = await generateUserParams({
           userProfile: 'validUser1',
           hasHashedPassword: true,
           optParams: { _id: dummyid }
@@ -164,8 +164,8 @@ describe('User repository', () => {
       const dummyid = 'dummyid'
       let expectedUser = null
 
-      beforeEach(() => {
-        expectedUser = generateUserParams({
+      beforeEach(async () => {
+        expectedUser = await generateUserParams({
           userProfile: 'validUser1',
           hasHashedPassword: true,
           optParams: { _id: dummyid }
@@ -258,7 +258,7 @@ describe('User repository', () => {
     })
 
     it('should create user successfully with valid params', async () => {
-      const docParams = generateUserParams({
+      const docParams = await generateUserParams({
         userProfile: 'validUser1',
         hasHashedPassword: true,
       })
@@ -306,7 +306,7 @@ describe('User repository', () => {
     })
 
     it('should throw DatabaseError when user save to db unsuccessful', async () => {
-      const docParams = generateUserParams({
+      const docParams = await generateUserParams({
         userProfile: 'validUser1',
         hasHashedPassword: true,
       })
