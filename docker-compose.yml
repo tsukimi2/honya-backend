@@ -43,8 +43,6 @@ services:
       - REFRESH_TOKEN_EXPIRES_IN=60d
       - REFRESH_TOKEN_EXPIRES_IN_SEC=5184000
       - SALTROUNDS=10
-      - NEXT_PUBLIC_API_PREFIX=/api/v1
-      - NEXT_PUBLIC_API_HOST=localhost
     depends_on:
       - mongo
     networks:

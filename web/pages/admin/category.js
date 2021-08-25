@@ -11,14 +11,23 @@ const CategoryPage = ({ initCategories }) => {
 }
 
 export async function getStaticProps() {
-  const res = await fetch(`http://${API_HOST}${API_PREFIX}/categories`) // eslint-disable-line no-undef
-  const data = await res.json()
-  const initCategories = data && data.data && data.data.categories ? data.data.categories : []
+  let initCategories = []
+  try {
+    const res = await fetch(`http://${API_HOST}${API_PREFIX}/categories`) // eslint-disable-line no-undef  
+    const data = await res.json()
+    initCategories = data && data.data && data.data.categories ? data.data.categories : []  
+  } catch(err) {
+    /* eslint-disable */
+    console.log('err')
+    console.log(err)
+    /* eslint-enable */
+  }
 
   return {
     props: {
       initCategories
-    }
+    },
+    revalidate: 86400
   }
 }
 
