@@ -1,0 +1,23 @@
+.floatEnd {
+  float: right !important;
+}
+
+.listItem {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.listItemTxt {
+  flex-grow: 10;
+  width: 70% !important;
+}
+.btnGroup {
+  flex-grow: 2;
+}
+.btn {
+  /* margin: 0.1rem 0.5rem 0.1rem 0.5rem;
+  line-height: 1.5;
+  border-radius: 3px;
+  */
+  font-weight: bold;
+}

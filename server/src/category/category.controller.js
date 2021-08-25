@@ -31,7 +31,7 @@ const categoryController = ({ categoryService }) => {
     let categories = null
 
     try {
-      categories = await categoryService.getCategories({}, { lean: true })
+      categories = await categoryService.getCategories({}, { lean: true, sortBy: 'name' })
     } catch(err) {
       return next(new NotFoundError('categories not found', { err }))
     }
