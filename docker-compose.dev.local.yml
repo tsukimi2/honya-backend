@@ -36,6 +36,8 @@ services:
     volumes:
       - /app/node_modules
       - ./web:/app
+    depends_on:
+      - api
     networks:
       - honya
   api:

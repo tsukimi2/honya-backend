@@ -27,6 +27,8 @@ services:
   web:
     image: 'osiris65/honya-web-0-1-0'
     mem_limit: 128m
+    depends_on:
+      - api
     networks:
       - honya
   api:
