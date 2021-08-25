@@ -81,6 +81,7 @@ const authController = ({ config, logger, userService }) => {
         token_type: 'bearer',
         expires_in: config.get('security:jwt:access_token_expires_in_sec'),
         user: {
+          _id: uid,
           username,
           email,
           role,

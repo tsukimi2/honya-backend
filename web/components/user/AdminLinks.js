@@ -4,7 +4,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Nav from 'react-bootstrap/Nav'
 
 const arrAdminLinks = [
-  { link: '/create/category', text: 'Create Category' },
+  { link: '/admin/category', text: 'Create Category' },
   { link: '/create/product', text: 'Create Product' },
   { link: '/admin/orders', text: 'View Orders' },
   { link: '/admin/products', text: 'Manage Products' }

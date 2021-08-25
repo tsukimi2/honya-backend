@@ -9,120 +9,8 @@ import * as Yup from 'yup'
 import _ from 'lodash-core'
 import { signin } from '../../libs/apiUtils/auth-api-utils'
 import { localStorage_set } from '../../libs/utils/localStorage-utils'
-// import { useAuthContext } from '../../contexts/AuthContext'
 import { AuthContext } from '../../contexts/AuthContext'
 import FormikInput from '../ui/FormikInput'
-
-/*
-const SigninForm = () => {
-  const usernameRef = useRef()
-  const passwordRef = useRef()
-  //const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const router = useRouter()
-
-  const { setUserInAuthContext } = useContext(AuthContext)
-
-  const submitHandler = async (event) => {
-    event.preventDefault()
-
-    const username = usernameRef.current.value
-    const password = passwordRef.current.value
-    setError(null)
-    //setLoading(true)
-
-    // ToDo: validation
-
-    try {
-      const result = await signin({username, password})
-
-      if(result.user) {
-        setUserInAuthContext(result.user)     
-        localStorage_set('user', result.user)
-      }
-
-      if(result.user.role === 'admin') {
-        router.replace('/admin/dashboard')
-      } else {
-        router.replace('/user/dashboard')
-      }
-    } catch(err) {
-      setError(err.message)
-      //setLoading(false)
-    }
-  }
-  
-  ==========================================
-
-  const usernameRef = useRef()
-  const passwordRef = useRef()
-  //const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  //const [signedInUser, setSignedInUser] = useState(null)
-  const router = useRouter()
-
-  // const { setUserInAuthContext } = useContext(AuthContext)
-  const { updateUserInAuthContext } = useContext(AuthContext)
-  // const [ userInAuthContext, updateUserInAuthContext ]= useAuthContext()
-  // const{ updateUserInAuthContext } = useAuthContext()
-
-  
-  const submitHandler = async (event) => { 
-    event.preventDefault()
-
-    const username = usernameRef.current.value
-    const password = passwordRef.current.value
-    
-    setError(null)
-    //setLoading(true)
-
-    // ToDo: validation
-
-    try {      
-      const result = await signin({username, password})
-      if(result.user) {
-        updateUserInAuthContext(result.user, mounted)
-        localStorage_set('user', result.user)
-      }
-
-      if(result.user.role === 'admin') {      
-        router.replace('/admin/dashboard')
-      } else {     
-        router.replace('/user/dashboard')
-      }     
-    } catch(err) {
-      setError(err.message)
-      //setLoading(false)
-    }
-  }
-
-  return (
-    <Container md={{ span: 8, offset: 2 }}>
-      {
-        error && (
-          <ShowAlert alertLevel="danger">{error}</ShowAlert>
-        )
-      }
-
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="username">
-          <Form.Label>Username</Form.Label>
-          <Form.Control type="text" name="username" required ref={usernameRef} />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" name="password" required ref={passwordRef} />
-        </Form.Group>
-
-        <Button type="submit" variant="primary">
-          Submit
-        </Button>
-      </Form>
-    </Container>
-  )
-}
-*/
 
 
 const SigninForm = () => {
@@ -219,5 +107,22 @@ const SigninForm = () => {
     </Container>
   )
 }
+
+/*
+        <form onSubmit={clickSubmit}>
+            <div className="form-group">
+                <label className="text-muted">Name</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    onChange={handleChange}
+                    value={name}
+                    autoFocus
+                    required
+                />
+            </div>
+            <button className="btn btn-outline-primary">Create Category</button>
+        </form>
+        */
 
 export default SigninForm

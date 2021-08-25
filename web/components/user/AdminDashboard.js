@@ -4,11 +4,9 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
-// import { useAuthContext } from "../../contexts/AuthContext"
 import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from "./UserInfo"
 import AdminLinks from "./AdminLinks"
-// import { isAuthenticated } from '../../libs/utils/auth-utils'
 import cookie from 'cookie-cutter'
 
 const AdminDashboard = () => {
@@ -17,10 +15,7 @@ const AdminDashboard = () => {
   let [role, setRole] = useState('')
   let [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  //let { user } = useContext(AuthContext)
   const { userInAuthContext } = useContext(AuthContext)
-  // const [userInAuthContext, updateUserInAuthContext] = useAuthContext()
-  // const { userInAuthContext }= useAuthContext()
   const router = useRouter()
 
   useEffect(() => {

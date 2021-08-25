@@ -5,10 +5,8 @@ import Button from 'react-bootstrap/Button'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { signout } from '../../libs/apiUtils/auth-api-utils'
-// import { isAuthenticated } from '../../libs/utils/auth-utils'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import styles from './menu.module.css'
-// import { useAuthContext } from '../../contexts/AuthContext'
 import { AuthContext } from '../../contexts/AuthContext'
 import { Nav } from 'react-bootstrap'
 
@@ -22,24 +20,21 @@ const isActive = (routerPath, href) => {
 
 const Menu = () => {
   const router = useRouter()
-  // const { clearAuthContext } = useContext(AuthContext)
   const { userInAuthContext, updateUserInAuthContext } = useContext(AuthContext)
-  // const [userInAuthContext, updateUserInAuthContext] = useAuthContext()
-  // const { userInAuthContext, updateUserInAuthContext } = useAuthContext()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    const loginHash = cookie.get('loginHash')
-    if(loginHash) {
-      setIsAuthenticated(true)
-    } else {
-      setIsAuthenticated(false)
-    }
-  })
+    const hasLoginHash = cookie.get('loginHash') ? true : false
+    setIsAuthenticated(hasLoginHash)
+  }) 
+  /* eslint-enable react-hooks/exhaustive-deps */
+
 
   const signoutHandler = () => {  
     signout()
     updateUserInAuthContext(null)
+    setIsAuthenticated(false)
     router.push('/')
   }
 

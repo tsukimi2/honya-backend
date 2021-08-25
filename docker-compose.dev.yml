@@ -58,6 +58,7 @@ services:
       - REFRESH_TOKEN_EXPIRES_IN_SEC=5184000
       - SALTROUNDS=10
       - NEXT_PUBLIC_API_PREFIX=/api/v1
+      - NEXT_PUBLIC_API_HOST=honya.co.jp
     depends_on:
       - redis
       - mongo
