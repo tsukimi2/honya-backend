@@ -10,8 +10,8 @@ describe('e2e login', () => {
   let page = null
   //const loginUrl = 'http://honya.co.jp/signin'
   const loginUrl = `${config.get('uri:test_base_href')}/signin`
-  let user1params = null
-  let admin1params = null
+  let userParams = null
+  let adminParams = null
 
   let dbclient = null
   let db = null
@@ -25,11 +25,11 @@ describe('e2e login', () => {
     await usersCollection.deleteMany({ "username": /^user*/ })
     await usersCollection.deleteMany({ "username": /^admin*/ })
 
-    user1params = await generateUserParams({ userProfile: 'validUser1', hasHashedPassword: true  })
-    admin1params = await generateUserParams({ userProfile: 'validAdmin1', hasHashedPassword: true  })
+    userParams = await generateUserParams({ userProfile: 'validUser1', hasHashedPassword: true  })
+    adminParams = await generateUserParams({ userProfile: 'validAdmin1', hasHashedPassword: true  })
   
-    await usersCollection.insertOne(user1params)
-    await usersCollection.insertOne(admin1params)
+    await usersCollection.insertOne(userParams)
+    await usersCollection.insertOne(adminParams)
 
     page = await Page.build('Desktop')
   })
@@ -51,8 +51,8 @@ describe('e2e login', () => {
 
     step('should login to application and redirect to admin dashboard', async () => {
       const expectedText = 'Admin Dashboard'
-      await page.waitAndType('#username', admin1params.username)
-      await page.waitAndType('#password', admin1params.password)
+      await page.waitAndType('#username', adminParams.username)
+      await page.waitAndType('#password', adminParams.password)
       await page.waitAndClick('button[type="submit"]')
 
       await page.waitForNavigation()
@@ -70,8 +70,8 @@ describe('e2e login', () => {
 
     step('should login to application and redirect to admin dashboard', async () => {
       const expectedText = 'Dashboard'
-      await page.waitAndType('#username', user1params.username)
-      await page.type('#password', user1params.password)
+      await page.waitAndType('#username', userParams.username)
+      await page.type('#password', userParams.password)
       await page.click('button[type="submit"]')
       await page.waitForNavigation()
       const actualText = await page.getText('h2')
@@ -89,7 +89,7 @@ describe('e2e login', () => {
     step('should display alert message of Username/password not found', async () => {
       const expecteText = 'Invalid username/password'
 
-      await page.waitAndType('#username', user1params.username)
+      await page.waitAndType('#username', userParams.username)
       await page.type('#password', 'wrongpass')
       await page.click('button[type="submit"]')
       const actualText = await page.getText('div[role="alert"]')
