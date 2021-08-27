@@ -4,25 +4,18 @@ import Form from 'react-bootstrap/Form'
 import { MDBBtn } from 'mdb-react-ui-kit'
 import _ from 'lodash-core'
 import * as Yup from 'yup'
+import PropTypes from 'prop-types'
 
-const CrudForm = ({ frmSubmitHandler, frmLabelName, frmInputPlaceholder, frmSubmitBtnTxt, ishorizontalFrm }) => {
-
+const CrudForm = ({
+  frmSubmitHandler, frmLabelName, frmInputPlaceholder, frmSubmitBtnTxt, crudFormvalidationSchema, ishorizontalFrm
+}) => {
   return (
     <Formik
       initialValues={{
         name: '',
       }}
       validationSchema={
-        Yup.object({
-          name: Yup.string()
-            .required('Required')
-            .min(3, 'Must be between 3 and 20 characters')
-            .max(20, 'Must be between 3 and 20 characters')
-            .matches(/^[a-zA-Z0-9_-]+$/, { 
-              excludeEmptyString: true,
-              message: 'Only alphanumeric characters and - and _'
-            })
-        })
+        Yup.object(crudFormvalidationSchema)
       }
       onSubmit={async (values, {resetForm}) => {
         const isSubmitSuccess = await frmSubmitHandler(values)
@@ -54,6 +47,22 @@ const CrudForm = ({ frmSubmitHandler, frmLabelName, frmInputPlaceholder, frmSubm
     }
   </Formik>
   )
+}
+
+CrudForm.propTypes = {
+  frmSubmitHandler: PropTypes.func.isRequired,
+  frmLabelName: PropTypes.string.isRequired,
+  frmInputPlaceholder: PropTypes.string,
+  frmSubmitBtnTxt: PropTypes.string,
+  crudFormvalidationSchema: PropTypes.object,
+  ishorizontalFrm: PropTypes.oneOf([ 'true', 'false' ])
+}
+
+CrudForm.defaultProps = {
+  frmInputPlaceholder: '',
+  frmSubmitBtnTxt: 'Submit',
+  crudFormvalidationSchema: {},
+  ishorizontalFrm: false
 }
 
 export default CrudForm

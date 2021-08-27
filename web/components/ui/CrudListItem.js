@@ -51,7 +51,7 @@ const CrudListItem = ({ listItemId, initListItemTxt, removeListItem, updateListI
   const handleChange = (e) => {
     setListItemTxt(e.target.value)
   }
-
+//                &#xff38;
   return (
     <ListGroup.Item className={styles.listItem}>
     {
@@ -63,9 +63,7 @@ const CrudListItem = ({ listItemId, initListItemTxt, removeListItem, updateListI
               <Button variant="info" className={styles.btn} onClick={onEditNode}>
                 <FiEdit2 />
               </Button>
-              <Button variant="danger" className={styles.btn} onClick={onRemoveNode}>
-                &#xff38;
-              </Button>
+              <Button variant="danger" className={styles.btn} onClick={onRemoveNode}>X</Button>
             </ButtonGroup>
           </div>
         </>

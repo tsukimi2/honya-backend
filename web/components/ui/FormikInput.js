@@ -9,7 +9,7 @@ const FormikInput = ({ label, ...props }) => {
   const [field, meta] = useField(props)
   const labelColspan = props.labelColspan ? props.labelColspan : 2
   const inputControlColspan = props.inputControlColspan ? props.inputControlColspan : 10
-  const isHorizontal = props.ishorizontal ? props.ishorizontal : false
+  const isHorizontal = props.ishorizontal === 'true' ? true : false
 
   return (
     <>
@@ -18,7 +18,6 @@ const FormikInput = ({ label, ...props }) => {
           <Form.Group className="{className}" controlId={props.id || props.name}>
             <Form.Label>{label}</Form.Label>
             <Form.Control
-    //         type="text"
               isInvalid={!!meta.error}
               {...field}
               {...props}
@@ -58,10 +57,11 @@ const FormikInput = ({ label, ...props }) => {
 }
 
 FormikInput.propTypes = {
-  label: PropTypes.string,
-  name: PropTypes.string,
-  type: PropTypes.string,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['text', 'password', 'email']).isRequired,
   className: PropTypes.string,
+  placeholder: PropTypes.string,
 }
 
 export default FormikInput

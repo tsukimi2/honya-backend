@@ -3,9 +3,8 @@ import { useRouter } from "next/router"
 import { AuthContext } from "../../contexts/AuthContext"
 import { localStorage_get } from "../../libs/utils/localStorage-utils"
 
-const WithAuth = (WrappedComponent) => {
-  // eslint-disable-next-line react/display-name
-  return (props) => {
+const WithAuth = (WrappedComponent) => (props) => {
+  // return (props) => {
     const { userInAuthContext } = useContext(AuthContext) // eslint-disable-line react-hooks/rules-of-hooks
     const Router = useRouter() // eslint-disable-line react-hooks/rules-of-hooks
 
@@ -29,7 +28,7 @@ const WithAuth = (WrappedComponent) => {
     }
 
     return null
-  }
+  // }
 }
 
 export default WithAuth

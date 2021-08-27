@@ -22,7 +22,9 @@ const CrudList = ({ list, removeListItem, updateListItem }) => {
 }
 
 CrudList.propTypes = {
-  list: PropTypes.arrayOf(PropTypes.object)
+  list: PropTypes.arrayOf(PropTypes.object).isRequired,
+  removeListItem: PropTypes.func.isRequired,
+  updateListItem: PropTypes.func.isRequired,
 }
 
 export default CrudList

@@ -46,6 +46,10 @@ const MainHeader = () => {
     '/admin/dashboard': {
       title: 'Admin Dashboard',
       description: `Konnichiwa, ${username}`,
+    },
+    '/admin/category': {
+      title: 'Category',
+      description: `Konnichiwa, ${username}`,
     }
   }
 

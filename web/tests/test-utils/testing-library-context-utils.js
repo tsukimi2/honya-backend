@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react'
-// import { AuthContextProvider } from '../../contexts/AuthContext'
 import AuthContextProvider from '../../contexts/AuthContext'
 
 const renderWithAuthContext = (ui, options) => render(ui, {
