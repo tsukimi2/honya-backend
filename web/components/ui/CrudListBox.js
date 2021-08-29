@@ -5,7 +5,8 @@ import CrudList from './CrudList'
 import styles from './CrudListBox.module.css'
 
 const CrudListBox = ({
-  listBoxName, list, frmLabelName, frmInputPlaceholder, frmSubmitBtnTxt, ishorizontalFrm, frmSubmitHandler, removeListItem, updateListItem
+  listBoxName, list, frmLabelName, frmInputPlaceholder, frmSubmitBtnTxt, crudFormvalidationSchema,
+  ishorizontalFrm, frmSubmitHandler, removeListItem, updateListItem
 }) => {
   return (
     <Card className={styles.well}>
@@ -22,6 +23,7 @@ const CrudListBox = ({
           frmLabelName={frmLabelName}
           frmInputPlaceholder={frmInputPlaceholder}
           frmSubmitBtnTxt={frmSubmitBtnTxt}
+          crudFormvalidationSchema={crudFormvalidationSchema}
           ishorizontalFrm={ishorizontalFrm}
         />
       </Card.Body>
@@ -31,7 +33,21 @@ const CrudListBox = ({
 
 CrudListBox.propTypes = {
   listBoxName: PropTypes.string.isRequired,
-  list: PropTypes.arrayOf(PropTypes.object)
+  list: PropTypes.arrayOf(PropTypes.object).isRequired,
+  frmLabelName: PropTypes.string.isRequired,
+  frmInputPlaceholder: PropTypes.string,
+  frmSubmitBtnTxt: PropTypes.string,
+  crudFormvalidationSchema: PropTypes.object.isRequired,
+  ishorizontalFrm: PropTypes.oneOf([ 'true', 'false' ]),
+  frmSubmitHandler: PropTypes.func.isRequired,
+  removeListItem: PropTypes.func.isRequired,
+  updateListItem: PropTypes.func.isRequired,
+}
+
+CrudListBox.defaultProps = {
+  frmInputPlaceholder: '',
+  frmSubmitBtnTxt: 'Submit',
+  ishorizontalFrm: 'false'
 }
 
 export default CrudListBox

@@ -1,9 +1,24 @@
 import { useState, useEffect } from 'react'
+import Container from 'react-bootstrap/Container'
 import { ToastContainer, toast } from 'react-toastify'
 import CrudListBox from "../ui/CrudListBox"
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../../libs/apiUtils/category-api-utils'
-import WithAuth from '../auth/WitAuth'
+import WithAuth from '../auth/WithAuth'
 import WithAdmin from '../auth/WithAdmin'
+import * as Yup from 'yup'
+import PropTypes from 'prop-types'
+
+const addCategoryValidationSchema = {
+  name: Yup.string()
+    .required('Required')
+    .min(3, 'Must be between 3 and 20 characters')
+    .max(20, 'Must be between 3 and 20 characters')
+    .matches(/^[a-zA-Z0-9_ -]+$/, {
+      excludeEmptyString: true,
+      message: 'Only alphanumeric characters and - and _'
+    })
+    .trim()
+}
 
 const Category = ({ initCategories }) => {
   const listBoxName = 'Categories'
@@ -24,22 +39,43 @@ const Category = ({ initCategories }) => {
     }
 
     setCategories(data)
+    return data
   }
 
   useEffect(() => {
     loadCategories()
+
+    // https://stackoverflow.com/questions/54954385/react-useeffect-causing-cant-perform-a-react-state-update-on-an-unmounted-comp
+    return () => {
+      setCategories([])
+    }
   }, [])
 
-  const addCategory = async (newCategory) => {
+  // https://dev.to/danialdezfouli/what-s-wrong-with-the-async-function-in-useeffect-4jne
+  // https://dev.to/stlnick/useeffect-and-async-4da8
+  /*
+  useEffect(() => {
+    (async () => {
+      const data = await loadCategories()
+      setCategories(data)
+    })()
+
+    return () => {
+      //setCategories([])
+    }
+  })
+  */
+
+  const addCategory = async (newCategory) => {    
     try {
       const { category } = await createCategory(newCategory)
       setCategories([ ...categories, category ])
-      toast.success(`Add category ${newCategory} successful`, {
+      toast.success(`Add category ${newCategory.name} successful`, {
         toastId: 'addCategorySuccessToastId',
       })
       return true
     } catch(err) {
-      toast.error(`Add category ${newCategory} failed`, {
+      toast.error(`Add category ${newCategory.name} failed`, {
         toastId: 'addCategoryFailToastId',
       })
     }
@@ -92,13 +128,15 @@ const Category = ({ initCategories }) => {
   }
 
   return (
-    <>
+    <Container className="mt-4">
       <CrudListBox
+        className="mt-4"
         listBoxName={listBoxName}
         list={categories}
         frmLabelName={frmLabelName}
         frmInputPlaceholder={frmInputPlaceholder}
         frmSubmitBtnTxt={frmSubmitBtnTxt}
+        crudFormvalidationSchema={addCategoryValidationSchema}
         ishorizontalFrm={ishorizontalFrm}
         frmSubmitHandler={addCategory}
         removeListItem={removeCategory}
@@ -111,8 +149,12 @@ const Category = ({ initCategories }) => {
         hideProgressBar
         draggable={false}
       />
-    </>
+    </Container>
   )
 }
-//
+
+Category.propTypes = {
+  initCategories: PropTypes.arrayOf(PropTypes.object)
+}
+
 export default WithAuth(WithAdmin(Category))

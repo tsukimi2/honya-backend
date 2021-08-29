@@ -26,5 +26,33 @@ export const handlers = [
         }
       })
     )
+  }),
+  rest.get('/api/v1/categories', (req, res, ctx) => {
+    return res(
+      ctx.json({
+        data: {
+          categories: [
+            { _id: '1', name: 'cat1' },
+            { _id: '2', name: 'cat2' }
+          ]
+        }
+      })
+    )
+  }),
+  rest.post('/api/v1/category', (req, res, ctx) => {  
+    const name = (req.body && req.body.name) ? req.body.name : 'cat1'
+    const _id = (Math.random() + 1).toString(36).substring(7)
+
+    return res(
+      ctx.status(201),
+      ctx.json({
+        data: {
+          category: {
+            _id,
+            name
+          }
+        }
+      })
+    )
   })
 ]

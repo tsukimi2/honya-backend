@@ -1,0 +1,9 @@
+export const UI_PRIMARY = 'primary'
+export const UI_SECONDARY = 'secondary'
+export const UI_SUCCESS = 'success'
+export const UI_DANGER = 'danger'
+export const UI_WARNING = 'warning'
+export const UI_INFO = 'info'
+export const UI_LIGHT = 'light'
+export const UI_DARK = 'dark'
+export const ARR_ALERT_LEVELS = [ UI_PRIMARY, UI_SECONDARY, UI_SUCCESS, UI_DANGER, UI_WARNING, UI_INFO, UI_LIGHT, UI_DARK]

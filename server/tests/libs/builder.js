@@ -78,10 +78,16 @@ export default class Builder {
   async blur(selector) {
     await this.page.$eval(selector, e => e.blur())
   }
+
+  async getCount(selector) {
+    await this.page.waitForSelector(selector)
+    const count = await this.page.$$eval(selector, items => items.length)
+
+    return count
+  }
 }
 
 /*
-
 export default class Builder {
   constructor(page) {
     this.page = page;

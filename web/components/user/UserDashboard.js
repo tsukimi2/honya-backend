@@ -57,7 +57,7 @@ const UserDashboard = () => {
     */
 
   return (
-    <Container md={{ span: 8, offset: 2 }}>
+    <Container md={{ span: 8, offset: 2 }} className="mt-4">
       <Row>
         <Col md={3}><UserLinks /></Col>
         <Col md={9}>
@@ -68,19 +68,5 @@ const UserDashboard = () => {
     </Container>
   )
 }
-
-/*
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-3">
-          <UserLinks />
-        </div>
-        <div className="col-9">
-          <UserInfo username={username} email={email} role={role} />
-          <PurchaseHistory />
-        </div>
-      </div>
-    </div>
-    */
 
 export default UserDashboard

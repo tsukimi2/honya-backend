@@ -1,0 +1,9 @@
+.form {
+  padding-top: 2rem;
+}
+
+.submitBtncontainer {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-end;
+}

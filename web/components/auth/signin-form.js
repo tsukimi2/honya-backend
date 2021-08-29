@@ -44,7 +44,7 @@ const SigninForm = () => {
   }
 
   return (
-    <Container md={{ span: 8, offset: 2 }}>
+    <Container md={{ span: 8, offset: 2 }} className="mt-4">
       {
         error && (
           <ShowAlert alertLevel="danger">{error}</ShowAlert>
@@ -107,22 +107,5 @@ const SigninForm = () => {
     </Container>
   )
 }
-
-/*
-        <form onSubmit={clickSubmit}>
-            <div className="form-group">
-                <label className="text-muted">Name</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    onChange={handleChange}
-                    value={name}
-                    autoFocus
-                    required
-                />
-            </div>
-            <button className="btn btn-outline-primary">Create Category</button>
-        </form>
-        */
 
 export default SigninForm

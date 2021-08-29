@@ -112,6 +112,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
         selectParams: [ '_id' ],
         lean: true
       })
+
       if(!categoryId) {
         throw new BadRequestError('product not belonged to a valid cateogry')
       }
