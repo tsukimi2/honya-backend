@@ -39,7 +39,7 @@ const SignupForm = () => {
   }
 
   return (
-    <Container md={{ span: 8, offset: 2 }}>
+    <Container md={{ span: 8, offset: 2 }} className="mt-4">
       {
         error && (
           <ShowAlert alertLevel="danger">{error}</ShowAlert>

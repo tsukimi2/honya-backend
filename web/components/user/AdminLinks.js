@@ -5,7 +5,7 @@ import Nav from 'react-bootstrap/Nav'
 
 const arrAdminLinks = [
   { link: '/admin/category', text: 'Create Category' },
-  { link: '/create/product', text: 'Create Product' },
+  { link: '/admin/product/create', text: 'Create Product' },
   { link: '/admin/orders', text: 'View Orders' },
   { link: '/admin/products', text: 'Manage Products' }
 ]

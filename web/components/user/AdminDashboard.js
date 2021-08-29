@@ -49,7 +49,7 @@ const AdminDashboard = () => {
   }, [isAuthenticated, userInAuthContext, router])
 
   return (
-    <Container md={{ span: 8, offset: 2 }}>
+    <Container md={{ span: 8, offset: 2 }} className="mt-4">
       <Row>
         <Col md={3}><AdminLinks /></Col>
         <Col md={9}><UserInfo username={username} email={email} role={role} /></Col>

@@ -1,3 +1,4 @@
+import useSWR from 'swr'
 import 'whatwg-fetch'
 import { API_PREFIX } from '../../config'
 
@@ -12,6 +13,16 @@ export const getCategories = async () => {
   return data
 }
 
+export function useCategories() {
+  const { data, error } = useSWR(`${API_PREFIX}/categories`)
+
+  return {
+    categories: data && data.data && data.data.categories ? data.data.categories : null,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
 export const createCategory = async (category) => {
   let response = null
   try {
@@ -24,8 +35,7 @@ export const createCategory = async (category) => {
       body: JSON.stringify(category)
     })
   } catch(err) {
-    console.log('err')
-    console.log(err)
+
   }
 
   const data = await response.json()

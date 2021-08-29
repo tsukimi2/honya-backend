@@ -1,14 +1,14 @@
-import { Fragment } from 'react'
 import Menu from './menu'
 import MainHeader from './main-header'
+import styles from './Layout.module.css'
 
-const Layout = ({ children, className }) => {
+const Layout = ({ children }) => {
   return (
-    <Fragment>
+    <>
       <Menu />
       <MainHeader />
-      <main className={className}>{children}</main>
-    </Fragment>
+      <main className={styles.main}>{children}</main>
+    </>
   )
 }
 

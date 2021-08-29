@@ -41,7 +41,7 @@ describe('Product model', () => {
       })
 
       it('should be invalid with length greater than 32 characters', (done) => {
-        productParams['name'] = '123456789012345678901234567890123'
+        productParams['name'] = '1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901'
         const product = new Product(productParams)
 
         product.validate((err) => {
@@ -49,21 +49,6 @@ describe('Product model', () => {
           expect(err.errors).to.exist
           expect(err.errors).to.have.property('name')
           expect(err.errors.name).to.have.property('kind').to.eq('maxlength')
-          done()
-        })
-      })
-    })
-
-    context('Testing description', () => {
-      it('should be invalid with empty description', (done) => {
-        productParams['description'] = ''
-        const product = new Product(productParams)
-
-        product.validate((err) => {        
-          expect(err).to.exist
-          expect(err.errors).to.exist
-          expect(err.errors).to.have.property('description')
-          expect(err.errors.description).to.have.property('kind').to.eq('required')
           done()
         })
       })

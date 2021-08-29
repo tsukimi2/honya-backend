@@ -7,48 +7,45 @@ import styles from './FormikInput.module.css'
 
 const FormikInput = ({ label, ...props }) => {
   const [field, meta] = useField(props)
-  const labelColspan = props.labelColspan ? props.labelColspan : 2
-  const inputControlColspan = props.inputControlColspan ? props.inputControlColspan : 10
-  const isHorizontal = props.ishorizontal === 'true' ? true : false
+  const { type, className, labelColspan, inputControlColspan, ishorizontal } = props
+  const isHorizontal = ishorizontal === 'true' ? true : false
 
   return (
     <>
       {
         !isHorizontal && (
-          <Form.Group className="{className}" controlId={props.id || props.name}>
+          <Form.Group className={className} controlId={props.id || props.name}>
             <Form.Label>{label}</Form.Label>
-            <Form.Control
-              isInvalid={!!meta.error}
-              {...field}
-              {...props}
-            />
-  
-          {
-            meta.touched && meta.error && (
-              <ErrorMessage component="div" name={field.name} className={styles.error} />
-            )
-          }
+              <Form.Control
+                type={type}
+                isInvalid={!!meta.error}
+                {...field}
+              />
+            {
+              meta.touched && meta.error && (
+                <ErrorMessage component="div" name={field.name} className={styles.error} />
+              )
+            }
           </Form.Group>
         )
       }
 
       {
         isHorizontal && (
-          <Form.Group as={Row} className="{className}" controlId={props.id || props.name}>
-            <Form.Label column sm={labelColspan}>{label}</Form.Label>
-            <Col sm={inputControlColspan}>
+          <Form.Group as={Row} className={className} controlId={props.id || props.name}>
+            <Form.Label column md={labelColspan}>{label}</Form.Label>
+            <Col md={inputControlColspan}>
               <Form.Control
+                type={type}
                 isInvalid={!!meta.error}
                 {...field}
-                {...props}
               />
+              {
+                meta.touched && meta.error && (
+                  <ErrorMessage component="div" name={field.name} className={styles.error} />
+                )
+              }
             </Col>
-
-          {
-            meta.touched && meta.error && (
-              <ErrorMessage component="div" name={field.name} className={styles.error} />
-            )
-          }
           </Form.Group>
         )
       }
@@ -59,9 +56,21 @@ const FormikInput = ({ label, ...props }) => {
 FormikInput.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['text', 'password', 'email']).isRequired,
+  type: PropTypes.oneOf(['text', 'password', 'email', 'number']).isRequired,
   className: PropTypes.string,
   placeholder: PropTypes.string,
+  ishorizontal: PropTypes.oneOf(['true', 'false']),
+  labelColspan: PropTypes.number,
+  inputControlColspan: PropTypes.number
+}
+
+FormikInput.defaultProps = {
+  className: 'mb-4',
+  type: 'text',
+  placeholder: '',
+  ishorizontal: 'false',
+  labelColspan: 2,
+  inputControlColspan: 10
 }
 
 export default FormikInput

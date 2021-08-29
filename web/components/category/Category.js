@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Container from 'react-bootstrap/Container'
 import { ToastContainer, toast } from 'react-toastify'
 import CrudListBox from "../ui/CrudListBox"
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../../libs/apiUtils/category-api-utils'
@@ -12,10 +13,11 @@ const addCategoryValidationSchema = {
     .required('Required')
     .min(3, 'Must be between 3 and 20 characters')
     .max(20, 'Must be between 3 and 20 characters')
-    .matches(/^[a-zA-Z0-9_-]+$/, { 
+    .matches(/^[a-zA-Z0-9_ -]+$/, {
       excludeEmptyString: true,
       message: 'Only alphanumeric characters and - and _'
     })
+    .trim()
 }
 
 const Category = ({ initCategories }) => {
@@ -126,8 +128,9 @@ const Category = ({ initCategories }) => {
   }
 
   return (
-    <>
+    <Container className="mt-4">
       <CrudListBox
+        className="mt-4"
         listBoxName={listBoxName}
         list={categories}
         frmLabelName={frmLabelName}
@@ -146,7 +149,7 @@ const Category = ({ initCategories }) => {
         hideProgressBar
         draggable={false}
       />
-    </>
+    </Container>
   )
 }
 
