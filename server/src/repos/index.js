@@ -123,10 +123,14 @@ export default class Repos {
       if(opts.limit > 0) {
         query.limit(opts.limit)
       }
-      if(opts.lean) {
-        docs = await query.lean()
+      if(opts.count) {
+        docs = await query.count()
       } else {
-        docs = await query.exec()
+        if(opts.lean) {
+          docs = await query.lean()
+        } else {
+          docs = await query.exec()
+        }
       }
     } catch(err) {
       throw new DatabaseError('cannot find documents', { err })
@@ -210,6 +214,7 @@ api_1    | { n: 1, ok: 1, deletedCount: 1 }
     let arrOrder = []
     let i = 0
     const DEFAULT_ORDER_VAL = 1
+    let sOrder = ''
 
     if(!sortBy) {    
       return arrSort
@@ -217,8 +222,13 @@ api_1    | { n: 1, ok: 1, deletedCount: 1 }
     if(sortBy && !Array.isArray(sortBy)) {
       arrSortBy = sortBy.split(',')
     }   
-    if(order && !Array.isArray(order)) {    
-      arrOrder = order.split(',')
+    if(order && !Array.isArray(order)) {
+      if(typeof order === 'number') {
+        sOrder = order.toString()
+      } else {
+        sOrder = order
+      }
+      arrOrder = sOrder.split(',')
     }
 
     for(i = 0; i < arrSortBy.length; i++) {

@@ -31,6 +31,10 @@ const MainHeader = () => {
       title: 'Home',
       description: 'Honya App'
     },
+    '/shop': {
+      title: 'Shop',
+      description: 'Shop and find books you like'
+    },
     '/signup': {
       title: 'Sign Up',
       description: 'Honya App'

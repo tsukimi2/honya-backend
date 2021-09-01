@@ -1,0 +1,15 @@
+.card {
+  margin-left: 3rem;
+  margin-right: 3rem;
+  max-height: 50rem;
+}
+.header {
+  cursor: pointer;
+  height: 3rem;
+}
+.img {
+  cursor: pointer !important;
+}
+.footer {
+  padding: 1rem 0;
+}

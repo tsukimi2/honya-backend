@@ -1,17 +1,20 @@
+//import formidable from 'formidable'
 import BadRequestError from '../errors/BadRequestError.js'
 import NotFoundError from '../errors/NotFoundError.js'
 import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
 import { DISPLAY } from '../libs/constants.js'
 import logger from '../libs/logger/index.js'
+//import Product from './product.model.js'
+//import fs from 'fs'
 
 const productController = ({ productService, IncomingForm }) => {
   const validateProductInput = (fields) => {
     const { name, description, price, category, quantity, sold, shipping } = fields
 
-    if (!name || !description || !price || !category) {
+    if (!name || !price || !category) {
       return {
         isValid: false,
-        errmsg: 'product name, description, price, and category name are all required'
+        errmsg: 'product name, price, and category name are all required'
       }
     }
     
@@ -151,7 +154,8 @@ const productController = ({ productService, IncomingForm }) => {
 
   const listBySearch = async (req, res, next) => {
     let products = []
-    const{ filters } = req.body
+    let productsSize = 0
+    const { filters } = req.body
     const opts = {
       order: req.body.order ? req.body.order : DISPLAY.ORDER.DESC,
       sortBy: req.body.sortBy ? req.body.sortBy : '_id',
@@ -170,9 +174,19 @@ const productController = ({ productService, IncomingForm }) => {
       return next(new NotFoundError('product meeting search criteria not found'))
     }
 
+    try {
+      const countOpts = {
+        count: true
+      }
+      productsSize = await productService.listBySearch(filters, countOpts)
+    } catch(err) {
+      return next(new NotFoundError('product meeting search criteria not found'))
+    }
+
     return res.status(200).json({
       data: {
-        products
+        products,
+        size: productsSize
       }
     })
   }
@@ -196,9 +210,78 @@ const productController = ({ productService, IncomingForm }) => {
     return res.status(200).send(photo.data)
   }
 
+  /*
+  const photo = async (req, res, next) => {
+    const { productId } = req.params
+
+    try {
+      let product = await productService.getProductById(productId, { populatePath: 'category', lean: true })
+      req['product'] = product
+      res.set('Content-Type', req.product.photo.contentType);
+      return res.send(req.product.photo.data);
+    } catch(err) {
+      console.log('err')
+      console.log(err)
+    }
+
+    next()
+  }
+
+  const create = (req, res) => {
+console.log("create")    
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+    form.parse(req, (err, fields, files) => {
+console.log('fields')      
+console.log(fields)
+        if (err) {
+            return res.status(400).json({
+                error: 'Image could not be uploaded'
+            });
+        }
+        // check for all fields
+        const { name, description, price, category, quantity, shipping } = fields;
+
+        if (!name || !description || !price || !category || !quantity || !shipping) {
+            return res.status(400).json({
+                error: 'All fields are required'
+            });
+        }
+
+        let product = new Product(fields);
+console.log('product')
+console.log(product)
+        // 1kb = 1000
+        // 1mb = 1000000
+console.log('files')
+console.log(files)
+        if (files.photo) {
+            // console.log("FILES PHOTO: ", files.photo);
+            if (files.photo.size > 1000000) {
+                return res.status(400).json({
+                    error: 'Image should be less than 1mb in size'
+                });
+            }
+            product.photo.data = fs.readFileSync(files.photo.path);
+            product.photo.contentType = files.photo.type;
+        }
+
+        product.save((err, result) => {
+            if (err) {
+                console.log('PRODUCT CREATE ERROR ', err);
+                return res.status(400).json({
+                    error: errorHandler(err)
+                });
+            }
+            res.json(result);
+        });
+    });
+  };
+*/
   const createProduct = async (req, res, next) => {
     try {
       const form = new IncomingForm({ keepExtensions: true })
+      //form.keepExtensions = true
       form.parse(req, async (err, fields, files) => {
         if(err) {
           return next(new UnprocessableEntityError('failed to create product'), { err })
@@ -243,6 +326,8 @@ const productController = ({ productService, IncomingForm }) => {
         })
       })
     } catch(err) {
+console.log('err')      
+console.log(err)
       return next(new UnprocessableEntityError('failed to create product'), { err })
     }
 
@@ -330,6 +415,8 @@ const productController = ({ productService, IncomingForm }) => {
     listCategories,
     listBySearch,
     getPhoto,
+    //create,
+    //photo,
     createProduct,
     updateProduct,
     deleteProduct,

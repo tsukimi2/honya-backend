@@ -1,9 +1,13 @@
 import useSWR from 'swr'
 import 'whatwg-fetch'
-import { API_PREFIX } from '../../config'
+import { API_PROTO, API_HOST, API_PREFIX } from '../../config'
 
-export const getCategories = async () => {
-  const response = await fetch(`${API_PREFIX}/categories`)
+export const getCategories = async ({ fullUrl=false }) => {
+  let url = `${API_PREFIX}/categories`
+  if(fullUrl) {
+    url = `${API_PROTO}://${API_HOST}${url}`
+  }
+  const response = await fetch(url)
 
   const data = await response.json()
   if (!response.ok) {

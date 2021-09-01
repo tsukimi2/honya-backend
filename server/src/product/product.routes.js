@@ -37,8 +37,10 @@ router.get('/products/related/:productId',
 )
 
 router.get('/products/:productId/photo', productController.getPhoto)
+//router.get('/products/:productId/photo', productController.photo)
 
 router.post('/products/search',
+/*
   body('filters')
     .isObject().withMessage('missing search filters'),
   body('sortBy')
@@ -50,6 +52,7 @@ router.post('/products/search',
   body('skip')
   .optional()
   .isInt(),
+  */
 /*
   body('name')
     .optional()
@@ -108,6 +111,7 @@ router.post('/product',
   validator,
   */
   productController.createProduct
+  //productController.create
 )
 
 router.put('/products/:id',
