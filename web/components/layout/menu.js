@@ -68,6 +68,14 @@ const Menu = () => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav sticky="top" className="me-auto">
+          <Link href="/shop" passHref>
+            <a
+              className="nav-link"
+              style={isActive(router.asPath, '/shop')}
+            >
+              Shop
+            </a>
+          </Link>
           {isAuthenticated && getUserRole() === 'user' && (
             <Link href="/user/dashboard">
              <a

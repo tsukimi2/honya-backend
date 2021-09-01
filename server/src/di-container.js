@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import formidable from 'formidable'
 const IncomingForm = formidable
+// const form = new formidable.IncomingForm()
 import fs from 'fs'
 import config from './libs/config/index.js'
 import logger from './libs/logger/index.js'
@@ -32,3 +33,4 @@ export const userController = UserController({ logger, userService })
 export const productRepos = new ProductRepos(Product)
 export const productService = ProductService({ productRepos, categoryRepos, config, fs })
 export const productController = ProductController({ productService, IncomingForm })
+// export const productController = ProductController({ productService, form })

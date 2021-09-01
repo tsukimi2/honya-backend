@@ -13,7 +13,7 @@ import './libs/logger/setupLogger.js'
 app.use(httpLogger)
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 import './libs/setupMongoose.js'
 app.use(passport.initialize())
 app.use(passport.session())

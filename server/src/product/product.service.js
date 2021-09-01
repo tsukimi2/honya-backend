@@ -51,6 +51,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     let products = []
     let findArgs = {}
     const { sortBy, order, limit, skip, lean } = opts
+    const count = opts.count ? opts.count : false
 
     for (let key in filters) {
       if (filters[key].length > 0) {
@@ -75,6 +76,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
         order,
         skip,
         limit,
+        count,
         lean,
       })
     } catch(err) {
