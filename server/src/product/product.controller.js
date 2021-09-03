@@ -84,14 +84,24 @@ const productController = ({ productService, IncomingForm }) => {
   }
   */
 
-  const getProducts = async (req, res, next) => { 
+  const getProducts = async (req, res, next) => {
+    const query = {}
+    // assign search value to query.name
+    if (req.query.search) {
+      query.name = { $regex: req.query.search, $options: 'i' }
+      // assigne category value to query.category
+      if(req.query.category && req.query.category !== 'All') {
+        query.category = req.query.category
+      }
+    }
+
     const order = req.query.order ? req.query.order : ''
     const sortBy = req.query.sortBy ? req.query.sortBy : '_id'
     const limit = req.query.limit ? parseInt(req.query.limit) : DISPLAY.LIMIT.DEFAULT
     let products = null
 
     try {
-      products = await productService.getProducts({}, {
+      products = await productService.getProducts(query, {
         selectParams: '-photo',
         populatePath: 'category',
         sortBy,
@@ -227,13 +237,10 @@ const productController = ({ productService, IncomingForm }) => {
     next()
   }
 
-  const create = (req, res) => {
-console.log("create")    
+  const create = (req, res) => {  
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
     form.parse(req, (err, fields, files) => {
-console.log('fields')      
-console.log(fields)
         if (err) {
             return res.status(400).json({
                 error: 'Image could not be uploaded'
@@ -249,12 +256,10 @@ console.log(fields)
         }
 
         let product = new Product(fields);
-console.log('product')
-console.log(product)
+
         // 1kb = 1000
         // 1mb = 1000000
-console.log('files')
-console.log(files)
+
         if (files.photo) {
             // console.log("FILES PHOTO: ", files.photo);
             if (files.photo.size > 1000000) {

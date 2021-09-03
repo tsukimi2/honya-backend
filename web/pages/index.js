@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react'
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
 import { useProducts } from '../libs/apiUtils/product-api-utils'
-import LoadingOverlay from '../components/ui/LoadingOverlay'
 import { API_HOST, API_PREFIX } from '../config'
-import DisplayProducts from '../components/product/DisplayProducts'
+import HomeComponent from '../components/product/Home'
+
 
 
 export default function Home({ initProducts }) {
   const [productsByArrival, setProductsByArrival] = useState(initProducts.iniitProductsByArrival)
   const [productsBySell, setProductsBySell] = useState(initProducts.iniitProductsBySell)
 
-  const { products: arrProductsByArrival, isLoading: isLoadingProductsByArrival } = useProducts('createdAt', 'desc', 6)
-  const { products: arrProductsBySell, isLoading: isLoadingProductsBySell } = useProducts('sold', 'desc', 6)
+  // const { products: arrProductsByArrival, isLoading: isLoadingProductsByArrival } = useProducts('createdAt', 'desc', 6)
+  // const { products: arrProductsBySell, isLoading: isLoadingProductsBySell } = useProducts('sold', 'desc', 6)
+  const { products: arrProductsByArrival, isLoading: isLoadingProductsByArrival } = useProducts({ sortBy: 'createdAt', order: 'desc', limit: 6}, true)
+  const { products: arrProductsBySell, isLoading: isLoadingProductsBySell } = useProducts({ sortBy: 'sold', order: 'desc', limit: 6 }, true)
 
-  useEffect(() => { 
+  useEffect(() => {
+console.log('arrProductsByArrival')
+console.log(arrProductsByArrival)
     if(arrProductsByArrival && Array.isArray(arrProductsByArrival)) {    
       setProductsByArrival(arrProductsByArrival.slice())
     }
@@ -26,26 +28,12 @@ export default function Home({ initProducts }) {
 
 
   return (
-    <>
-      {
-        (isLoadingProductsByArrival || isLoadingProductsBySell) && (<LoadingOverlay />)
-      }
-      <Container fluid className="mt-4">
-        <Row>
-          <DisplayProducts
-            header="New Arrivals"
-            products={productsByArrival}
-          />
-        </Row>
-        <hr />
-        <Row>
-          <DisplayProducts
-            header="Best Sellers"
-            products={productsBySell}
-          />
-        </Row>
-      </Container>
-    </>
+    <HomeComponent 
+      isLoadingProductsByArrival={isLoadingProductsByArrival}
+      isLoadingProductsBySell={isLoadingProductsBySell}
+      productsByArrival={productsByArrival}
+      productsBySell={productsBySell}
+    />
   )
 }
 
