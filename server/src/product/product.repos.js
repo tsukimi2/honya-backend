@@ -16,7 +16,7 @@ export default class ProductRepos extends Repos {
       category: mongoose.Types.ObjectId(categoryId),
     }
     const optsParams = Object.assign({}, {
-      selectParams: 'name category',
+      selectParams: 'name price category',
       populatePath: 'category',
       populateSelect: '_id name',
 //      limit: opts.limit

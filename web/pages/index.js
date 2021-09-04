@@ -4,7 +4,6 @@ import { API_HOST, API_PREFIX } from '../config'
 import HomeComponent from '../components/product/Home'
 
 
-
 export default function Home({ initProducts }) {
   const [productsByArrival, setProductsByArrival] = useState(initProducts.iniitProductsByArrival)
   const [productsBySell, setProductsBySell] = useState(initProducts.iniitProductsBySell)
@@ -15,8 +14,6 @@ export default function Home({ initProducts }) {
   const { products: arrProductsBySell, isLoading: isLoadingProductsBySell } = useProducts({ sortBy: 'sold', order: 'desc', limit: 6 }, true)
 
   useEffect(() => {
-console.log('arrProductsByArrival')
-console.log(arrProductsByArrival)
     if(arrProductsByArrival && Array.isArray(arrProductsByArrival)) {    
       setProductsByArrival(arrProductsByArrival.slice())
     }
@@ -25,7 +22,6 @@ console.log(arrProductsByArrival)
       setProductsBySell(arrProductsBySell.slice())
     }
   }, [arrProductsByArrival, arrProductsBySell])
-
 
   return (
     <HomeComponent 
