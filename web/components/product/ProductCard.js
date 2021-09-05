@@ -1,11 +1,14 @@
+import { useContext } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import Card from 'react-bootstrap/Card'
 import Badge from 'react-bootstrap/Badge'
-import BtnAddToCart from '../ui/BtnAddToCart'
+import Button from 'react-bootstrap/Button'
 import slugify from 'react-slugify'
+import { addItemToCart, getNumItemsInCart } from '../../libs/utils/cartHelpers'
+import { CartContext } from '../../contexts/CartContextProvider'
 import styles from './ProductCard.module.css'
 
 const ProductCard = ({ fullCard, shortCard, id, name, description, price, category, createdAt, quantity }) => {
@@ -14,6 +17,7 @@ const ProductCard = ({ fullCard, shortCard, id, name, description, price, catego
   const slug = slugify(name)
   const isFullCard = fullCard === 'true' ? true : false
   const isShortCard = shortCard === 'true' ? true : false
+  const { dispatch: cartDispatch } = useContext(CartContext)
 
   const showStock = quantity => {
     return quantity > 0 ? (
@@ -21,6 +25,23 @@ const ProductCard = ({ fullCard, shortCard, id, name, description, price, catego
     ) : (
       <Badge pill bg="danger">Out of Stock</Badge>
     )
+  }
+
+  const addToCart = () => {
+    const product = {
+      _id: id,
+      name,
+      description,
+      price,
+      category,
+      createdAt,
+      quantity
+    }
+    addItemToCart(product, () => {})
+    cartDispatch({
+      type: 'SET_ITEMS_COUNT',
+      count: getNumItemsInCart()
+    })
   }
 
   return (
@@ -71,9 +92,13 @@ const ProductCard = ({ fullCard, shortCard, id, name, description, price, catego
           )
         }
       </Card.Body>
-      <Card.Footer className={styles.footer}>
-        <BtnAddToCart />
-      </Card.Footer>
+      {
+        !isShortCard && (
+          <Card.Footer className={styles.footer}>
+            <Button variant="primary" onClick={addToCart}>Add To Cart</Button>
+          </Card.Footer>
+        )
+      }
     </Card>
   )
 }

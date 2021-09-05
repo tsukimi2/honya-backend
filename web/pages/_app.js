@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'mdb-react-ui-kit/dist/css/mdb.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 import AuthContextProvider from '../contexts/AuthContext'
+import CartContextProvider from '../contexts/CartContextProvider'
 
 
 function MyApp({ Component, pageProps }) {
@@ -23,9 +24,11 @@ function MyApp({ Component, pageProps }) {
         showOnShallow={true}
       />
       <AuthContextProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <CartContextProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </CartContextProvider>
       </AuthContextProvider>
     </>
   )

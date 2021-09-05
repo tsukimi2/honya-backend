@@ -8,8 +8,9 @@ export const localStorage_get = (key) => {
 
 export const localStorage_set = (key, obj) => {
   if(typeof window === 'undefined') {
-    throw new Error('local storage not available in browser')
+    return false
   }
 
   localStorage.setItem(key, JSON.stringify(obj))
+  return true
 }
