@@ -35,7 +35,7 @@ export const getNumItemsInCart = () => {
     return 0
   }
 
-  return cart.length
+  return cart.reduce((acc, currElem) => acc + currElem.count, 0)
 }
 
 export const getCart = () => {
@@ -43,6 +43,39 @@ export const getCart = () => {
   if(!cart) {
     return []
   }
+
+  return cart
+}
+
+export const updateItemInCart = (productId, count) => {
+  const cart = localStorage_get('cart')
+  if(!cart) {
+    return false
+  }
+
+  cart.map((product, i) => {
+    if (product._id === productId) {
+        cart[i].count = count;
+    }
+  })
+
+  localStorage_set('cart', cart)
+
+  return true
+}
+
+export const removeItemInCart = productId => {
+  const cart = localStorage_get('cart')
+  if(!cart) {
+    return []
+  }
+
+  cart.map((product, i) => {
+    if (product._id === productId) {
+      cart.splice(i, 1);
+    }
+  })
+  localStorage_set('cart', cart)
 
   return cart
 }

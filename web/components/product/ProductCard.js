@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import Card from 'react-bootstrap/Card'
@@ -11,13 +11,14 @@ import { addItemToCart, getNumItemsInCart } from '../../libs/utils/cartHelpers'
 import { CartContext } from '../../contexts/CartContextProvider'
 import styles from './ProductCard.module.css'
 
-const ProductCard = ({ fullCard, shortCard, id, name, description, price, category, createdAt, quantity }) => {
+const ProductCard = ({ id, name, description, price, category, createdAt, quantity, fullCard, shortCard, showAddToCardBtn }) => {
   //const photoUrl = `${API_PREFIX}/products/${id}/photo`
   const photoUrl = '/images/ancient_greece.jpg'
   const slug = slugify(name)
   const isFullCard = fullCard === 'true' ? true : false
   const isShortCard = shortCard === 'true' ? true : false
   const { dispatch: cartDispatch } = useContext(CartContext)
+  const router = useRouter()
 
   const showStock = quantity => {
     return quantity > 0 ? (
@@ -44,11 +45,13 @@ const ProductCard = ({ fullCard, shortCard, id, name, description, price, catego
     })
   }
 
+  const handleForwardLink = () => {
+    router.push(`/product/${slug}/${id}`)
+  }
+
   return (
     <Card style={{ width: '25rem', margin: '1.5rem 1rem', outlineColor: 'grey' }}>
-      <Link href={`/product/${slug}/${id}`}>
-        <Card.Title className={styles.header}>{name}</Card.Title>
-      </Link>
+      <Card.Title className={styles.header} onClick={handleForwardLink}>{name}</Card.Title>
       <Image
         src={photoUrl}
         alt={name}
@@ -56,6 +59,7 @@ const ProductCard = ({ fullCard, shortCard, id, name, description, price, catego
         width={45}
         height={60}
         className={styles.img}
+        onClick={handleForwardLink}
       />
 
       <Card.Body className={styles.body}>
@@ -93,7 +97,7 @@ const ProductCard = ({ fullCard, shortCard, id, name, description, price, catego
         }
       </Card.Body>
       {
-        !isShortCard && (
+        !isShortCard && showAddToCardBtn && (
           <Card.Footer className={styles.footer}>
             <Button variant="primary" onClick={addToCart}>Add To Cart</Button>
           </Card.Footer>
@@ -106,13 +110,14 @@ const ProductCard = ({ fullCard, shortCard, id, name, description, price, catego
 ProductCard.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  price: PropTypes.number,
-  category: PropTypes.string,
-  createdAt: PropTypes.string,
-  quantity: PropTypes.number,
+  description: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  category: PropTypes.string.isRequired,
+  createdAt: PropTypes.string.isRequired,
+  quantity: PropTypes.number.isRequired,
   fullCard: PropTypes.string,
-  shortCard: PropTypes.string,
+  shortCard: PropTypes.bool,
+  showAddToCardBtn: PropTypes.bool
 }
 
 ProductCard.defaultProps = {
@@ -121,7 +126,8 @@ ProductCard.defaultProps = {
   createdAt: '',
   quantity: 0,
   fullCard: 'false',
-  shortCard: 'false,'
+  shortCard: false,
+  showAddToCardBtn: true,
 }
 
 export default ProductCard

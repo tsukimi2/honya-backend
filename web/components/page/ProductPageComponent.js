@@ -2,7 +2,8 @@ import PropTypes from 'prop-types'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import ProductCard from '../product/ProductCard'
+//import ProductCard from '../product/ProductCard'
+import HorizontalProductCard from '../product/HorizontalProductCard'
 import LoadingOverlay from '../ui/LoadingOverlay'
 import RelatedProducts from '../product/RelatedProducts'
 
@@ -11,14 +12,13 @@ const ProductPageComponent = ({ isLoadingProduct, isLoadingRelatedProducts, prod
     <>
       <Container fluid className="mt-4">
         <Row>
-          <Col md={8}>
+          <Col md={9}>
             {
               isLoadingProduct && <LoadingOverlay />
             }
             {
               product && (
-                <ProductCard
-                  fullCard='true'
+                <HorizontalProductCard
                   id={product._id}
                   name={product.name}
                   description={product.description}
@@ -30,7 +30,7 @@ const ProductPageComponent = ({ isLoadingProduct, isLoadingRelatedProducts, prod
               )
             }
           </Col>
-          <Col md={4}>
+          <Col md={3}>
             {
               isLoadingRelatedProducts && <LoadingOverlay />
             }
@@ -43,6 +43,19 @@ const ProductPageComponent = ({ isLoadingProduct, isLoadingRelatedProducts, prod
     </>
   )
 }
+
+/*
+                <ProductCard
+                  fullCard='true'
+                  id={product._id}
+                  name={product.name}
+                  description={product.description}
+                  price={product.price}
+                  category={product.category.name}
+                  createdAt={product.createdAt}
+                  quantity={product.quantity}
+                />
+                */
 
 ProductPageComponent.propTypes = {
   isLoadingProduct: PropTypes.bool.isRequired,

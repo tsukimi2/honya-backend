@@ -5,7 +5,7 @@ import { useProduct, useRelatedProducts } from '../../../libs/apiUtils/product-a
 const ProductPage = () => {
   const router = useRouter()
   const { pid } = router.query
-  const { product, isLoading:isLoadingProduct, isError } = useProduct({ fullUrl: false, id: pid })
+  const { product, isLoading:isLoadingProduct } = useProduct({ fullUrl: false, id: pid })
   const { products: relatedProducts, isLoading: isLoadingRelatedProducts } = useRelatedProducts(pid)
 
   return (

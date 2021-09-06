@@ -6,7 +6,7 @@ export const CartContext = createContext()
 
 const CartContextProvider = (props) => {
 const [numItemsInCart, dispatch] = useReducer(cartReducer, 0, () => {
-  const numItems = getNumItemsInCart('cart')
+  const numItems = getNumItemsInCart('cart')  
   return numItems ? numItems : 0
 })
 
@@ -18,21 +18,3 @@ const [numItemsInCart, dispatch] = useReducer(cartReducer, 0, () => {
 }
 
 export default CartContextProvider
-
-/*
-const AuthContextProvider = (props) => {
-  const [userInAuthContext, setUserInAuthContext] = useState(null)
-
-  const updateUserInAuthContext = (user) => {
-    setUserInAuthContext(user)
-  }
-
-  return (
-    <AuthContext.Provider value={{ userInAuthContext, updateUserInAuthContext }}>
-      {props.children}
-    </AuthContext.Provider>
-  )
-}
-
-export default AuthContextProvider
-*/

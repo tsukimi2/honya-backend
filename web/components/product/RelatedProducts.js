@@ -2,20 +2,26 @@ import PropTypes from 'prop-types'
 import ProductCard from "./ProductCard"
 
 const RelatedProducts = ({ relatedProducts }) => {
+  const shortCard = true
   const renderRelatedProducts = (relatedProducts) => {
     return (
-      relatedProducts.map((elem, idx) => {
-        return (
-          <div className="mb-3" key={idx}>
-            <ProductCard
-              shortCard='true'
-              id={elem._id}
-              name={elem.name}
-              price={elem.price}
-            />
-          </div>
-        )
-      })
+      <>
+        <h2>Related Products</h2>
+        {
+          relatedProducts && Array.isArray(relatedProducts) && relatedProducts.map((elem, idx) => {
+            return (
+              <div className="mb-3" key={idx}>
+                <ProductCard
+                  shortCard={shortCard}
+                  id={elem._id}
+                  name={elem.name}
+                  price={elem.price}
+                />
+              </div>
+            )
+          })
+        }
+      </>
     )
   }
 

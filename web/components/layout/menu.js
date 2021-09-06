@@ -11,7 +11,6 @@ import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import styles from './menu.module.css'
 import { AuthContext } from '../../contexts/AuthContext'
 import { CartContext } from '../../contexts/CartContextProvider'
-import { getNumItemsInCart } from '../../libs/utils/cartHelpers'
 
 
 const isActive = (routerPath, href) => {

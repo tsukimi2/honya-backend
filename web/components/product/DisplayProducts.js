@@ -13,6 +13,9 @@ const DisplayProducts = ({ header, products }) => {
             name={elem.name}
             description={elem.description}
             price={elem.price}
+            category={elem.category.name}
+            createdAt={elem.createdAt}
+            quantity={elem.quantity}
           />)
       }
     </>

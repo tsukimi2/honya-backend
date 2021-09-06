@@ -267,7 +267,7 @@ describe('Get products', () => {
 
       try {
         res = await request(app)
-          .get(`${API_PREFIX}/products/related/${product._id}?limit=${limit}`)
+          .get(`${API_PREFIX}/products/${product._id}/related?limit=${limit}`)
           .expect(200)
       } catch(e) {
         console.log(e)
@@ -286,7 +286,7 @@ describe('Get products', () => {
     it('should throw NotFoundError if no related product is found', async () => {
       try {
         res = await request(app)
-          .get(`${API_PREFIX}/products/related/${product3._id}`)
+          .get(`${API_PREFIX}/products/${product3._id}/related`)
           .expect(404)
       } catch(e) {
         console.log(e)
