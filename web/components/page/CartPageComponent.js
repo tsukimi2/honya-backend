@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import CartProductCard from '../product/CartProductCard'
+import Checkout from '../cart/Checkout'
 
 const CartPageComponent = ({ cartItems }) => {
   const [items, setItems] = useState(cartItems)
@@ -39,6 +40,7 @@ const CartPageComponent = ({ cartItems }) => {
         <Col md={6}>
           <h2 className="mb-4">Your cart summary</h2>
           <hr />
+          <Checkout products={items} />
         </Col>
       </Row>
     </Container>
