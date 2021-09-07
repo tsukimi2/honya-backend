@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button'
 import DropIn from 'braintree-web-drop-in-react'
 import { AuthContext } from "../../contexts/AuthContext"
 import { useBraintreeClientToken } from "../../libs/apiUtils/payment-api-utils"
+import ShowAlert from "../ui/ShowAlert"
 
 
 const Checkout = ({ products }) => {
@@ -17,18 +18,10 @@ const Checkout = ({ products }) => {
     address: ''
   })
   const { braintreeClientToken, isLoading, isError:isBraintreeClientTokenError } = useBraintreeClientToken({})
-/*  
-  console.log('braintreeClientToken')
-  console.log(braintreeClientToken)
-  console.log('isLoading')
-  console.log(isLoading)
-  console.log('isBraintreeClientTokenError')
-  console.log(isBraintreeClientTokenError)
-*/
 
   useEffect(() => {
     if(braintreeClientToken && braintreeClientToken.clientToken) {
-      setData({ clientToken: braintreeClientToken.clientToken })
+      setData({ ...data, clientToken: braintreeClientToken.clientToken})
     }
   }, [braintreeClientToken])
 
@@ -51,18 +44,34 @@ console.log(data)
     }, 0);
   }
 
+  const buy = async () => {
+    // send the nonce to your server
+    // nonce = data.instance.requestPaymentMethod()
+    let nonce = null
+    try {
+      const paymentMethodObj = await data.instance.requestPaymentMethod()
+
+      
+      nonce = paymentMethodObj.nonce
+    } catch(err) {
+      setData({ ...data, error: err.message })
+    }
+
+
+  }
+
   const showDropIn = () => (
     <>
       {
         data.clientToken && products.length > 0 && (
-          <>
+          <div onBlur={() => setData({ ...data, error: null })}>
             <DropIn
               options={{
                 authorization: data.clientToken
               }} onInstance={instance => (data.instance = instance)}
             />
-            <Button variant="success">Checkout</Button>
-          </>
+            <Button variant="success" onClick={buy} >Pay</Button>
+          </div>
         )
       }
     </>
@@ -85,6 +94,11 @@ console.log(data)
   return (
     <>
       <h2>Total: ${getTotal()}</h2>
+      {
+        data.error && (
+          <ShowAlert>{data.error}</ShowAlert>
+        )
+      }
       { showCheckout() }
     </>
   )

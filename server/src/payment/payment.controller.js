@@ -1,25 +1,28 @@
 import braintree from 'braintree'
 
-const paymentController = ({ config }) => {
-  const gateway = new braintree.BraintreeGateway({
-    environment: braintree.Environment.Sandbox, // comment out in production
-    merchantId: config.get('security:payment:braintree:merchant_id'),
-    publicKey: config.get('security:payment:braintree:public_key'),
-    privateKey: config.get('security:payment:braintree:private_key'),
-  })
-
-  const generateToken = async (req, res) => {
+const paymentController = ({ paymentService }) => {
+  const generateToken = async (req, res, next) => {
     try {
-      const response = await gateway.clientToken.generate({})
-      // const clientToken = response.clientToken
+      const response = await paymentService.generateToken()
       res.send(response)
     } catch(err) {
-      res.status(500).send(err);
+      return next(err)
+    }
+  }
+
+  const processPayment = async (req, res, next) => {
+    try {
+      const { paymentMethodNonce, amount } = req.body
+      const saleResult = await paymentService.processPayment({ paymentMethodNonce, amount })
+      return res.json(saleResult)
+    } catch(err) {
+      return next(err)
     }
   }
 
   return {
-    generateToken
+    generateToken,
+    processPayment
   }
 }
 
