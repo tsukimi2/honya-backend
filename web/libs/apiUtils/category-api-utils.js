@@ -21,7 +21,7 @@ export function useCategories() {
   const { data, error } = useSWR(`${API_PREFIX}/categories`)
 
   return {
-    categories: data && data.data && data.data.categories ? data.data.categories : null,
+    categories: data && data.data && data.data.categories ? data.data.categories : [],
     isLoading: !error && !data,
     isError: error
   }

@@ -28,7 +28,7 @@ router.get('/products',
   productController.getProducts
 )
 
-router.get('/products/related/:productId',
+router.get('/products/:productId/related',
   query('limit')
     .optional()
     .isInt({ min: 1, max: DISPLAY.LIMIT.MAX }),

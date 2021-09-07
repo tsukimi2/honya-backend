@@ -3,12 +3,15 @@ import cookie from 'cookie-cutter'
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
 import Link from 'next/link'
+import Nav from 'react-bootstrap/Nav'
+import Badge from 'react-bootstrap/Badge'
 import { useRouter } from 'next/router'
 import { signout } from '../../libs/apiUtils/auth-api-utils'
 import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import styles from './menu.module.css'
 import { AuthContext } from '../../contexts/AuthContext'
-import { Nav } from 'react-bootstrap'
+import { CartContext } from '../../contexts/CartContextProvider'
+
 
 const isActive = (routerPath, href) => {
   if(routerPath === href) {
@@ -21,13 +24,14 @@ const isActive = (routerPath, href) => {
 const Menu = () => {
   const router = useRouter()
   const { userInAuthContext, updateUserInAuthContext } = useContext(AuthContext)
+  const { numItemsInCart } = useContext(CartContext)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const hasLoginHash = cookie.get('loginHash') ? true : false
     setIsAuthenticated(hasLoginHash)
-  }) 
+  })
   /* eslint-enable react-hooks/exhaustive-deps */
 
 
@@ -74,6 +78,14 @@ const Menu = () => {
               style={isActive(router.asPath, '/shop')}
             >
               Shop
+            </a>
+          </Link>
+          <Link href="/cart" passHref>
+            <a
+              className="nav-link"
+              style={isActive(router.asPath, '/cart')}
+            >
+              Cart { numItemsInCart > 0 && (<sup><Badge pill bg="info">{numItemsInCart}</Badge></sup>)}
             </a>
           </Link>
           {isAuthenticated && getUserRole() === 'user' && (

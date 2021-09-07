@@ -35,6 +35,10 @@ const MainHeader = () => {
       title: 'Shop',
       description: 'Shop and find books you like'
     },
+    '/cart': {
+      title: 'Shopping Cart',
+      description: 'Manage your cart items. Add remove checkout or continue shopping.'
+    },
     '/signup': {
       title: 'Sign Up',
       description: 'Honya App'
@@ -58,6 +62,10 @@ const MainHeader = () => {
     '/admin/product/create': {
       title: 'Add a new product',
       description: `Konnichiwa, ${username}, ready to add a new product?`
+    },
+    '/product': {
+      title: 'Product',
+      description: ''
     }
   }
 
