@@ -3,6 +3,7 @@ import authRoutes from '../auth/auth.routes.js'
 import userRoutes from '../user/user.routes.js'
 import categoryRoutes from '../category/category.routes.js'
 import productRoutes from '../product/product.routes.js'
+import paymentRoutes from '../payment/payment.routes.js'
 
 const API_PREFIX = config.get('app:api_prefix')
 
@@ -14,4 +15,5 @@ export function bindRoutes(app) {
   app.use(API_PREFIX, userRoutes)
   app.use(API_PREFIX, categoryRoutes)
   app.use(API_PREFIX, productRoutes)
+  app.use(API_PREFIX, paymentRoutes)
 }
