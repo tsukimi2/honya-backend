@@ -23,7 +23,7 @@ const isActive = (routerPath, href) => {
 
 const Menu = () => {
   const router = useRouter()
-  const { userInAuthContext, updateUserInAuthContext } = useContext(AuthContext)
+  const { userInAuthContext, dispatch:authDispatch } = useContext(AuthContext)
   const { numItemsInCart } = useContext(CartContext)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
@@ -37,7 +37,8 @@ const Menu = () => {
 
   const signoutHandler = () => {  
     signout()
-    updateUserInAuthContext(null)
+    // updateUserInAuthContext(null)
+    authDispatch({ type: 'SET_USER', user: null })
     setIsAuthenticated(false)
     router.push('/')
   }

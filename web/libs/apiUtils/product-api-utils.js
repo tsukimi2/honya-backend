@@ -47,7 +47,8 @@ export const useProduct = ({ fullUrl=false, id }) => {
     product: data && data.data && data.data.product ? data.data.product : null,
     isLoading: !error && !data,
     isError: error
-  }}
+  }
+}
 
 // https://github.com/vercel/swr/issues/254
 export const useProducts = (params) => { 
