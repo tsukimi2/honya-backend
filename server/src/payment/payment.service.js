@@ -1,5 +1,6 @@
 import braintree from 'braintree'
 
+//
 const productService = ({ config }) => {
   const gateway = new braintree.BraintreeGateway({
     environment: braintree.Environment.Sandbox, // comment out in production
