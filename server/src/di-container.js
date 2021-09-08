@@ -22,6 +22,10 @@ import ProductService from './product/product.service.js'
 import ProductController from './product/product.controller.js'
 import PaymentService from './payment/payment.service.js'
 import PaymentController from './payment/payment.controller.js'
+import Order from './order/order.model.js'
+import OrderRepos from './order/order.repos.js'
+import OrderService from './order/order.service.js'
+import OrderController from './order/order.controller.js'
 
 export const errHandler = ErrHandler({ logger })
 export const database = Database({ mongoose, logger })
@@ -37,3 +41,6 @@ export const productService = ProductService({ productRepos, categoryRepos, conf
 export const productController = ProductController({ productService, IncomingForm })
 export const paymentService = PaymentService({ config })
 export const paymentController = PaymentController({ paymentService })
+export const orderRepos = new OrderRepos(Order)
+export const orderService = OrderService({ orderRepos })
+export const orderController = OrderController({ orderService })

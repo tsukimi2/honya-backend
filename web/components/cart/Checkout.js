@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from "react"
 import Link from 'next/link'
 import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
 import DropIn from 'braintree-web-drop-in-react'
 import { AuthContext } from "../../contexts/AuthContext"
 import { useBraintreeClientToken, processPayment } from "../../libs/apiUtils/payment-api-utils"
+import { createOrder } from "../../libs/apiUtils/order-api-utils"
 import ShowAlert from "../ui/ShowAlert"
-
 
 const Checkout = ({ products, handleEmptyCart }) => {
   const { userInAuthContext } =  useContext(AuthContext)
@@ -63,11 +64,24 @@ const Checkout = ({ products, handleEmptyCart }) => {
       }
 
       const paymentResponse = await processPayment({ paymentData })
+      const createOrderData = {
+        products,
+        transaction_id: paymentResponse.transaction.id,
+        amount: paymentResponse.transaction.amount,
+        address: data.address,
+      }
+      await createOrder({ createOrderData })
+
+
       setData({ ...data, success: paymentResponse.success, loading: false })
       handleEmptyCart()
     } catch(err) {
-      setData({ ...data, error: err.message, loading: false })
+      setData({ ...data, error: err.message || err.errmsg, loading: false })
     }
+  }
+
+  const handleAddress = event => {
+    setData({ ...data, address: event.target.value })
   }
 
   const showDropIn = () => (
@@ -80,6 +94,15 @@ const Checkout = ({ products, handleEmptyCart }) => {
       {
         data.clientToken && products.length > 0 && (
           <>
+            <Form.Group className="mb-3" controlId="deliveryAddr">
+              <Form.Label>Delivery address:</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={5}
+                value={data.address}
+                onChange={handleAddress}
+              />
+            </Form.Group>
             <DropIn
               options={{
                 authorization: data.clientToken,
