@@ -16,6 +16,8 @@ const paymentController = ({ paymentService }) => {
       const saleResult = await paymentService.processPayment({ paymentMethodNonce, amount })
       return res.json(saleResult)
     } catch(err) {
+console.log('err')      
+console.log(err)
       return next(err)
     }
   }

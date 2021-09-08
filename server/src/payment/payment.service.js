@@ -13,7 +13,7 @@ const productService = ({ config }) => {
   }
 
   const processPayment = ({ paymentMethodNonce, amount }) => {
-    return gateway.transcation.sale({
+    return gateway.transaction.sale({
       amount,
       paymentMethodNonce,
       options: {

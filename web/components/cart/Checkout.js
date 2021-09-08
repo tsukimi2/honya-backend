@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Button from 'react-bootstrap/Button'
 import DropIn from 'braintree-web-drop-in-react'
 import { AuthContext } from "../../contexts/AuthContext"
-import { useBraintreeClientToken } from "../../libs/apiUtils/payment-api-utils"
+import { useBraintreeClientToken, processPayment } from "../../libs/apiUtils/payment-api-utils"
 import ShowAlert from "../ui/ShowAlert"
 
 
@@ -13,7 +13,7 @@ const Checkout = ({ products }) => {
     loading: false,
     success: false,
     clientToken: null,
-    error: '',
+    error: null,
     instance: {},
     address: ''
   })
@@ -28,15 +28,12 @@ const Checkout = ({ products }) => {
   useEffect(() => {
     if(isBraintreeClientTokenError) {
       if(braintreeClientToken.err) {
-        setData({ ...data, error: `${braintreeClientToken.errmsg}. Please sign in before checkout` })
+        setData({ ...data, error: `${braintreeClientToken.errmsg}` })
       } else {
         setData({ ...data, error: 'Error occurred during payment' })
       }
     }
   }, [isBraintreeClientTokenError])
-
-console.log('data')
-console.log(data)
 
   const getTotal = () => {
     return products.reduce((currentValue, nextValue) => {
@@ -51,30 +48,42 @@ console.log(data)
     try {
       const paymentMethodObj = await data.instance.requestPaymentMethod()
 
-      
       nonce = paymentMethodObj.nonce
     } catch(err) {
       setData({ ...data, error: err.message })
+      return
     }
 
+    try {
+      const paymentData = {
+        paymentMethodNonce: nonce,
+        amount: getTotal(products)
+      }
 
+      const paymentResponse = await processPayment({ paymentData })
+console.log('paymentResponse')      
+console.log(paymentResponse)
+      setData({ ...data, success: paymentResponse.success })
+    } catch(err) {
+      setData({ ...data, error: err.message })
+    }
   }
 
   const showDropIn = () => (
-    <>
+    <div onBlur={() => setData({ ...data, error: null })}>
       {
-        data.clientToken && products.length > 0 && (
-          <div onBlur={() => setData({ ...data, error: null })}>
+        data.clientToken && products.length > 0 ? (
+          <>
             <DropIn
               options={{
                 authorization: data.clientToken
               }} onInstance={instance => (data.instance = instance)}
             />
-            <Button variant="success" onClick={buy} >Pay</Button>
-          </div>
-        )
+            <Button variant="success" size="lg" className="btn-block mt-3" onClick={buy} >Pay</Button>
+          </>
+        ) : ( showBtnCheckout() )
       }
-    </>
+    </div>
   )
 
   const showCheckout = () => (
@@ -82,21 +91,28 @@ console.log(data)
       {
         userInAuthContext ? (
           <>{ showDropIn() }</>
-        ) : (
-          <Link href="/signin" passHref>
-            <Button variant="primary">Sign in to checkout</Button>
-          </Link>
-        )
+        ) : ( showBtnCheckout() )
       }
     </>
+  )
+
+  const showBtnCheckout = () => (
+    <Link href="/signin" passHref>
+      <Button variant="primary">Sign in to checkout</Button>
+    </Link>
   )
 
   return (
     <>
       <h2>Total: ${getTotal()}</h2>
       {
-        data.error && (
+        data && data.error && data.error !== 'Forbidden access' && (
           <ShowAlert>{data.error}</ShowAlert>
+        )
+      }
+      {
+        data && data.success && (
+          <ShowAlert alertLevel="success">Thank you! Your payment was successful!</ShowAlert>
         )
       }
       { showCheckout() }
