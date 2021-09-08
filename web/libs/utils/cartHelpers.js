@@ -1,4 +1,4 @@
-import { localStorage_get, localStorage_set } from "./localStorage-utils"
+import { localStorage_get, localStorage_set, localStorage_remove } from "./localStorage-utils"
 
 // export const addItemToCart = (item, next) => {
 export const addItemToCart = (item) => {
@@ -26,7 +26,6 @@ export const addItemToCart = (item) => {
   })
 
   localStorage_set('cart', cart)
-  // next()
 }
 
 export const getNumItemsInCart = () => {
@@ -78,4 +77,8 @@ export const removeItemInCart = productId => {
   localStorage_set('cart', cart)
 
   return cart
+}
+
+export const emptyCart = () => {
+  localStorage_remove('cart')
 }

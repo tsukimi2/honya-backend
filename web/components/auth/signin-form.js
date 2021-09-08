@@ -8,7 +8,6 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import _ from 'lodash-core'
 import { signin } from '../../libs/apiUtils/auth-api-utils'
-import { localStorage_set } from '../../libs/utils/localStorage-utils'
 import { AuthContext } from '../../contexts/AuthContext'
 import FormikInput from '../ui/FormikInput'
 

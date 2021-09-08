@@ -1,15 +1,24 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import CartProductCard from '../product/CartProductCard'
 import Checkout from '../cart/Checkout'
+import { emptyCart } from '../../libs/utils/cartHelpers'
+import { CartContext } from '../../contexts/CartContextProvider'
 
 const CartPageComponent = ({ cartItems }) => {
+  const { dispatch:cartDispatch } = useContext(CartContext)
   const [items, setItems] = useState(cartItems)
 
   const removeItem = (id) => {
     setItems(items.filter(elem => elem._id !== id))
+  }
+
+  const handleEmptyCart = () => {
+    emptyCart()
+    cartDispatch({type: 'SET_ITEMS_COUNT', count: 0 })
+    setItems([])
   }
 
   return (
@@ -40,7 +49,10 @@ const CartPageComponent = ({ cartItems }) => {
         <Col md={6}>
           <h2 className="mb-4">Your cart summary</h2>
           <hr />
-          <Checkout products={items} />
+          <Checkout
+            products={items}
+            handleEmptyCart={handleEmptyCart}
+          />
         </Col>
       </Row>
     </Container>

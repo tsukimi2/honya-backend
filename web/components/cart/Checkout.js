@@ -7,8 +7,9 @@ import { useBraintreeClientToken, processPayment } from "../../libs/apiUtils/pay
 import ShowAlert from "../ui/ShowAlert"
 
 
-const Checkout = ({ products }) => {
+const Checkout = ({ products, handleEmptyCart }) => {
   const { userInAuthContext } =  useContext(AuthContext)
+  // const [isAuth, setIsAuth] = useState(userInAuthContext)
   const [data, setData] = useState({
     loading: false,
     success: false,
@@ -17,7 +18,7 @@ const Checkout = ({ products }) => {
     instance: {},
     address: ''
   })
-  const { braintreeClientToken, isLoading, isError:isBraintreeClientTokenError } = useBraintreeClientToken({})
+  const { braintreeClientToken, isLoading:isBraintreeClientTokenLoading , isError:isBraintreeClientTokenError } = useBraintreeClientToken({})
 
   useEffect(() => {
     if(braintreeClientToken && braintreeClientToken.clientToken) {
@@ -33,7 +34,7 @@ const Checkout = ({ products }) => {
         setData({ ...data, error: 'Error occurred during payment' })
       }
     }
-  }, [isBraintreeClientTokenError])
+  }, [isBraintreeClientTokenError, braintreeClientToken])
 
   const getTotal = () => {
     return products.reduce((currentValue, nextValue) => {
@@ -42,6 +43,7 @@ const Checkout = ({ products }) => {
   }
 
   const buy = async () => {
+    setData({ ...data, loading: true })
     // send the nonce to your server
     // nonce = data.instance.requestPaymentMethod()
     let nonce = null
@@ -61,27 +63,34 @@ const Checkout = ({ products }) => {
       }
 
       const paymentResponse = await processPayment({ paymentData })
-console.log('paymentResponse')      
-console.log(paymentResponse)
-      setData({ ...data, success: paymentResponse.success })
+      setData({ ...data, success: paymentResponse.success, loading: false })
+      handleEmptyCart()
     } catch(err) {
-      setData({ ...data, error: err.message })
+      setData({ ...data, error: err.message, loading: false })
     }
   }
 
   const showDropIn = () => (
     <div onBlur={() => setData({ ...data, error: null })}>
       {
-        data.clientToken && products.length > 0 ? (
+        isBraintreeClientTokenLoading && (
+          <ShowAlert alertLevel="info">Loading...</ShowAlert>
+        )
+      }
+      {
+        data.clientToken && products.length > 0 && (
           <>
             <DropIn
               options={{
-                authorization: data.clientToken
+                authorization: data.clientToken,
+                paypal: {
+                  flow: 'vault'
+                }
               }} onInstance={instance => (data.instance = instance)}
             />
             <Button variant="success" size="lg" className="btn-block mt-3" onClick={buy} >Pay</Button>
           </>
-        ) : ( showBtnCheckout() )
+        )
       }
     </div>
   )
@@ -89,9 +98,10 @@ console.log(paymentResponse)
   const showCheckout = () => (
     <>
       {
-        userInAuthContext ? (
-          <>{ showDropIn() }</>
-        ) : ( showBtnCheckout() )
+        userInAuthContext && showDropIn()
+      }
+      {
+        !userInAuthContext && showBtnCheckout()
       }
     </>
   )
@@ -105,6 +115,11 @@ console.log(paymentResponse)
   return (
     <>
       <h2>Total: ${getTotal()}</h2>
+      {
+        data && data.loading && (
+          <ShowAlert alertLevel="info">Loading...</ShowAlert>
+        )
+      }
       {
         data && data.error && data.error !== 'Forbidden access' && (
           <ShowAlert>{data.error}</ShowAlert>
@@ -120,4 +135,4 @@ console.log(paymentResponse)
   )
 }
  
-export default Checkout;
+export default Checkout
