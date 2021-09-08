@@ -17,10 +17,7 @@ const UserDashboard = () => {
   let [email, setEmail] = useState('')
   let [role, setRole] = useState('')
 
-  //let { user } = useContext(AuthContext)
   const { userInAuthContext } = useContext(AuthContext)
-  // const [userInAuthContext, updateUserInAuthContext] = useAuthContext()
-  // const { userInAuthContext } = useAuthContext()
   const router = useRouter()
 
   useEffect(() => {

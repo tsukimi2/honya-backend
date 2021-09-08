@@ -8,7 +8,6 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import _ from 'lodash-core'
 import { signin } from '../../libs/apiUtils/auth-api-utils'
-import { localStorage_set } from '../../libs/utils/localStorage-utils'
 import { AuthContext } from '../../contexts/AuthContext'
 import FormikInput from '../ui/FormikInput'
 
@@ -17,7 +16,7 @@ const SigninForm = () => {
   const [error, setError] = useState(null)
   const router = useRouter()
 
-  const { updateUserInAuthContext } = useContext(AuthContext)
+  const { dispatch:authDispatch } = useContext(AuthContext)
   
   const submitHandler = async (values) => {
     setError(null)
@@ -28,8 +27,9 @@ const SigninForm = () => {
     try {      
       const result = await signin({username, password})
       if(result.user) {
-        updateUserInAuthContext(result.user)
-        localStorage_set('user', result.user)
+        authDispatch({ type: 'SET_USER', user: result.user })
+        // updateUserInAuthContext(result.user)
+        // localStorage_set('user', result.user)
       }
 
       if(result.user.role === 'admin') {      

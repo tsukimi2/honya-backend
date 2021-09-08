@@ -20,6 +20,8 @@ import Product from './product/product.model.js'
 import ProductRepos from './product/product.repos.js'
 import ProductService from './product/product.service.js'
 import ProductController from './product/product.controller.js'
+import PaymentService from './payment/payment.service.js'
+import PaymentController from './payment/payment.controller.js'
 
 export const errHandler = ErrHandler({ logger })
 export const database = Database({ mongoose, logger })
@@ -33,4 +35,5 @@ export const userController = UserController({ logger, userService })
 export const productRepos = new ProductRepos(Product)
 export const productService = ProductService({ productRepos, categoryRepos, config, fs })
 export const productController = ProductController({ productService, IncomingForm })
-// export const productController = ProductController({ productService, form })
+export const paymentService = PaymentService({ config })
+export const paymentController = PaymentController({ paymentService })

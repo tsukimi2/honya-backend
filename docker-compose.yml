@@ -45,6 +45,9 @@ services:
       - REFRESH_TOKEN_EXPIRES_IN=60d
       - REFRESH_TOKEN_EXPIRES_IN_SEC=5184000
       - SALTROUNDS=10
+      - BRAINTREE_MERCHANT_ID
+      - BRAINTREE_PUBLIC_KEY
+      - BRAINTREE_PRIVATE_KEY
     depends_on:
       - mongo
     networks:

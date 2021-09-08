@@ -14,3 +14,12 @@ export const localStorage_set = (key, obj) => {
   localStorage.setItem(key, JSON.stringify(obj))
   return true
 }
+
+export const localStorage_remove = (key) => {
+  if(typeof window === 'undefined') {
+    return false
+  }
+
+  localStorage.removeItem(key)
+  return true
+}

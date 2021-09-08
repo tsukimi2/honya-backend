@@ -41,6 +41,16 @@ function Config() {
     nconf.set('security:jwt:refresh_token_expires_in_sec', process.env.REFRESH_TOKEN_EXPIRES_IN_SEC)
   }
   nconf.set('security:password:saltrounds', parseInt(process.env.SALTROUNDS))
+
+  if(process.env.BRAINTREE_MERCHANT_ID) {
+    nconf.set('security:payment:braintree:merchant_id', process.env.BRAINTREE_MERCHANT_ID)
+  }
+  if(process.env.BRAINTREE_PUBLIC_KEY) {
+    nconf.set('security:payment:braintree:public_key', process.env.BRAINTREE_PUBLIC_KEY)
+  }
+  if(process.env.BRAINTREE_PRIVATE_KEY) {
+    nconf.set('security:payment:braintree:private_key', process.env.BRAINTREE_PRIVATE_KEY)
+  }
 }
 
 Config.prototype.get = function(key) {
