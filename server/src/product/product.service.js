@@ -189,6 +189,10 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
 
   const deleteProduct = async (params) => productRepos.deleteOne(params)
 
+  const decreaseQuantity = async (products) => {
+    return productRepos.bulkWriteDecreaseQuantity(products)
+  }
+
   return {
     getProductById,
     getProducts,
@@ -199,6 +203,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     createProduct,
     updateProduct,
     deleteProduct,
+    decreaseQuantity,
   }
 }
 

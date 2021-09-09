@@ -31,6 +31,22 @@ const MainHeader = () => {
       title: 'Home',
       description: 'Honya App'
     },
+    '/admin/category': {
+      title: 'Category',
+      description: `Konnichiwa, ${username}`,
+    },
+    '/admin/dashboard': {
+      title: 'Admin Dashboard',
+      description: `Konnichiwa, ${username}`,
+    },
+    '/admin/orders': {
+      title: 'Orders',
+      description: `Konnichiwa, ${username}, you can manage all the orders here`,
+    },
+    '/admin/product/create': {
+      title: 'Add a new product',
+      description: `Konnichiwa, ${username}, ready to add a new product?`
+    },
     '/shop': {
       title: 'Shop',
       description: 'Shop and find books you like'
@@ -50,18 +66,6 @@ const MainHeader = () => {
     '/user/dashboard': {
       title: 'Dashboard',
       description: `Konnichiwa, ${username}`,
-    },
-    '/admin/dashboard': {
-      title: 'Admin Dashboard',
-      description: `Konnichiwa, ${username}`,
-    },
-    '/admin/category': {
-      title: 'Category',
-      description: `Konnichiwa, ${username}`,
-    },
-    '/admin/product/create': {
-      title: 'Add a new product',
-      description: `Konnichiwa, ${username}, ready to add a new product?`
     },
     '/product': {
       title: 'Product',

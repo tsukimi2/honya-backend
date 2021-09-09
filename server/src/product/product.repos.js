@@ -38,4 +38,17 @@ export default class ProductRepos extends Repos {
 
     return docs
   }
+
+  async bulkWriteDecreaseQuantity(products) {
+    const bulkOps = products.map(item => {
+      return {
+        updateOne: {
+          filter: { _id: item._id },
+          update: { $inc: { quantity: -item.count, sold: +item.count }}
+        }
+      }
+    })
+
+    return this.model.bulkWrite(bulkOps, {})
+  }
 }

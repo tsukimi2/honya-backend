@@ -1,21 +1,9 @@
 import BadRequestError from "../errors/BadRequestError.js"
+import NotFoundError from "../errors/NotFoundError.js"
 import UnprocessableEntityError from "../errors/UnprocessableEntityError.js"
 
 const orderController = ({ orderService }) => {
   const create = (req, res, next) => {
-console.log('req auth')
-console.log(req.auth)
-/*
-honya-server | {
-honya-server |   order: {
-honya-server |     products: [ [Object] ],
-honya-server |     transaction_id: 'ab1mr0vj',
-honya-server |     amount: '65.00',
-honya-server |     address: 'Harbour Plaza Resort City,\nTin Shu Wai'
-honya-server |   }
-honya-server | }
-*/
-
     if(!req.body.order) {
       return next(new BadRequestError('Missing order'))
     }
@@ -29,14 +17,24 @@ honya-server | }
       const order = orderService.createOrder(orderData)
       return res.status(200).json(order)
     } catch(err) {
+      return next(new UnprocessableEntityError('Failed to create order'))
+    }
+  }
+
+  const listOrders = async (req, res, next) => {
+    try {
+      const orders = await orderService.listOrders()
+      return res.status(200).json({ orders })
+    } catch(err) {
 console.log('err')      
 console.log(err)
-      return next(new UnprocessableEntityError('Failed to create order'))
+      return next(new NotFoundError('orders not found', { err }))
     }
   }
 
   return {
     create,
+    listOrders,
   }
 }
 
