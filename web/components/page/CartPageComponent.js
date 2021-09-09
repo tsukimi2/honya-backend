@@ -4,12 +4,14 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import CartProductCard from '../product/CartProductCard'
 import Checkout from '../cart/Checkout'
-import { emptyCart } from '../../libs/utils/cartHelpers'
+import { emptyCart, updateItemInCart, getNumItemsInCart, removeItemInCart } from '../../libs/utils/cartHelpers'
 import { CartContext } from '../../contexts/CartContextProvider'
+
 
 const CartPageComponent = ({ cartItems }) => {
   const { dispatch:cartDispatch } = useContext(CartContext)
   const [items, setItems] = useState(cartItems)
+  //const [count, setCount] = useState(storedCount)
 
   const removeItem = (id) => {
     setItems(items.filter(elem => elem._id !== id))
@@ -21,6 +23,27 @@ const CartPageComponent = ({ cartItems }) => {
     setItems([])
   }
 
+  const handleCountChange = (productId, val) => {
+    // setCount(val < 1 ? 1 : val)
+    const count = val < 1 ? 1 : val
+    setItems(items.map(elem => {
+      if(elem._id === productId) {
+        return { ...elem, count: val }
+      }
+      return elem
+    }))
+    updateItemInCart(productId, val)
+    cartDispatch({ type: 'SET_ITEMS_COUNT', count: getNumItemsInCart() })
+  }
+
+  const handleRemoveProduct = (productId) => {
+    removeItemInCart(productId)
+    cartDispatch({ type: 'SET_ITEMS_COUNT', count: getNumItemsInCart() })
+    removeItem(productId)
+  }
+
+console.log('items')
+console.log(items)
   return (
     <Container fluid>
       <Row>
@@ -38,7 +61,8 @@ const CartPageComponent = ({ cartItems }) => {
               quantity={product.quantity}
               storedCount={product.count}
               showAddToCardBtn={false}
-              removeItem={removeItem}
+              handleRemoveProduct={handleRemoveProduct}
+              handleCountChange={handleCountChange}
             />
           ))
         }

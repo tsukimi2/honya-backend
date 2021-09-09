@@ -93,11 +93,35 @@ const userController = ({ logger, userService }) => {
     next()
   }
 
+  const addOrderToUserHistory = async (req, res, next) => {
+    if(!(req.auth && req.auth._id)) {
+      logger.warn('Failed to update user purchase history due to no user ID found when trying to push products into user purchas history')
+      return next()
+    }
+    if(!(req.body && req.body.order && req.body.order.products && Array.isArray(req.body.order.products))) {
+      logger.warn('Failed to update user purchase history due to no products found in order')
+      return next()
+    }
+    if(!(req.body.order.transaction_id && req.body.order.amount)) {
+      logger.warn('Failed to update user purchase history due to incomplete order info')
+      return next()
+    }
+
+    const uid = req.auth._id
+    try {
+      await userService.addOrderToUserHistory(uid, req.body.order)
+      return next()
+    } catch(err) {
+      return next(err)
+    }
+  }
+
   return {
     attachUidParamToReq,
     getUserById,
     updateUserById,
-    deleteUserById
+    deleteUserById,
+    addOrderToUserHistory,
   }
 }
 

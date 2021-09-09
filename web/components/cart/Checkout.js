@@ -10,7 +10,6 @@ import ShowAlert from "../ui/ShowAlert"
 
 const Checkout = ({ products, handleEmptyCart }) => {
   const { userInAuthContext } =  useContext(AuthContext)
-  // const [isAuth, setIsAuth] = useState(userInAuthContext)
   const [data, setData] = useState({
     loading: false,
     success: false,
@@ -114,6 +113,9 @@ const Checkout = ({ products, handleEmptyCart }) => {
             <Button variant="success" size="lg" className="btn-block mt-3" onClick={buy} >Pay</Button>
           </>
         )
+      }
+      {
+        !data.clientToken && products.length > 0 && showBtnCheckout()
       }
     </div>
   )
