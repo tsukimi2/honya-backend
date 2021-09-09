@@ -5,7 +5,7 @@ import ShowAlert from "../ui/ShowAlert"
 import OrderList from './OrderList'
 
 
-const Orders = ({ orders, isLoading, isError, errOrders }) => {
+const Orders = ({ orders, isLoading, isError, errOrders, statusValues, handleStatusChange }) => {
   return (
     <Container md={{ span: 8, offset: 2 }} className="mt-4">
       {
@@ -29,6 +29,8 @@ const Orders = ({ orders, isLoading, isError, errOrders }) => {
             <h1>Total orders: {orders.length}</h1>
             <OrderList
               orders={orders}
+              statusValues={statusValues}
+              handleStatusChange={handleStatusChange}
             />
           </Row>
         )

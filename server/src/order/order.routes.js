@@ -6,6 +6,10 @@ const router = express.Router()
 
 router.get('/orders', validateJwt, authController.isAdmin, orderController.listOrders)
 
+router.get('/orders/status-values', validateJwt, authController.isAdmin, orderController.getStatusValues)
+
+router.patch('/orders/:orderId/status', validateJwt, authController.isAdmin, orderController.updateOrderStatus)
+
 router.post('/order',
   validateJwt,
   userController.addOrderToUserHistory,

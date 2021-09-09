@@ -16,9 +16,19 @@ const orderService = ({ orderRepos }) => {
     return orderRepos.get(filterParams, opts)
   }
 
+  const getStatusValues = () => {
+    return orderRepos.getStatusValues()
+  }
+
+  const updateOrderStatus = async (orderId, status) => {
+    return orderRepos.updateOrderStatus(orderId, status)
+  }
+
   return {
     createOrder,
     listOrders,
+    getStatusValues,
+    updateOrderStatus,
   }
 }
 

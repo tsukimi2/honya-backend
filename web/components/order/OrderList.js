@@ -1,7 +1,7 @@
 import Accordion from 'react-bootstrap/Accordion'
 import OrderItem from './OrderItem'
 
-const OrderList = ({ orders }) => {
+const OrderList = ({ orders, statusValues, handleStatusChange }) => {
   return (
     <Accordion>
     {
@@ -11,6 +11,8 @@ const OrderList = ({ orders }) => {
             oIndex={oIndex}
             key={oIndex}
             order={order}
+            statusValues={statusValues}
+            handleStatusChange={handleStatusChange}
           />
         )
       })

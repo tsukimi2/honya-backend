@@ -26,15 +26,40 @@ const orderController = ({ orderService }) => {
       const orders = await orderService.listOrders()
       return res.status(200).json({ orders })
     } catch(err) {
-console.log('err')      
-console.log(err)
       return next(new NotFoundError('orders not found', { err }))
+    }
+  }
+
+  const getStatusValues = (req, res, next) => {
+    try {
+      const statusValues = orderService.getStatusValues()
+      return res.status(200).json({ statusValues })
+    } catch(err) {
+      return next(new NotFoundError('order status values not found'), { err })
+    }
+  }
+
+  const updateOrderStatus = async (req, res, next) => {
+    if(!(req.body && req.body.status)) {
+      return next(new BadRequestError('missing order status'))
+    }
+
+    const { orderId } = req.params
+    const { status } = req.body
+
+    try {
+      const order = await orderService.updateOrderStatus(orderId, status)
+      return res.status(200).json({ order })
+    } catch(err) {
+      return next(new UnprocessableEntityError('order status update failed', { err }))
     }
   }
 
   return {
     create,
     listOrders,
+    getStatusValues,
+    updateOrderStatus,
   }
 }
 

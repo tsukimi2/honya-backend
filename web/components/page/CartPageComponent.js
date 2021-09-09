@@ -25,7 +25,7 @@ const CartPageComponent = ({ cartItems }) => {
 
   const handleCountChange = (productId, val) => {
     // setCount(val < 1 ? 1 : val)
-    const count = val < 1 ? 1 : val
+    // const count = val < 1 ? 1 : val
     setItems(items.map(elem => {
       if(elem._id === productId) {
         return { ...elem, count: val }
@@ -42,8 +42,6 @@ const CartPageComponent = ({ cartItems }) => {
     removeItem(productId)
   }
 
-console.log('items')
-console.log(items)
   return (
     <Container fluid>
       <Row>
