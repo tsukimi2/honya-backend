@@ -185,13 +185,18 @@ export default class Repos {
     return doc
   }
 
-  /*
-api_1    | result
-api_1    | { n: 0, ok: 1, deletedCount: 0 }
+  async findOneAndUpdate(filterParams, updateParams, opts={}) {
+    if(!filterParams || _.isEmpty(filterParams) || !updateParams || _.isEmpty(updateParams)) {
+      throw new ApplicationError('Invalid filter or update params')
+    }
 
-api_1    | result
-api_1    | { n: 1, ok: 1, deletedCount: 1 }
-  */
+    try {
+      return this.model.findOneAndUpdate(filterParams, updateParams, opts)
+    } catch(err) {
+      throw new DatabaseError('DatabaseError', { err })
+    }
+  }
+
   async deleteOne(filterParams) {
     let result = null
 

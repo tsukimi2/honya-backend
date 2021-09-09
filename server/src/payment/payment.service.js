@@ -1,10 +1,6 @@
 import braintree from 'braintree'
 
 const productService = ({ config }) => {
-console.log('braintree credentials')
-console.log(config.get('security:payment:braintree:merchant_id'))
-console.log(config.get('security:payment:braintree:public_key'))
-console.log(config.get('security:payment:braintree:private_key'))
   const gateway = new braintree.BraintreeGateway({
     environment: braintree.Environment.Sandbox, // comment out in production
     merchantId: config.get('security:payment:braintree:merchant_id'),

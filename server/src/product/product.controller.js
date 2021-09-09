@@ -331,8 +331,6 @@ const productController = ({ productService, IncomingForm }) => {
         })
       })
     } catch(err) {
-console.log('err')      
-console.log(err)
       return next(new UnprocessableEntityError('failed to create product'), { err })
     }
 
@@ -413,6 +411,21 @@ console.log(err)
     return res.status(204).end()
   }
 
+  const decreaseQuantity = async (req, res, next) => {
+    if(!(req.body && req.body.order && req.body.order.products)) {
+      return next(new UnprocessableEntityError('Failed to update product quantity due to missing products in order'))
+    }
+
+    const { products } = req.body.order
+    try {
+      await productService.decreaseQuantity(products)
+    } catch(err) {
+      return next(new UnprocessableEntityError('Failed to update product quantity'), { err })
+    }
+
+    next()
+  }
+
   return {
     getProductById,
     getProducts,
@@ -425,6 +438,7 @@ console.log(err)
     createProduct,
     updateProduct,
     deleteProduct,
+    decreaseQuantity,
   }
 }
 
