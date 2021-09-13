@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Nav from 'react-bootstrap/Nav'
 
-const UserLinks = () => {
+const UserLinks = ({ uid }) => {
   return (
     <Card>
       <Card.Header>User Links</Card.Header>
@@ -14,7 +14,7 @@ const UserLinks = () => {
           </Link>
         </ListGroup.Item>
         <ListGroup.Item>
-          <Link href="/profile/update" passHref>
+          <Link href={`/profile/${uid}`} passHref>
             <Nav.Link>Update Profile</Nav.Link>
           </Link>
         </ListGroup.Item>

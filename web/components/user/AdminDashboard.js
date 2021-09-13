@@ -3,21 +3,21 @@ import { useRouter } from 'next/router'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { localStorage_get } from '../../libs/utils/localStorage-utils'
 import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from "./UserInfo"
 import AdminLinks from "./AdminLinks"
-import cookie from 'cookie-cutter'
+
 
 const AdminDashboard = () => {
-  let [username, setUsername] = useState('')
-  let [email, setEmail] = useState('')
-  let [role, setRole] = useState('')
-  let [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [role, setRole] = useState('')
+  // const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const { userInAuthContext } = useContext(AuthContext)
   const router = useRouter()
 
+  /*
   useEffect(() => {
     const loginHash = cookie.get('loginHash')
     if(loginHash) {  
@@ -47,6 +47,22 @@ const AdminDashboard = () => {
       setRole(storedUser.role)
     }
   }, [isAuthenticated, userInAuthContext, router])
+  */
+
+  useEffect(() => {   
+    if(!userInAuthContext) {
+      router.replace('/signin')
+    } else {
+      if(userInAuthContext.role !== 'admin') {
+        router.replace('/user/dashboard')
+      }
+
+      setUsername(userInAuthContext.username)
+      setEmail(userInAuthContext.email)
+      setRole(userInAuthContext.role)
+      // setUid(userInAuthContext._id)
+    }
+  }, [userInAuthContext, router])
 
   return (
     <Container md={{ span: 8, offset: 2 }} className="mt-4">

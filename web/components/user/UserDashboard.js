@@ -3,60 +3,39 @@ import { useRouter } from 'next/router'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import { localStorage_get } from '../../libs/utils/localStorage-utils'
-// import { useAuthContext } from "../../contexts/AuthContext"
 import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from './UserInfo'
 import PurchaseHistory from './PurchaseHistory'
 import UserLinks from "./UserLlinks"
-// import { isAuthenticated } from '../../libs/utils/auth-utils'
-import cookie from 'cookie-cutter'
 
 const UserDashboard = () => {
-  let [username, setUsername] = useState('')
-  let [email, setEmail] = useState('')
-  let [role, setRole] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [role, setRole] = useState('')
+  const [uid, setUid] = useState('')
 
   const { userInAuthContext } = useContext(AuthContext)
   const router = useRouter()
 
-  useEffect(() => {
-    const loginHash = cookie.get('loginHash')
-    if(!loginHash) {
-      router.replace('/signin')
-    }
-
-    let storedUser = null
+  useEffect(() => {   
     if(!userInAuthContext) {
-      storedUser = localStorage_get('user')
+      router.replace('/signin')
     } else {
-      storedUser = { ...userInAuthContext }
-    }
-
-    if(storedUser) {
-      if(storedUser.role === 'admin') {
+      if(userInAuthContext.role === 'admin') {
         router.replace('/admin/dashboard')
       }
 
-      setUsername(storedUser.username)
-      setEmail(storedUser.email)
-      setRole(storedUser.role)
+      setUsername(userInAuthContext.username)
+      setEmail(userInAuthContext.email)
+      setRole(userInAuthContext.role)
+      setUid(userInAuthContext._id)
     }
   }, [userInAuthContext, router])
-
-  /*
-      <Container md={{ span: 8, offset: 2 }}>
-      <Row>
-        <Col md={3}><AdminLinks /></Col>
-        <Col md={9}><UserInfo username={username} email={email} role={role} /></Col>
-      </Row>
-    </Container>
-    */
 
   return (
     <Container md={{ span: 8, offset: 2 }} className="mt-4">
       <Row>
-        <Col md={3}><UserLinks /></Col>
+        <Col md={3}><UserLinks uid={uid} /></Col>
         <Col md={9}>
           <UserInfo username={username} email={email} role={role} />
           <PurchaseHistory />

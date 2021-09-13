@@ -25,7 +25,7 @@ const CrudForm = ({
       }}
     >
     {
-      ({ handleSubmit, errors, isSubmitting }) => (
+      ({ handleSubmit, handleChange, errors, isSubmitting }) => (
         <Form onSubmit={handleSubmit}>
           <Form.Group>
 
@@ -37,6 +37,7 @@ const CrudForm = ({
             className="mb-4"
             ishorizontal={ishorizontalFrm}
             placeholder={frmInputPlaceholder}
+            handleChange={handleChange}
           />
       
           <MDBBtn rounded type="submit" color="primary" disabled={isSubmitting || !(_.isEmpty(errors))}>

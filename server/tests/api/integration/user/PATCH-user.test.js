@@ -69,7 +69,7 @@ describe('Update user', () => {
         let updatedUser = null
 
         res = await request(app)
-          .put(`${API_PREFIX}/users/${userId}`)
+          .patch(`${API_PREFIX}/users/${userId}`)
           .send({ password: newPassword, dummy: 'dummy' })
           .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
           .expect(200)
@@ -82,7 +82,7 @@ describe('Update user', () => {
         expect(updatedUser).to.not.have.property('dummy')
         
         await request(app)
-          .put(`${API_PREFIX}/users/${userId}`)
+          .patch(`${API_PREFIX}/users/${userId}`)
           .send({ password: oldPassword })
           .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
       })
@@ -92,7 +92,7 @@ describe('Update user', () => {
           const userId = user._id.toString()
   
           res = await request(app)
-            .put(`${API_PREFIX}/users/${userId}`)
+            .patch(`${API_PREFIX}/users/${userId}`)
             .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
             .expect(400)
   
@@ -105,7 +105,7 @@ describe('Update user', () => {
           const oldPassword = userParams.password
 
           res = await request(app)
-            .put(`${API_PREFIX}/users/${userId}`)
+            .patch(`${API_PREFIX}/users/${userId}`)
             .send({ password: oldPassword })
             .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
             .expect(400)
@@ -119,7 +119,7 @@ describe('Update user', () => {
           const oldPassword = ''
 
           res = await request(app)
-            .put(`${API_PREFIX}/users/${userId}`)
+            .patch(`${API_PREFIX}/users/${userId}`)
             .send({ password: oldPassword, dummy: 'dummy' })
             .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
             .expect(400)
@@ -133,7 +133,7 @@ describe('Update user', () => {
           const oldPassword = '1234567'
 
           res = await request(app)
-            .put(`${API_PREFIX}/users/${userId}`)
+            .patch(`${API_PREFIX}/users/${userId}`)
             .send({ password: oldPassword })
             .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
             .expect(400)
@@ -147,7 +147,7 @@ describe('Update user', () => {
           const oldPassword = '123456789012345678901'
   
           res = await request(app)
-            .put(`${API_PREFIX}/users/${userId}`)
+            .patch(`${API_PREFIX}/users/${userId}`)
             .send({ password: oldPassword })
             .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
             .expect(400)
@@ -185,7 +185,7 @@ describe('Update user', () => {
         const newPassword = 'testing2'
 
         res = await request(app)
-          .put(`${API_PREFIX}/users/${user2Id}`)
+          .patch(`${API_PREFIX}/users/${user2Id}`)
           .send({ password: newPassword })
           .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
           .set('Accept', 'application/json')
@@ -202,7 +202,7 @@ describe('Update user', () => {
         const newPassword = 'testing2'
 
         res = await request(app)
-          .put(`${API_PREFIX}/users/${userId}`)
+          .patch(`${API_PREFIX}/users/${userId}`)
           .send({ password: newPassword })
           .expect(403)
   

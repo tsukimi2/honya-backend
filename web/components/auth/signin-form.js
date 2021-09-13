@@ -17,7 +17,7 @@ const SigninForm = () => {
   const router = useRouter()
 
   const { dispatch:authDispatch } = useContext(AuthContext)
-  
+
   const submitHandler = async (values) => {
     setError(null)
     //setLoading(true)
@@ -81,13 +81,14 @@ const SigninForm = () => {
         }}
       >
         {
-          ({ handleSubmit, errors, isSubmitting }) => (
+          ({ handleSubmit, handleChange, errors, isSubmitting }) => (
             <Form onSubmit={handleSubmit}>
               <FormikInput
                 label="Username"
                 name="username"
                 type="text"
                 className="mb-4"
+                handleChange={handleChange}
               />
 
               <FormikInput
@@ -95,6 +96,7 @@ const SigninForm = () => {
                 name="password"
                 type="password"
                 className="mb-4"
+                handleChange={handleChange}
               />
       
               <Button type="submit" variant="primary" disabled={isSubmitting || !(_.isEmpty(errors))}>
