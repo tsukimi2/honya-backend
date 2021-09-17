@@ -7,6 +7,7 @@ import { AuthContext } from "../../contexts/AuthContext"
 import UserInfo from './UserInfo'
 import PurchaseHistory from './PurchaseHistory'
 import UserLinks from "./UserLlinks"
+import { useUserOrderHistory } from "../../libs/apiUtils/order-api-utils"
 
 const UserDashboard = () => {
   const [username, setUsername] = useState('')
@@ -15,6 +16,7 @@ const UserDashboard = () => {
   const [uid, setUid] = useState('')
 
   const { userInAuthContext } = useContext(AuthContext)
+  const { orderHistory: history } = useUserOrderHistory({ uid })
   const router = useRouter()
 
   useEffect(() => {   
@@ -38,7 +40,9 @@ const UserDashboard = () => {
         <Col md={3}><UserLinks uid={uid} /></Col>
         <Col md={9}>
           <UserInfo username={username} email={email} role={role} />
-          <PurchaseHistory />
+          <PurchaseHistory
+            history={history}
+          />
         </Col>
       </Row>
     </Container>

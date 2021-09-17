@@ -66,7 +66,7 @@ const HorizontalProductCard = ({
   return (
     <Card>
       <Container>
-      <Row>
+        <Row>
           <Col md={3}>
             <Card.Body>
             <Row>

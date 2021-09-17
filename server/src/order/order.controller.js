@@ -55,11 +55,22 @@ const orderController = ({ orderService }) => {
     }
   }
 
+  const getOrderHistory = async (req, res, next) => {
+    try {
+      const { uid } = req.params
+      const orderHistory = await orderService.getOrderHistory(uid)
+      res.status(200).json({ orderHistory })
+    } catch(err) {
+      return next(new NotFoundError('user order history values not found'), { err })
+    }
+  }
+
   return {
     create,
     listOrders,
     getStatusValues,
     updateOrderStatus,
+    getOrderHistory,
   }
 }
 

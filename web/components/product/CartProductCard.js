@@ -26,7 +26,6 @@ CartProductCard.propTypes = {
   name: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   quantity: PropTypes.number.isRequired,
-  // storedCount: PropTypes.number.isRequired,
 }
 
 export default CartProductCard

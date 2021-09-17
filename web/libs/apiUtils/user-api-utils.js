@@ -15,6 +15,20 @@ export const useUser = ({ uid, fullUrl=false }) => {
   }
 }
 
+export const useUserPurchaseHistory = ({ uid, fullUrl=false }) => {
+  const tmpUrl = `${API_PREFIX}/users/${uid}?history=1`
+  const url = !fullUrl ? tmpUrl : `${API_PROTO}://${API_HOST}${tmpUrl}`
+
+  const{ data, error } = useSWR(url)
+
+  return {
+    history: data && data.data && data.data.user && data.data.user.history ? data.data.user.history : [],
+    err: error && data ? data : null,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
 export const updateUser = async ({ user, fullUrl=false }) => {
   const tmpUrl = `${API_PREFIX}/users/${user._id}`
   const url = !fullUrl ? tmpUrl : `${API_PROTO}://${API_HOST}${tmpUrl}`

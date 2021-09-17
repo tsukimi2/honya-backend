@@ -8,6 +8,11 @@ const userController = ({ logger, userService }) => {
   const getUserById = async (req, res, next) => {
     const { _id } = req.user
     let user = null
+    let needHistory = false
+
+    if(req.query && req.query.history) {
+      needHistory = true
+    }
   
     try {
       user = await userService.getUserById(_id)
@@ -27,7 +32,8 @@ const userController = ({ logger, userService }) => {
         user: {
           _id: user._id.toString(),
           username: user.username,
-          email: user.email
+          email: user.email,
+          history: needHistory ? user.history : undefined
         }
       }
     })
