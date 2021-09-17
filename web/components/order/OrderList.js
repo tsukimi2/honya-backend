@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import Accordion from 'react-bootstrap/Accordion'
 import OrderItem from './OrderItem'
 
@@ -19,6 +20,17 @@ const OrderList = ({ orders, statusValues, handleStatusChange }) => {
     }
     </Accordion>
   )
+}
+
+OrderList.propTypes = {
+  orders: PropTypes.array.isRequired,
+  statusValues: PropTypes.array,
+  handleStatusChange: PropTypes.func,
+}
+
+OrderList.defaultProps = {
+  statusValues: null,
+  handleStatusChange: () => {}
 }
 
 export default OrderList

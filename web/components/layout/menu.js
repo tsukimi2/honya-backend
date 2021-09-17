@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
-import cookie from 'cookie-cutter'
+import { useContext } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button'
 import Link from 'next/link'
@@ -25,13 +24,13 @@ const Menu = () => {
   const router = useRouter()
   const { userInAuthContext, dispatch:authDispatch } = useContext(AuthContext)
   const { numItemsInCart } = useContext(CartContext)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  // const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   /* eslint-disable react-hooks/exhaustive-deps */
-  useEffect(() => {
-    const hasLoginHash = cookie.get('loginHash') ? true : false
-    setIsAuthenticated(hasLoginHash)
-  })
+  // useEffect(() => {
+    // const hasLoginHash = cookie.get('loginHash') ? true : false
+    // setIsAuthenticated(hasLoginHash)
+  // })
   /* eslint-enable react-hooks/exhaustive-deps */
 
 
@@ -39,7 +38,7 @@ const Menu = () => {
     signout()
     // updateUserInAuthContext(null)
     authDispatch({ type: 'SET_USER', user: null })
-    setIsAuthenticated(false)
+    // setIsAuthenticated(false)
     router.push('/')
   }
 
@@ -89,7 +88,7 @@ const Menu = () => {
               Cart { numItemsInCart > 0 && (<sup><Badge pill bg="info">{numItemsInCart}</Badge></sup>)}
             </a>
           </Link>
-          {isAuthenticated && getUserRole() === 'user' && (
+          {userInAuthContext && getUserRole() === 'user' && (
             <Link href="/user/dashboard">
              <a
                 className="nav-link"
@@ -100,7 +99,7 @@ const Menu = () => {
             </Link>
           )}
 
-          {isAuthenticated && getUserRole() === 'admin' && (
+          {userInAuthContext && getUserRole() === 'admin' && (
             <Link href="/admin/dashboard" passHref>
               <a
                 className="nav-link"
@@ -121,7 +120,7 @@ const Menu = () => {
           </Link>
 
           {
-            !isAuthenticated && (
+            !userInAuthContext && (
               <Link href="/signin" passHref>
                 <a
                   className="nav-link"
@@ -134,7 +133,7 @@ const Menu = () => {
           }
 
           {
-            isAuthenticated && (
+            userInAuthContext && (
               <Button
                 className={styles.signoutBtn}
                 variant="outline-light"

@@ -15,23 +15,30 @@ const OrderItem = ({ oIndex, order, statusValues, handleStatusChange }) => {
     <Accordion.Item eventKey={oIndex}>
       <Accordion.Header>Order ID: {order._id}</Accordion.Header>
       <Accordion.Body>
-        <Form.Group className="mb-3" controlId="order-status">
-          <FloatingLabel label="Order Status">
-            <Form.Control as="select"
-              aria-label="Order Status"
-              onChange={e => onStatusChange(e, order.status, order._id)}
-            >
-              {
-                statusValues.map((status, index) => {
-                  if(status === order.status) {
-                    return (<option key={index} value={status} selected>{status}</option>)
+        {
+          statusValues ? (
+            <Form.Group className="mb-3" controlId="order-status">
+              <FloatingLabel label="Order Status">
+                <Form.Control as="select"
+                  aria-label="Order Status"
+                  onChange={e => onStatusChange(e, order.status, order._id)}
+                >
+                  {
+                    statusValues.map((status, index) => {
+                      if(status === order.status) {
+                        return (<option key={index} value={status} selected>{status}</option>)
+                      }
+                      return (<option key={index} value={status}>{status}</option>)
+                    })
                   }
-                  return (<option key={index} value={status}>{status}</option>)
-                })
-              }
-            </Form.Control>
-          </FloatingLabel>
-        </Form.Group>
+                </Form.Control>
+              </FloatingLabel>
+            </Form.Group>
+          ) : (
+            <><span>Status: {order.status}</span><br /></>
+          )
+        }
+
         TransactionID: {order.transaction_id}<br />
         Amount: ${order.amount}<br />
         Ordered by: {order.user.name}<br />

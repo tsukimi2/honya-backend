@@ -116,7 +116,7 @@ const AddProduct = () => {
         }}
       >
         {
-          ({ handleSubmit, setFieldValue, errors, isSubmitting }) => (
+          ({ handleSubmit, handleChange, setFieldValue, errors, isSubmitting }) => (
             <Form className={styles.form} onSubmit={handleSubmit}>
               <FormikInput
                 label="Name"
@@ -124,6 +124,7 @@ const AddProduct = () => {
                 type="text"
                 ishorizontal="true"
                 className="mb-3"
+                handleChange={handleChange}
               />
 
               <Form.Group as={Row} controlId="file" className="mb-3">
@@ -145,6 +146,7 @@ const AddProduct = () => {
                 type="text"
                 ishorizontal="true"
                 className="mb-3"
+                handleChange={handleChange}
               />
 
               <FormikInput
@@ -153,6 +155,7 @@ const AddProduct = () => {
                 type="number"
                 ishorizontal="true"
                 className="mb-3"
+                handleChange={handleChange}
               />
 
               <FormikSelect
@@ -177,6 +180,7 @@ const AddProduct = () => {
                 type="number"
                 ishorizontal="true"
                 className="mb-3"
+                handleChange={handleChange}
               />
 
               <div className={styles.submitBtncontainer}>

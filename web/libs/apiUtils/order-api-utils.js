@@ -55,6 +55,20 @@ export const useOrderStatusValues = ({ fullUrl=false }) => {
   }
 }
 
+export const useUserOrderHistory = ({ uid, fullUrl=false }) =>{
+  const tmpUrl = `${API_PREFIX}/orders/user/${uid}`
+  const url = !fullUrl ? tmpUrl : `${API_PROTO}://${API_HOST}${tmpUrl}`
+
+  const{ data, error } = useSWR(url)
+
+  return {
+    orderHistory: data && data.orderHistory ? data.orderHistory : [],
+    err: error && data ? data : null,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
+
 export const updateOrderStatus = async ({ orderId, status, fullUrl=false }) => {
   const tmpUrl = `${API_PREFIX}/orders/${orderId}/status`
   const url = !fullUrl ? tmpUrl : `${API_PROTO}://${API_HOST}${tmpUrl}`

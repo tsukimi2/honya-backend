@@ -7,7 +7,7 @@ import { authController, userController } from '../di-container.js'
 const router = express.Router()
 
 router.get('/users/:uid', validateJwt, authController.isAuth, userController.getUserById)
-router.put('/users/:uid',
+router.patch('/users/:uid',
   validateJwt,
   authController.isAuth,
   body('password')

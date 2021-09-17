@@ -9,6 +9,16 @@ const FormikInput = ({ label, ...props }) => {
   const [field, meta] = useField(props)
   const { type, className, labelColspan, inputControlColspan, ishorizontal } = props
   const isHorizontal = ishorizontal === 'true' ? true : false
+  let formControlProps = { type }
+  if(props.disabled) {
+    formControlProps['disabled'] = true
+  }
+
+// https://stackoverflow.com/questions/51159477/withformik-how-to-use-handlechange
+  const onInputChange = (evt) => {
+    const val = evt.target.value
+    props.handleInputChange(val)
+  }
 
   return (
     <>
@@ -16,11 +26,23 @@ const FormikInput = ({ label, ...props }) => {
         !isHorizontal && (
           <Form.Group className={className} controlId={props.id || props.name}>
             <Form.Label>{label}</Form.Label>
-              <Form.Control
-                type={type}
-                isInvalid={!!meta.error}
-                {...field}
-              />
+              {
+                !formControlProps.disabled ? (
+                  <Form.Control
+                    type={type}
+                    isInvalid={!!meta.error}
+                    {...field}
+                    onChange={(e) => {props.handleChange(e); onInputChange(e)}}
+                  />
+                ) : (
+                  <Form.Control
+                    type={type}
+                    disabled
+                    isInvalid={!!meta.error}
+                    {...field}
+                  />
+                )
+              }
             {
               meta.touched && meta.error && (
                 <ErrorMessage component="div" name={field.name} className={styles.error} />
@@ -39,6 +61,7 @@ const FormikInput = ({ label, ...props }) => {
                 type={type}
                 isInvalid={!!meta.error}
                 {...field}
+                onChange={(e) => {props.handleChange(e); onInputChange(e)}}
               />
               {
                 meta.touched && meta.error && (
@@ -61,7 +84,9 @@ FormikInput.propTypes = {
   placeholder: PropTypes.string,
   ishorizontal: PropTypes.oneOf(['true', 'false']),
   labelColspan: PropTypes.number,
-  inputControlColspan: PropTypes.number
+  inputControlColspan: PropTypes.number,
+  handleChange: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func,
 }
 
 FormikInput.defaultProps = {
@@ -70,7 +95,8 @@ FormikInput.defaultProps = {
   placeholder: '',
   ishorizontal: 'false',
   labelColspan: 2,
-  inputControlColspan: 10
+  inputControlColspan: 10,
+  handleInputChange: () => {}
 }
 
 export default FormikInput

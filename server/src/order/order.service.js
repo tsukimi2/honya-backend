@@ -24,11 +24,39 @@ const orderService = ({ orderRepos }) => {
     return orderRepos.updateOrderStatus(orderId, status)
   }
 
+  const getOrderHistory = async (uid) => {
+    const filterParams = { user: uid }
+    const opts = {
+      populatePath: 'user',
+      populateSelect: '_id name',
+      sortBy: 'createdAt',
+      order: DISPLAY.ORDER.DESC,
+    }
+    return orderRepos.get(filterParams, opts)
+  }
+
+/*
+exports.purchaseHistory = (req, res) => {
+    Order.find({ user: req.profile._id })
+        .populate('user', '_id name')
+        .sort('-created')
+        .exec((err, orders) => {
+            if (err) {
+                return res.status(400).json({
+                    error: errorHandler(err)
+                });
+            }
+            res.json(orders);
+        });
+};
+*/  
+
   return {
     createOrder,
     listOrders,
     getStatusValues,
     updateOrderStatus,
+    getOrderHistory,
   }
 }
 

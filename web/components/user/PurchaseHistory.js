@@ -1,15 +1,23 @@
+import PropTypes from 'prop-types'
 import Card from 'react-bootstrap/Card'
-import ListGroup from 'react-bootstrap/ListGroup'
+import OrderList from '../order/OrderList'
 
-const PurchaseHistory = () => {
+const PurchaseHistory = ({ history }) => {
+  
   return (
     <Card>
-      <Card.Header>Purchase history</Card.Header>
-      <ListGroup>
-        <ListGroup.Item>history</ListGroup.Item>
-      </ListGroup>
-    </Card>
+    <Card.Header>Purchase history</Card.Header>
+    <Card.Body>
+      <OrderList
+        orders={history}
+      />
+    </Card.Body>
+  </Card>
   )
+}
+
+PurchaseHistory.propTypes = {
+  history: PropTypes.array.isRequired,
 }
 
 export default PurchaseHistory
