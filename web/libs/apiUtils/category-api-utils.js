@@ -7,9 +7,19 @@ export const getCategories = async ({ fullUrl=false }) => {
   if(fullUrl) {
     url = `${API_PROTO}://${API_HOST}${url}`
   }
-  const response = await fetch(url)
 
-  const data = await response.json()
+  let response = null
+  let data = null
+
+  try {
+    response = await fetch(url)
+
+    data = await response.json()
+
+  } catch(err) {
+    throw new Error(err)
+  }
+
   if (!response.ok) {
     throw new Error(data.errmsg)
   }

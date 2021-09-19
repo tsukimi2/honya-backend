@@ -1,4 +1,4 @@
-import { getCategories } from '../libs/apiUtils/category-api-utils'
+// import { getCategories } from '../libs/apiUtils/category-api-utils'
 import Shop from '../components/shop/Shop'
 
 const ShopPage = ({ initData }) => {
@@ -23,12 +23,27 @@ export async function getStaticProps() {
       const res = await fetch(`http://${API_HOST}${API_PREFIX}/products?&order=${order}&limit=${limit}`) // eslint-disable-line no-undef  
       const data = await res.json()
 
-      products = data && data.data && data.data.products ? data.data.products : []  
+      products = data && data.data && data.data.products ? data.data.products : []
     } catch(err) {
       products = []
     }
 
     return products
+  }
+
+  const getCategories = async () => {
+    let categories = null
+
+    try {
+      const res = await fetch(`http://${API_HOST}${API_PREFIX}/categories`) // eslint-disable-line no-undef  
+      const data = await res.json()
+
+      categories = data && data.data && data.data.categories ? data.data.categories : []
+    } catch(err) {
+      categories = []
+    }
+
+    return categories
   }
 
   const order = 'asc'
