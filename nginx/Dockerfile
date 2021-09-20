@@ -1,3 +1,3 @@
 FROM nginx
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./tsukuyomi.me.conf /etc/nginx/conf.d/tsukuyomi.me.conf
 EXPOSE 80
