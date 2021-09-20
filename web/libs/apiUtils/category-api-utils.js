@@ -13,9 +13,7 @@ export const getCategories = async ({ fullUrl=false }) => {
 
   try {
     response = await fetch(url)
-
     data = await response.json()
-
   } catch(err) {
     throw new Error(err)
   }
