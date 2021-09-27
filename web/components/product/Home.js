@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import _ from 'lodash-core'
 import LoadingOverlay from "../ui/LoadingOverlay"
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -9,19 +10,36 @@ import { getProducts } from '../../libs/apiUtils/product-api-utils'
 
 const Home = ({ isLoadingProductsByArrival, isLoadingProductsBySell, productsByArrival, productsBySell }) => {
   const { categories } = useCategories()
+
   const [searchData, setSearchData] = useState({
-    categories: [],
+    // categories: [],
     category: "",
     search: "",
     products: [],
     searched: false
   })
-  const { category, search, products, searched } = searchData
-  
-  useEffect(() => {
-    setSearchData({ ...searchData, categories })
-  }, [categories])
+  //const [categories, setCategories] = useState([])
 
+  //const [category, setCategory] = useState(false)
+  const { category, search, products, searched } = searchData
+
+  /*
+  useEffect(() => {
+    console.log('useEffect')
+    console.log('categories')
+    console.log(categories)
+console.log('update')      
+    // setSearchData({ ...searchData })
+
+  }, [categories])
+  */
+/*
+  useEffect(() => {
+console.log('useEffect')
+    setCategories([...fetchedCategories])
+  }, [fetchedCategories])
+  */
+  
   const handleSearchBarChange = name => evt => {    
     setSearchData({ ...searchData, [name]: evt.target.value })
   }
@@ -67,6 +85,36 @@ const Home = ({ isLoadingProductsByArrival, isLoadingProductsBySell, productsByA
       {
         (isLoadingProductsByArrival || isLoadingProductsBySell) && (<LoadingOverlay />)
       }
+            <Container fluid className="mt-4">
+        <SearchBar
+          categories={categories}
+          handleChange={handleSearchBarChange}
+          submitHandler={searchBarSubmitHandler}
+        />
+        { renderDisplayProducts() }
+        <Row>
+          <DisplayProducts
+            header="New Arrivals"
+            products={productsByArrival}
+          />
+        </Row>
+        <hr />
+        <Row>
+          <DisplayProducts
+            header="Best Sellers"
+            products={productsBySell}
+          />
+        </Row>
+      </Container>
+    </>
+  )
+
+  /*
+    return (
+    <>
+      {
+        (isLoadingProductsByArrival || isLoadingProductsBySell) && (<LoadingOverlay />)
+      }
       <Container fluid className="mt-4">
         <SearchBar
           categories={categories}
@@ -90,6 +138,7 @@ const Home = ({ isLoadingProductsByArrival, isLoadingProductsBySell, productsByA
       </Container>
     </>
   )
+  */
 }
 
 export default Home

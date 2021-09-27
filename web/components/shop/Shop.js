@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import _ from 'lodash'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -50,6 +51,7 @@ const Shop = ({
   initCategories, initProducts
 }) => {
   const { categories } = useCategories()
+  const [prevCategories, setPrevCategories] = useState([])
   const categoryHeader = 'Filter by categories'
   const categoryGroupName = 'category'
   const priceHeader = 'Filter by price'
@@ -68,11 +70,15 @@ const Shop = ({
   const [size, setSize] = useState(0)
   const [filteredProducts, setFilteredProducts] = useState(initProducts)
 
+  if(!(_.isEqual(categories, prevCategories))) {
+    setPrevCategories([...categories])
+    const transformedcategoryOpts = transformCategoryDataToCategoryOpts(categories)
+    setCategoryOpts([...transformedcategoryOpts])
+  }
+
   useEffect(() => {
-    const categoryOpts = transformCategoryDataToCategoryOpts(categories)
-    setCategoryOpts(categoryOpts)
     loadFilteredProducts(myFilters.filters)
-  }, [categories, myFilters])
+  }, [myFilters])
 
   const loadMore = async () => {
     let toSkip = skip + limit
@@ -134,6 +140,16 @@ const Shop = ({
     loadFilteredProducts(newFilters.filters)
     setMyFilters(newFilters)
   }
+/*
+  return (
+    <>
+      <Container fluid className="mt-4">
+        <Row>
+        </Row>
+      </Container>
+    </>
+  )
+*/
 
   return(
     <>

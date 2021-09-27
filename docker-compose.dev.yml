@@ -5,15 +5,13 @@ services:
     networks:
       - honya
   mongo:
-    image: 'mongo:4.4.7'
+    image: 'mongo'
     networks:
       - honya
   nginx:
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
-    image: osiris65/honya-nginx-0-1-0
-    container_name: honya-nginx
     restart: always
     ports:
       - '80:80'
@@ -27,8 +25,6 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile.dev
-    image: osiris65/honya-web-0-1-0
-    container_name: honya-web
     volumes:
       - /app/node_modules
       - ./web:/app
@@ -40,20 +36,21 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.dev
-    image: osiris65/honya-server-0-1-0
-    container_name: honya-server
     volumes:
       - /app/node_modules
       - ./server:/app
     environment:
-      - GOOGLE_OAUTH_CLIENT_ID
-      - GOOGLE_OAUTH_CLIENT_SECRET
-      - GOOGLE_OAUTH_CALLBACK_URL  
-      - MONGO_HOST
-      - MONGO_PORT
-      - REDIS_HOST
-      - REDIS_PORT
-      - JWT_SECRET
+      - GOOGLE_OAUTH_CLIENT_ID=765177302336-ppho0d0i2qkotm1290f1k92qp68bqcpa.apps.googleusercontent.com
+      - GOOGLE_OAUTH_CLIENT_SECRET=mH1JWxacesVCPEz7EK80TfRj
+      - GOOGLE_OAUTH_CALLBACK_URL=http://localhost/api/v1/auth/google/callback
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BRAINTREE_MERCHANT_ID=cv4sxp66w4xnm59b
+      - BRAINTREE_PUBLIC_KEY=bf5438dz7f6krw9w
+      - BRAINTREE_PRIVATE_KEY=b195ff1685bcc3a2654573ad46f2cd26
+      - JWT_SECRET=myjwtsecret
       - ACCESS_TOKEN_EXPIRES_IN=1d
       - ACCESS_TOKEN_EXPIRES_IN_SEC=86400
       - REFRESH_TOKEN_EXPIRES_IN=60d
@@ -61,9 +58,6 @@ services:
       - SALTROUNDS=10
       - NEXT_PUBLIC_API_PREFIX=/api/v1
       - NEXT_PUBLIC_API_HOST=honya.co.jp
-      - BRAINTREE_MERCHANT_ID
-      - BRAINTREE_PUBLIC_KEY
-      - BRAINTREE_PRIVATE_KEY
     depends_on:
       - redis
       - mongo

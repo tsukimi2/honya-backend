@@ -5,7 +5,7 @@ services:
     networks:
       - honya
   mongo:
-    image: 'mongo:4.4.7'
+    image: 'mongo'
     volumes:
       - honya-mongodb:/data/db
     ports:

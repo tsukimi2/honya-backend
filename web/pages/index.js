@@ -7,13 +7,10 @@ import HomeComponent from '../components/product/Home'
 export default function Home({ initProducts }) {
   const [productsByArrival, setProductsByArrival] = useState(initProducts.iniitProductsByArrival)
   const [productsBySell, setProductsBySell] = useState(initProducts.iniitProductsBySell)
-
-  // const { products: arrProductsByArrival, isLoading: isLoadingProductsByArrival } = useProducts('createdAt', 'desc', 6)
-  // const { products: arrProductsBySell, isLoading: isLoadingProductsBySell } = useProducts('sold', 'desc', 6)
   const { products: arrProductsByArrival, isLoading: isLoadingProductsByArrival } = useProducts({ sortBy: 'createdAt', order: 'desc', limit: 6}, true)
   const { products: arrProductsBySell, isLoading: isLoadingProductsBySell } = useProducts({ sortBy: 'sold', order: 'desc', limit: 6 }, true)
 
-  useEffect(() => {
+  useEffect(() => { 
     if(arrProductsByArrival && Array.isArray(arrProductsByArrival)) {    
       setProductsByArrival(arrProductsByArrival.slice())
     }
@@ -22,6 +19,10 @@ export default function Home({ initProducts }) {
       setProductsBySell(arrProductsBySell.slice())
     }
   }, [arrProductsByArrival, arrProductsBySell])
+
+  useEffect(() => {
+
+  }, [isLoadingProductsByArrival])
 
   return (
     <HomeComponent 
@@ -32,6 +33,15 @@ export default function Home({ initProducts }) {
     />
   )
 }
+
+/*
+    <HomeComponent 
+      isLoadingProductsByArrival={isLoadingProductsByArrival}
+      isLoadingProductsBySell={isLoadingProductsBySell}
+      productsByArrival={productsByArrival}
+      productsBySell={productsBySell}
+    />
+    */
 
 export async function getStaticProps() {
   const loadProducts = async (sortBy, order, limit) => {

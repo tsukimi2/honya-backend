@@ -1,4 +1,4 @@
-FROM node:14.17.3-alpine
+FROM node:14.17.6-alpine
 #FROM node:14
 
 # Install PM2
@@ -15,6 +15,7 @@ RUN apk add --no-cache \
       nodejs \
       yarn
 
+RUN apk --no-cache add --virtual builds-deps build-base python
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer

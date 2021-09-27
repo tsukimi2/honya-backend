@@ -26,7 +26,6 @@ const AuthContextProvider = (props) => {
 export default AuthContextProvider
 */
 
-
 const AuthContextProvider = (props) => {
   const [userInAuthContext, dispatch] = useReducer(authReducer, null, () => {
     const user = localStorage_get('user')

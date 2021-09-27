@@ -1,4 +1,3 @@
-// import { getCategories } from '../libs/apiUtils/category-api-utils'
 import Shop from '../components/shop/Shop'
 
 const ShopPage = ({ initData }) => {
