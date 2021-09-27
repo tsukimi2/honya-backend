@@ -16,8 +16,11 @@ services:
     image: 'osiris65/honya-nginx-0-1-0'
     restart: always
     ports:
-      - '80:80'
+      - "80:80"
+      - "443:443"
     mem_limit: 128m
+    volumes:
+      - ./nginx/ssl:/etc/ssl/certs/nginx/
     links:
       - api
     depends_on:
@@ -35,19 +38,22 @@ services:
     image: 'osiris65/honya-server-0-1-0'
     mem_limit: 128m
     environment:
-      - MONGO_HOST
-      - MONGO_PORT
-      - REDIS_HOST
-      - REDIS_PORT
-      - JWT_SECRET
+      - GOOGLE_OAUTH_CLIENT_ID=[key]
+      - GOOGLE_OAUTH_CLIENT_SECRET=[key]
+      - GOOGLE_OAUTH_CALLBACK_URL=[key]
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=[key]
       - ACCESS_TOKEN_EXPIRES_IN=1d
       - ACCESS_TOKEN_EXPIRES_IN_SEC=86400
       - REFRESH_TOKEN_EXPIRES_IN=60d
       - REFRESH_TOKEN_EXPIRES_IN_SEC=5184000
       - SALTROUNDS=10
-      - BRAINTREE_MERCHANT_ID
-      - BRAINTREE_PUBLIC_KEY
-      - BRAINTREE_PRIVATE_KEY
+      - BRAINTREE_MERCHANT_ID=[key]
+      - BRAINTREE_PUBLIC_KEY=[key]
+      - BRAINTREE_PRIVATE_KEY=[key]
     depends_on:
       - mongo
     networks:
