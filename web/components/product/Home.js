@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import _ from 'lodash-core'
+import { useState } from 'react'
 import LoadingOverlay from "../ui/LoadingOverlay"
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -12,33 +11,13 @@ const Home = ({ isLoadingProductsByArrival, isLoadingProductsBySell, productsByA
   const { categories } = useCategories()
 
   const [searchData, setSearchData] = useState({
-    // categories: [],
     category: "",
     search: "",
     products: [],
     searched: false
   })
-  //const [categories, setCategories] = useState([])
 
-  //const [category, setCategory] = useState(false)
   const { category, search, products, searched } = searchData
-
-  /*
-  useEffect(() => {
-    console.log('useEffect')
-    console.log('categories')
-    console.log(categories)
-console.log('update')      
-    // setSearchData({ ...searchData })
-
-  }, [categories])
-  */
-/*
-  useEffect(() => {
-console.log('useEffect')
-    setCategories([...fetchedCategories])
-  }, [fetchedCategories])
-  */
   
   const handleSearchBarChange = name => evt => {    
     setSearchData({ ...searchData, [name]: evt.target.value })
