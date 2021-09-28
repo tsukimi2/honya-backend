@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useProducts } from '../libs/apiUtils/product-api-utils'
-import { API_HOST, API_PREFIX } from '../config'
+import { API_PROTO, API_HOST, API_PREFIX } from '../config'
 import HomeComponent from '../components/product/Home'
 
 
@@ -34,21 +34,12 @@ export default function Home({ initProducts }) {
   )
 }
 
-/*
-    <HomeComponent 
-      isLoadingProductsByArrival={isLoadingProductsByArrival}
-      isLoadingProductsBySell={isLoadingProductsBySell}
-      productsByArrival={productsByArrival}
-      productsBySell={productsBySell}
-    />
-    */
-
 export async function getStaticProps() {
   const loadProducts = async (sortBy, order, limit) => {
     let products = null
 
     try {
-      const res = await fetch(`http://${API_HOST}${API_PREFIX}/products?sortBy=${sortBy}&order=${order}&limit=${limit}`) // eslint-disable-line no-undef  
+      const res = await fetch(`${API_PROTO}://${API_HOST}${API_PREFIX}/products?sortBy=${sortBy}&order=${order}&limit=${limit}`) // eslint-disable-line no-undef  
       const data = await res.json()
 
       products = data && data.data && data.data.products ? data.data.products : []  

@@ -64,36 +64,6 @@ const Home = ({ isLoadingProductsByArrival, isLoadingProductsBySell, productsByA
       {
         (isLoadingProductsByArrival || isLoadingProductsBySell) && (<LoadingOverlay />)
       }
-            <Container fluid className="mt-4">
-        <SearchBar
-          categories={categories}
-          handleChange={handleSearchBarChange}
-          submitHandler={searchBarSubmitHandler}
-        />
-        { renderDisplayProducts() }
-        <Row>
-          <DisplayProducts
-            header="New Arrivals"
-            products={productsByArrival}
-          />
-        </Row>
-        <hr />
-        <Row>
-          <DisplayProducts
-            header="Best Sellers"
-            products={productsBySell}
-          />
-        </Row>
-      </Container>
-    </>
-  )
-
-  /*
-    return (
-    <>
-      {
-        (isLoadingProductsByArrival || isLoadingProductsBySell) && (<LoadingOverlay />)
-      }
       <Container fluid className="mt-4">
         <SearchBar
           categories={categories}
@@ -117,7 +87,6 @@ const Home = ({ isLoadingProductsByArrival, isLoadingProductsBySell, productsByA
       </Container>
     </>
   )
-  */
 }
 
 export default Home

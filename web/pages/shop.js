@@ -1,4 +1,5 @@
 import Shop from '../components/shop/Shop'
+import { API_PROTO, API_HOST, API_PREFIX } from '../config'
 
 const ShopPage = ({ initData }) => {
   const categories = initData.initCategories
@@ -19,7 +20,7 @@ export async function getStaticProps() {
     let products = null
 
     try {
-      const res = await fetch(`http://${API_HOST}${API_PREFIX}/products?&order=${order}&limit=${limit}`) // eslint-disable-line no-undef  
+      const res = await fetch(`${API_PROTO}://${API_HOST}${API_PREFIX}/products?&order=${order}&limit=${limit}`) // eslint-disable-line no-undef  
       const data = await res.json()
 
       products = data && data.data && data.data.products ? data.data.products : []
@@ -34,7 +35,7 @@ export async function getStaticProps() {
     let categories = null
 
     try {
-      const res = await fetch(`http://${API_HOST}${API_PREFIX}/categories`) // eslint-disable-line no-undef  
+      const res = await fetch(`${API_PROTO}://${API_HOST}${API_PREFIX}/categories`) // eslint-disable-line no-undef  
       const data = await res.json()
 
       categories = data && data.data && data.data.categories ? data.data.categories : []

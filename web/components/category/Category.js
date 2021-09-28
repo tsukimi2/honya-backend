@@ -32,7 +32,7 @@ const Category = ({ initCategories }) => {
   const loadCategories = async () => {
     let data = []
     try {
-      const result = await getCategories()
+      const result = await getCategories({})
       data = result.data.categories
     } catch(err) {
       data = []
@@ -50,21 +50,6 @@ const Category = ({ initCategories }) => {
       setCategories([])
     }
   }, [])
-
-  // https://dev.to/danialdezfouli/what-s-wrong-with-the-async-function-in-useeffect-4jne
-  // https://dev.to/stlnick/useeffect-and-async-4da8
-  /*
-  useEffect(() => {
-    (async () => {
-      const data = await loadCategories()
-      setCategories(data)
-    })()
-
-    return () => {
-      //setCategories([])
-    }
-  })
-  */
 
   const addCategory = async (newCategory) => {    
     try {

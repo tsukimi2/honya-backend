@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap"
 import Category from "../../components/category/Category"
-import { API_HOST, API_PREFIX } from "../../config"
+import { API_PROTO, API_HOST, API_PREFIX } from "../../config"
 
 const CategoryPage = ({ initCategories }) => {
   return (
@@ -13,7 +13,7 @@ const CategoryPage = ({ initCategories }) => {
 export async function getStaticProps() {
   let initCategories = []
   try {
-    const res = await fetch(`http://${API_HOST}${API_PREFIX}/categories`) // eslint-disable-line no-undef  
+    const res = await fetch(`${API_PROTO}://${API_HOST}${API_PREFIX}/categories`) // eslint-disable-line no-undef
     const data = await res.json()
     initCategories = data && data.data && data.data.categories ? data.data.categories : []  
   } catch(err) {
