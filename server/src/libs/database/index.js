@@ -72,6 +72,7 @@ const database = ({ mongoose, logger }) => {
   }
 
   return {
+    clientOptions,
     connect,
     disconnect,
     getConnection,
