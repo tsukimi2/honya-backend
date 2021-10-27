@@ -9,7 +9,7 @@ docker-compose -f docker-compose.dev.local.yml up --build
 The application can then be accessed on your local web browser on localhost.
 
 The application uses the nextjs/expressjs/nginx/mongo and makes use of the following software topics.  If you are new to any of the following topics and wish to look for an example of how to implement, feel free to take a look at my code.
-- nextjs (a frontend framework built on top of reactjs that provides a bunch of additional benefits like hybrid SSG and SSR (Pre-render pages at build time (SSG) or request time (SSR) in a single project)
+- nextjs (a frontend framework built on top of reactjs that provides a bunch of additional benefits like image optimization and hybrid SSG and SSR (Pre-render pages at build time (SSG) or request time (SSR) in a single project)
    - See https://nextjs.org/ for a complete list of features offered by nextjs
 - expressjs
 - mongodb
