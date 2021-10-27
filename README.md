@@ -5,8 +5,15 @@ The application uses the nextjs/expressjs/nginx/mongo and makes use of the follo
    - See https://nextjs.org/ for a complete list of features offered by nextjs
 - expressjs
 - mongodb
-- docker
+- docker and docker-compose
 - travis CI (see the .travis.yml file for my implementation of a CI pipeline with docker)
 - dependency injection on the server code
 - nginx (covers the following concepts:
-   - aaa
+   - configuring nginx as reverse proxy
+   - client-side caching with Expires directive
+   - compression with gzip and brotli
+   - microcaching to cache dynamic content with proxy_cache_path directive
+   - https
+   - http2 (not implemented yet)
+   - rate limiting with limit_req and limit_req_zone directives
+   - caching with cache-control directive
