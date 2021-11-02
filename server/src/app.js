@@ -1,3 +1,4 @@
+import './libs/setupMongoose.js'
 import express from 'express'
 import passport from 'passport'
 import cookieParser from 'cookie-parser'
@@ -14,7 +15,7 @@ app.use(httpLogger)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-import './libs/setupMongoose.js'
+
 app.use(passport.initialize())
 app.use(passport.session())
 import './libs/setupPassport.js'

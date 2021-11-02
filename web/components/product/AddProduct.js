@@ -71,7 +71,7 @@ const AddProduct = () => {
     try {
       let data = new FormData() // eslint-disable-line no-undef
       data.append('name', values.name)
-      data.append('photo', values.photo)
+      data.append('file', values.file)
       data.append('description', values.description)
       data.append('category', values.category)
       data.append('price', values.price)
@@ -96,7 +96,7 @@ const AddProduct = () => {
       <Formik
         initialValues={{
           name: '',
-          photo: null,
+          file: null,
           description: '',
           price: '',
           category: '',
@@ -109,7 +109,7 @@ const AddProduct = () => {
         onSubmit={async (values, { resetForm, setFieldValue }) => {
           const isSubmitSuccess = await submitHandler(values)
           if(isSubmitSuccess) {
-            setFieldValue("photo", null)
+            setFieldValue("file", null)
             resetForm()
             fileRef.current.value = ''
           }
@@ -134,7 +134,7 @@ const AddProduct = () => {
                     type="file"
                     ref={fileRef}
                     onChange={(event) => {
-                      setFieldValue("photo", event.target.files[0])
+                      setFieldValue("file", event.target.files[0])
                     }}
                   />
                 </Col>

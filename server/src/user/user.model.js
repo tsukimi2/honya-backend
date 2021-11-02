@@ -3,8 +3,17 @@ import bcrypt from 'bcrypt'
 import _ from 'lodash'
 import DatabaseError from '../errors/DatabaseError.js'
 import { ROLE } from './user.constants.js'
+/*
 import config from '../libs/config/index.js'
+import { database } from '../di-container.js'
 
+const dburi = `mongodb://${config.get('db:mongo:host')}:${config.get('db:mongo:port')}/${config.get('db:mongo:schema')}`
+const connection = database.getConnection(dburi)
+
+console.log('user model')
+console.log('connection')
+console.log(connection)
+*/
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,

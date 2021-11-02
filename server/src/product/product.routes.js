@@ -3,11 +3,55 @@ import { body, query } from 'express-validator'
 import validator from '../libs/validator.js'
 import { isInEnum } from '../libs/validator.js'
 import { validateJwt } from '../auth/jwt.js'
-import { authController, productController } from '../di-container.js'
+// import { authController, productController, uploadFileController } from '../di-container.js'
+import { authController, productController, database } from '../di-container.js'
 import { DISPLAY } from '../libs/constants.js'
+// import multer from 'multer'
+// import {GridFsStorage} from 'multer-gridfs-storage'
+// import config from '../libs/config/index.js'
+import upload from '../photo-upload/upload.middleware.js'
+
 
 const router = express.Router()
 
+/*
+// const upload = uploadFileController.upload
+const clientOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+}
+console.log('product routes')
+console.log('dburl')
+const dburi = `mongodb://${config.get("db:mongo:host")}:${config.get("db:mongo:port")}/${config.get("db:mongo:schema")}`
+console.log(dburi)
+const dbconn = await database.getConnection(dburi)
+console.log('dbconn')
+console.log(dbconn)
+const storage = new GridFsStorage({
+  //url: `mongodb://${config.get("db:mongo:host")}:${config.get("db:mongo:port")}/${config.get("db:mongo:schema")}`,
+  //options: clientOptions,
+  db: dbconn,
+  file: (req, file) => {
+    const match = ["image/png", "image/jpeg"]
+    const filename = `${Date.now()}-${config.get("db:mongo:schema")}-${file.originalname}`
+
+    if (match.indexOf(file.mimetype) === -1) {
+      return filename
+    }
+
+    return {
+      bucketName: "photos",
+      filename
+    };
+  }
+});
+const upload = multer({
+  storage,
+  limits: { fileSize: config.get('app:img:max_img_size')}
+})
+*/
 
 router.get('/products/categories', productController.listCategories)
 router.get('/products/:id', productController.getProductById)
@@ -86,6 +130,8 @@ router.post('/products/search',
 router.post('/product',
   validateJwt,
   authController.isAdmin,
+  //upload.single('file'),
+  upload.single('file'),
   /*
   body('name')
     .isAlphanumeric('en-US', { ignore: /-_() / }).withMessage('product name must consist of alphanumeric characters only')
@@ -111,6 +157,7 @@ router.post('/product',
   validator,
   */
   productController.createProduct
+  // productController.createProduct
   //productController.create
 )
 

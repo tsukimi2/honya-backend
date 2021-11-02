@@ -139,7 +139,7 @@ export default class Repos {
     return docs
   }
 
-  async create(params) {  
+  async create(params) {
     if(!params || _.isEmpty(params)) {
       throw new ApplicationError('Invalid repos create params')
     }
@@ -151,7 +151,7 @@ export default class Repos {
         doc[key] = value
       }
 
-      await doc.save()
+      await doc.save()      
     } catch(err) {
       throw new DatabaseError('DatabaseError', { err })
     }

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import formidable from 'formidable'
 const IncomingForm = formidable
-// const form = new formidable.IncomingForm()
+// const form = formidable.IncomingForm()
 import fs from 'fs'
 import config from './libs/config/index.js'
 import logger from './libs/logger/index.js'
@@ -26,9 +26,11 @@ import Order from './order/order.model.js'
 import OrderRepos from './order/order.repos.js'
 import OrderService from './order/order.service.js'
 import OrderController from './order/order.controller.js'
+// import UploadFileController from './photo-upload/upload.controller.js'
 
 export const errHandler = ErrHandler({ logger })
 export const database = Database({ mongoose, logger })
+// export const uploadFileController = UploadFileController({ config, database })
 export const userRepos = new UserRepos(User)
 export const userService = UserService({ userRepos, config })
 export const categoryRepos = new CategoryRepos(Category)
@@ -38,9 +40,10 @@ export const authController = AuthController({ config, logger, userService })
 export const userController = UserController({ logger, userService })
 export const productRepos = new ProductRepos(Product)
 export const productService = ProductService({ productRepos, categoryRepos, config, fs })
-export const productController = ProductController({ productService, IncomingForm })
+export const productController = ProductController({ productService, config, logger, database })
 export const paymentService = PaymentService({ config })
 export const paymentController = PaymentController({ paymentService })
 export const orderRepos = new OrderRepos(Order)
 export const orderService = OrderService({ orderRepos })
 export const orderController = OrderController({ orderService })
+

@@ -1,13 +1,11 @@
-//import formidable from 'formidable'
+import mongoose from 'mongoose'
 import BadRequestError from '../errors/BadRequestError.js'
 import NotFoundError from '../errors/NotFoundError.js'
 import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
 import { DISPLAY } from '../libs/constants.js'
-import logger from '../libs/logger/index.js'
-//import Product from './product.model.js'
-//import fs from 'fs'
 
-const productController = ({ productService, IncomingForm }) => {
+
+const productController = ({ productService, config, logger, database }) => {
   const validateProductInput = (fields) => {
     const { name, description, price, category, quantity, sold, shipping } = fields
 
@@ -202,6 +200,7 @@ const productController = ({ productService, IncomingForm }) => {
   }
 
   const getPhoto = async (req, res, next) => {
+    /*
     const { productId } = req.params
     let photo = null
     const opts = { lean: true }
@@ -218,6 +217,30 @@ const productController = ({ productService, IncomingForm }) => {
 
     res.set('Content-Type', photo.contentType)
     return res.status(200).send(photo.data)
+    */
+    const dburi = `mongodb://${config.get('db:mongo:host')}:${config.get('db:mongo:port')}/${config.get('db:mongo:schema')}`
+    const gfs = database.getGfsConnection(dburi)
+
+    const { productId } = req.params
+    // let photo = null
+    const opts = { lean: true }
+
+    try {
+      const photoId = await productService.getPhoto(productId, opts)
+      const files = await gfs.find({ _id: photoId }).toArray()
+
+      if(!files[0] || files.length === 0) {
+        return next(new NotFoundError('product photo not found'))
+      }
+      const file = files[0]
+      if(!(file.contentType === 'image/jpeg' || file.contentType === 'image/png' || file.contentType === 'image/svg+xml')) {
+        return next(new NotFoundError('product photo not an image'))
+      }
+
+      gfs.openDownloadStream(photoId).pipe(res)
+    } catch(err) {
+      return next(new NotFoundError('product photo not found'), { err })
+    }
   }
 
   /*
@@ -237,52 +260,6 @@ const productController = ({ productService, IncomingForm }) => {
     next()
   }
 
-  const create = (req, res) => {  
-    let form = new formidable.IncomingForm();
-    form.keepExtensions = true;
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            return res.status(400).json({
-                error: 'Image could not be uploaded'
-            });
-        }
-        // check for all fields
-        const { name, description, price, category, quantity, shipping } = fields;
-
-        if (!name || !description || !price || !category || !quantity || !shipping) {
-            return res.status(400).json({
-                error: 'All fields are required'
-            });
-        }
-
-        let product = new Product(fields);
-
-        // 1kb = 1000
-        // 1mb = 1000000
-
-        if (files.photo) {
-            // console.log("FILES PHOTO: ", files.photo);
-            if (files.photo.size > 1000000) {
-                return res.status(400).json({
-                    error: 'Image should be less than 1mb in size'
-                });
-            }
-            product.photo.data = fs.readFileSync(files.photo.path);
-            product.photo.contentType = files.photo.type;
-        }
-
-        product.save((err, result) => {
-            if (err) {
-                console.log('PRODUCT CREATE ERROR ', err);
-                return res.status(400).json({
-                    error: errorHandler(err)
-                });
-            }
-            res.json(result);
-        });
-    });
-  };
-*/
   const createProduct = async (req, res, next) => {
     try {
       const form = new IncomingForm({ keepExtensions: true })
@@ -335,6 +312,107 @@ const productController = ({ productService, IncomingForm }) => {
     }
 
     return
+  }
+*/
+
+/*
+  const createProduct = async (req, res, next) => {
+    try {
+      const form = new IncomingForm({ keepExtensions: true })
+      //form.keepExtensions = true
+      form.parse(req, async (err, fields, files) => {
+        if(err) {
+          return next(new UnprocessableEntityError('failed to create product'), { err })
+        }
+
+        // validate product input
+        const validationResult = validateProductInput(fields)
+        if(!validationResult.isValid) {
+          return next(new BadRequestError(validationResult.errmsg))
+        }
+
+        // upload photo
+        try {
+          await upload(req, res)
+
+console.log(req.file)
+          if (req.file == undefined) {
+            throw new BadRequestError('no file has been selected')
+          }
+
+          logger.info('File has been uploaded')
+        } catch(err) {
+          throw new UnprocessableEntityError('Error when trying upload image', { err })
+        }
+        
+        let product = null
+        try {
+          product = await productService.createProduct(fields, files, req.file.id)
+        } catch(e) {
+          return next(new UnprocessableEntityError('failed to create product'), { err: e })
+        }
+        
+        const { _id, name, description, price, category, quantity, sold, shipping } = product
+        let result = {
+          _id,
+          name,
+          description,
+          price,
+          category,
+        }
+        if('quantity' in product) {
+          result['quantity'] = quantity
+        }
+        if('sold' in product) {
+          result['sold'] = sold
+        }
+        if('shipping' in product) {
+          result['shipping'] = shipping
+        }
+        if('photo' in product) {
+          result['photo'] = product.photo.data
+        }
+
+        return res.status(201).json({
+          data: result
+        })
+      })
+    } catch(err) {
+      return next(new UnprocessableEntityError('failed to create product'), { err })
+    }
+
+    return
+  }
+  */
+
+  const createProduct = async (req, res, next) => {
+    if(!req || !req.file || !req.file.id) {
+      throw new BadRequestError('no file has been selected')
+    }
+
+    const file = req.file
+    const fields = req.body
+
+    try {
+      // validate product input
+      const validationResult = validateProductInput(fields)
+      if(!validationResult.isValid) {
+        return next(new BadRequestError(validationResult.errmsg))
+      }
+    } catch(err) {
+      return next(new BadRequestError('BadRequestError', { err }))
+    }
+
+    let product = null
+    try {    
+      product = await productService.createProduct(fields, req.file.id)
+
+      return res.status(201).json({
+        product
+      })
+    } catch(err) {
+      return next(new UnprocessableEntityError('failed to create product'), { err })
+    }
   }
 
   const updateProduct = async (req, res, next) => {
@@ -390,16 +468,31 @@ const productController = ({ productService, IncomingForm }) => {
     } catch(err) {
       return next(new UnprocessableEntityError('failed to update product'), { err })
     }
-
-    return   
   }
 
   const deleteProduct = async (req, res, next) => {
     const { productId } = req.params
     let result = null
+    let product = null
 
     try {
-      result = await productService.deleteProduct({  _id: productId })
+      product = await productService.getProductById(productId)
+    } catch(err) {
+      return next(new NotFoundError('product to delete does not exist'), { err })
+    }
+
+    const dburi = `mongodb://${config.get('db:mongo:host')}:${config.get('db:mongo:port')}/${config.get('db:mongo:schema')}`
+    const gfs = database.getGfsConnection(dburi)
+    try {
+      const { photo:photoId } = product
+      gfs.delete(new mongoose.Types.ObjectId(photoId))
+      logger.info(`Photo chunks with file id ${photoId} deleted successfully`)
+    } catch(err) {
+      return next(new NotFoundError('failed to delete photo', { err }))
+    }
+
+    try {
+      result = await productService.deleteProduct({ _id: productId })
     } catch(err) {
       return next(new NotFoundError('failed to delete product'), { err })
     }
