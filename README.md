@@ -16,6 +16,7 @@ The application uses the nextjs/expressjs/nginx/mongo and makes use of the follo
 - docker and docker-compose
 - travis CI (see the .travis.yml file for my implementation of a CI pipeline with docker)
 - dependency injection on the server code
+- paypal and credit card payment implemented with Braintree
 - nginx (covers the following concepts:
    - configuring nginx as reverse proxy
    - client-side caching with Expires directive
