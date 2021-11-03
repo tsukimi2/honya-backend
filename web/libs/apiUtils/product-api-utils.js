@@ -1,7 +1,9 @@
 import useSWR from 'swr'
 import queryString from "query-string"
 import { API_PREFIX } from '../../config'
+import http from './http-common'
 
+/*
 export const createProduct = async (product) => {
   let data = null
 
@@ -9,8 +11,8 @@ export const createProduct = async (product) => {
     const response = await fetch(`${API_PREFIX}/product`, {
       method: 'POST',
       headers: {
-        Accept: 'multipart/form-data',
-        // Accept: 'application/json',
+        // Accept: 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
       body: product
     })
@@ -25,6 +27,53 @@ export const createProduct = async (product) => {
 
   return data.data
 }
+*/
+
+
+export const createProduct = async (product, file, onUploadProgress) => {
+  let data = null
+
+  try {
+    let formData = new FormData()
+    
+    for (const [key, value] of Object.entries(product)) {
+      formData.append(key, value)
+    }
+
+    const response = await http.post('/product', formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress,
+    })    
+    data = response.data
+
+    if(response.status !== 201) {
+      throw new Error(data.errmsg)
+    }
+  } catch(err) {
+    throw new Error(err)
+  }
+
+  return data.data
+}
+
+
+/*
+upload(file, onUploadProgress) {
+    let formData = new FormData();
+
+    formData.append("file", file);
+
+    return http.post("/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress,
+    });
+  }
+  */
+
 
 /*
 // export const useProducts = (sortBy, order='asc', limit=10) => {
