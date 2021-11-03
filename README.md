@@ -1,4 +1,10 @@
-This is an open source online bookstore application for my own learning purpose.  Please feel free to take a look at the code if you are interested.
+This is an open source online bookstore application for my own learning purpose.  The application has the following features:
+- Search/filter by categories and price range
+- Shopping cart
+- Paypal and credit card payment implemented with Braintree
+- OAuth2 authentication
+
+Please feel free to take a look at the code if you are interested.
 
 To get started on a local development environment, run
 
