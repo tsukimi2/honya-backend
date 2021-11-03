@@ -9,6 +9,7 @@ import { generateUserParams } from '../../../factories/userFactory.js'
 import { generateProductParams } from '../../../factories/productFactory.js'
 
 const API_PREFIX = config.get('app:api_prefix')
+const TEST_IMG_PATH = '/app/tests/img/mesopotamia.jpg'
 
 describe(`POST $(API_PREFIX}/product`, () => {
   let category1 = null
@@ -87,27 +88,34 @@ describe(`POST $(API_PREFIX}/product`, () => {
 
     it('should create product successfully with valid product params', async () => {
       const product = generateProductParams({})
+      let res = null
 
-      const res = await request(app)
+      try {
+        res = await request(app)
         .post(API_PREFIX + '/product')
         .set('Cookie', [`accessToken=${accessToken};refreshToken=${refreshToken};loginHash=${loginHash}`])
+        // .set('Content-Type', 'multipart/form-data')
         .field('name', product.name)
         .field('description', product.description)
         .field('price', product.price)
         .field('category', category1_id)
-        //.attach('image1', 'path/to/felix.jpeg')
+        .attach("file", TEST_IMG_PATH)
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(201)
+      } catch(err) {
+        console.log('err')
+        console.log(err)
+      }
 
-      expect(res.body.data).to.exist
-      expect(res.body.data).to.have.property('name').to.eq(product.name)
-      expect(res.body.data).to.have.property('description').to.eq(product.description)
-      expect(res.body.data).to.have.property('price').to.eq(product.price)
-      expect(res.body.data).to.have.property('category').to.eq(category1_id)
-      expect(res.body.data).to.not.have.property('quantity')
-      expect(res.body.data).to.have.property('sold').to.eq(0)
-      expect(res.body.data).to.not.have.property('shipping')
-      expect(res.body.data).to.not.have.property('photo')
+      expect(res.body.product).to.exist
+      expect(res.body.product).to.have.property('name').to.eq(product.name)
+      expect(res.body.product).to.have.property('description').to.eq(product.description)
+      expect(res.body.product).to.have.property('price').to.eq(product.price)
+      expect(res.body.product).to.have.property('category').to.eq(category1_id)
+      expect(res.body.product).to.not.have.property('quantity')
+      expect(res.body.product).to.have.property('sold').to.eq(0)
+      expect(res.body.product).to.not.have.property('shipping')
+      // expect(res.body.product).to.have.property('photo')
     })
 
     it('should create product successfully with full valid product params', async () => {
@@ -122,19 +130,19 @@ describe(`POST $(API_PREFIX}/product`, () => {
         .field('quantity', product.quantity)
         .field('sold', product.sold)
         .field('shipping', product.shipping)
-        //.attach('image1', 'path/to/felix.jpeg')
+        .attach('file', TEST_IMG_PATH)
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(201)
 
-      expect(res.body.data).to.exist
-      expect(res.body.data).to.have.property('name').to.eq(product.name)
-      expect(res.body.data).to.have.property('description').to.eq(product.description)
-      expect(res.body.data).to.have.property('price').to.eq(product.price)
-      expect(res.body.data).to.have.property('category').to.eq(category1_id)
-      expect(res.body.data).to.have.property('quantity').to.eq(product.quantity)
-      expect(res.body.data).to.property('sold').to.eq(product.sold)
-      expect(res.body.data).to.have.property('shipping').to.eq(product.shipping)
-      expect(res.body.data).to.not.have.property('photo')  
+      expect(res.body.product).to.exist
+      expect(res.body.product).to.have.property('name').to.eq(product.name)
+      expect(res.body.product).to.have.property('description').to.eq(product.description)
+      expect(res.body.product).to.have.property('price').to.eq(product.price)
+      expect(res.body.product).to.have.property('category').to.eq(category1_id)
+      expect(res.body.product).to.have.property('quantity').to.eq(product.quantity)
+      expect(res.body.product).to.property('sold').to.eq(product.sold)
+      expect(res.body.product).to.have.property('shipping').to.eq(product.shipping)
+      // expect(res.body.data).to.not.have.property('photo')  
     })
 
     it('should receive BadRequestError with empty product name, description, price, or cateogory name', async () => {
@@ -146,7 +154,7 @@ describe(`POST $(API_PREFIX}/product`, () => {
         //.set('Accept', 'application/json')
         .field('name', product.name)
         .field('description', '')
-        //.attach('image1', 'path/to/felix.jpeg')
+        .attach('file', TEST_IMG_PATH)
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(400)
 
@@ -164,7 +172,7 @@ describe(`POST $(API_PREFIX}/product`, () => {
         .field('description', product.description)
         .field('price', product.price)
         .field('category', product.category)
-        //.attach('image1', 'path/to/felix.jpeg')
+        .attach('file', TEST_IMG_PATH)
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(422)
 
@@ -224,7 +232,7 @@ describe(`POST $(API_PREFIX}/product`, () => {
         .field('description', product.description)
         .field('price', product.price)
         .field('category', product.category)
-        //.attach('image1', 'path/to/felix.jpeg')
+        .attach('file', TEST_IMG_PATH)
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(403)
 
@@ -243,7 +251,7 @@ describe(`POST $(API_PREFIX}/product`, () => {
         .field('description', product.description)
         .field('price', product.price)
         .field('category', product.category)
-        //.attach('image1', 'path/to/felix.jpeg')
+        .attach('file', TEST_IMG_PATH)
         //.attach('image2', imageBuffer, 'luna.jpeg')
         .expect(403)
 

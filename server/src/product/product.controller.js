@@ -5,7 +5,7 @@ import UnprocessableEntityError from '../errors/UnprocessableEntityError.js'
 import { DISPLAY } from '../libs/constants.js'
 
 
-const productController = ({ productService, config, logger, database }) => {
+const productController = ({ productService, config, logger, database, IncomingForm }) => {
   const validateProductInput = (fields) => {
     const { name, description, price, category, quantity, sold, shipping } = fields
 
@@ -200,24 +200,6 @@ const productController = ({ productService, config, logger, database }) => {
   }
 
   const getPhoto = async (req, res, next) => {
-    /*
-    const { productId } = req.params
-    let photo = null
-    const opts = { lean: true }
-
-    try {
-      photo = await productService.getPhoto(productId, opts)
-    } catch(err) {
-      return next(new NotFoundError('product photo not found'), { err })
-    }
-
-    if(!photo || (photo && (!photo.data || !photo.contentType))) {
-      return next(new NotFoundError('product photo not found'))
-    }
-
-    res.set('Content-Type', photo.contentType)
-    return res.status(200).send(photo.data)
-    */
     const dburi = `mongodb://${config.get('db:mongo:host')}:${config.get('db:mongo:port')}/${config.get('db:mongo:schema')}`
     const gfs = database.getGfsConnection(dburi)
 

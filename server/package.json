@@ -9,7 +9,7 @@
     "test": "npm run test:unit && npm run test:integration",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e && npm run test:snapshot",
     "test:unit": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r dotenv/config ./tests/api/unit/**/*.test.js",
-    "test:integration": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r dotenv/config --parallel=true ./tests/api/integration/**/*.test.js",
+    "test:integration": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r dotenv/config --parallel=false ./tests/api/integration/**/*.test.js",
     "test:e2e": "NODE_ENV=test ./node_modules/mocha/bin/mocha -r dotenv/config --timeout=30000 ./tests/e2e/**/*.test.js",
     "test:snapshot": "NODE_ENV=test jest --config=jest.config.json --detectOpenHandles --forceExit",
     "test:snapshot-update": "NODE_ENV=test jest --config=jest.config.json --updateSnapshot --detectOpenHandles --forceExit",

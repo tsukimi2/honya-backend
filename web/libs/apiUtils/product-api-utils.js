@@ -3,32 +3,6 @@ import queryString from "query-string"
 import { API_PREFIX } from '../../config'
 import http from './http-common'
 
-/*
-export const createProduct = async (product) => {
-  let data = null
-
-  try {
-    const response = await fetch(`${API_PREFIX}/product`, {
-      method: 'POST',
-      headers: {
-        // Accept: 'multipart/form-data',
-        "Content-Type": "multipart/form-data",
-      },
-      body: product
-    })
-    data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.errmsg)
-    }
-  } catch(err) {
-    throw new Error(err)
-  }
-
-  return data.data
-}
-*/
-
 
 export const createProduct = async (product, file, onUploadProgress) => {
   let data = null
