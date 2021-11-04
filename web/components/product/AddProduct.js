@@ -218,8 +218,6 @@ const AddProduct = () => {
       </Formik>
   )
 
-  // if (isError) return (<p>Error</p>)
-
   return (
     <>
       {
