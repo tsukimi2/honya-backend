@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react'
-import Image from 'next/image'
+import { useContext } from 'react'
+// import Image from 'next/image'
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import moment from 'moment'
@@ -11,9 +11,8 @@ import { addItemToCart, getNumItemsInCart } from '../../libs/utils/cartHelpers'
 import { CartContext } from '../../contexts/CartContextProvider'
 import styles from './ProductCard.module.css'
 import { API_PREFIX } from '../../config'
-import { getFile, useProductImage } from '../../libs/apiUtils/file-upload-api-utils'
 
-
+/* eslint-disable @next/next/no-img-element */
 const ProductCard = ({ id, name, description, price, category, createdAt, quantity, fullCard, shortCard, showAddToCardBtn }) => {
   // https://stackoverflow.com/questions/66756073/how-to-use-dynamic-link-in-next-js-image
   const photoUrl = `${API_PREFIX}/products/${id}/photo`
@@ -132,5 +131,6 @@ ProductCard.defaultProps = {
   shortCard: false,
   showAddToCardBtn: true,
 }
+/* eslint-disable @next/next/no-img-element */
 
 export default ProductCard

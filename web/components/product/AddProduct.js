@@ -19,6 +19,7 @@ import { useCategories } from '../../libs/apiUtils/category-api-utils'
 import LoadingOverlay from '../ui/LoadingOverlay'
 import ShowAlert from '../ui/ShowAlert'
 
+/* eslint-disable @next/next/no-img-element */
 const addProductValidationSchema = {
   name: Yup.string()
     .required('Required')
@@ -51,7 +52,6 @@ const AddProduct = () => {
   const [currentFile, setCurrentFile] = useState(null)
   const [previewImage, setPreviewImage] = useState(null)
   const [progress, setProgress] = useState(0)
-  const [message, setMessage] = useState('')
   const fileRef = useRef()
 
   const shippingOptList = [
@@ -61,9 +61,8 @@ const AddProduct = () => {
 
   const selectFile = (event) => {
     setCurrentFile(event.target.files[0])
-    setPreviewImage(URL.createObjectURL(event.target.files[0])),
-    setProgress(0),
-    setMessage('')
+    setPreviewImage(URL.createObjectURL(event.target.files[0])) // eslint-disable-line no-undef
+    setProgress(0)
   }
 
   useEffect(() => {
@@ -90,7 +89,6 @@ const AddProduct = () => {
         toastId: 'addProucdctSuccessToastId',
       })
       setProgress(0)
-      setMessage('')
       setCurrentFile(null)
       return true
     } catch(err) {
@@ -98,7 +96,6 @@ const AddProduct = () => {
         toastId: 'addProductFailToastId',
       })
       setProgress(0)
-      setMessage('Failed to upload the image')
       setCurrentFile(null)
     }
 
@@ -246,5 +243,6 @@ const AddProduct = () => {
     </>
   )
 }
+/* eslint-disable @next/next/no-img-element */
 
 export default WithAuth(WithAdmin(AddProduct))
