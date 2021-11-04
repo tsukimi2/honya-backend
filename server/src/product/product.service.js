@@ -104,7 +104,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
     return photo
   }
 
-  const createProduct = async (params, files) => {
+  const createProduct = async (params, uploadedImgId) => {
     try {
       const { category } = params
       const productParams = Object.assign({}, params)
@@ -121,6 +121,7 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
       productParams.category = categoryId
   
       // put photo into params
+      /*
       if(files && files.photo) {
         if(files.photo.size > config.get('app:img:max_img_size')) {
           throw new BadRequestError('photo max size exceeded')
@@ -134,8 +135,13 @@ const productService = ({ productRepos, categoryRepos, config, fs }) => {
           contentType: files.photo.type
         }
       }
+      */
+      if(uploadedImgId) {
+        productParams['photo'] = uploadedImgId
+      }
   
       // save product
+console.log('product saved')      
       return productRepos.create(productParams)
     } catch(err) {
       if(err instanceof BaseError) {

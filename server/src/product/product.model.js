@@ -32,8 +32,10 @@ const productSchema = mongoose.Schema({
     default: 0
   },
   photo: {
-    data: Buffer,
-    contentType: String
+    //data: Buffer,
+    //contentType: String
+    type: ObjectId,
+    ref: "photos.files",
   },
   shipping: {
     required: false,

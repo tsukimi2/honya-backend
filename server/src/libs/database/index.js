@@ -1,3 +1,10 @@
+export const clientOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+}
+
 const database = ({ mongoose, logger }) => {
   /*
   const connect = (dbUri) => {
@@ -17,17 +24,13 @@ const database = ({ mongoose, logger }) => {
   }
   */
 
+  let connections = {}
+  let gfsConnections = {}
+
   mongoose.Promise = global.Promise
 
-  const clientOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  }
-
   mongoose.connection.on('connected', () => {
-    logger.info('db connection opened...')
+    logger.info('db connection connected...')
   })
 
   mongoose.connection.on('error', err => {
@@ -46,21 +49,40 @@ const database = ({ mongoose, logger }) => {
     })
   })
 
-  let connections = {}
 
-  const connect = (dburi) => {
+  const connect = (dburi) => { 
     // connections[dburi] = mongoose.createConnection(dburi, clientOptions)
     connections[dburi] = mongoose.connect(dburi, clientOptions)
-    
+    const gfsconnect = mongoose.createConnection(dburi, clientOptions)
+
+    gfsconnect.once('open', () => {
+      gfsConnections[dburi] = new mongoose.mongo.GridFSBucket(gfsconnect.db, {
+        bucketName: 'photos'
+      })
+    })
+
     // connections[dburi].on('error', logger.error.bind(logger, 'db connection error>>'))
 
-/*
-    connections[dburi].once('open', () => {
-      logger.info('db connection opened...')
-    })
-*/
+//    connections[dburi].once('open', () => {
+//      logger.info('db connection opened...')
+//    })
     // return connection
   }
+
+/*
+  const connect = async (dburi) => {
+    connections[dburi] = await mongoose.connect(dburi, clientOptions)
+console.log('connections[dburi]')
+console.log(connections[dburi])
+
+//    mongoose.connection.once('open', () => {
+//      gfsConns[dburi] = new mongoose.mongo.GridFSBucket(connections[dburi].db, {
+//        bucketName: 'photos'
+//      })
+//    })
+  }
+  */
+
 
   const disconnect = dburi => {
     // mongoose.connection.close()
@@ -71,11 +93,16 @@ const database = ({ mongoose, logger }) => {
     return connections[dburi]
   }
 
+  const getGfsConnection = dburi => {
+    return gfsConnections[dburi]
+  }
+
   return {
     clientOptions,
     connect,
     disconnect,
     getConnection,
+    getGfsConnection,
   }
 }
 

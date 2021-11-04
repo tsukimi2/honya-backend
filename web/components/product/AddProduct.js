@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import ProgressBar from 'react-bootstrap/ProgressBar'
 import { MDBBtn } from 'mdb-react-ui-kit'
 import { Formik } from 'formik'
 import _ from 'lodash-core'
@@ -18,6 +19,7 @@ import { useCategories } from '../../libs/apiUtils/category-api-utils'
 import LoadingOverlay from '../ui/LoadingOverlay'
 import ShowAlert from '../ui/ShowAlert'
 
+/* eslint-disable @next/next/no-img-element */
 const addProductValidationSchema = {
   name: Yup.string()
     .required('Required')
@@ -47,12 +49,21 @@ const AddProduct = () => {
   const { categories, isLoading }= useCategories()
   const [loading, setLoading] = useState(isLoading)
   const [error] = useState(null)
+  const [currentFile, setCurrentFile] = useState(null)
+  const [previewImage, setPreviewImage] = useState(null)
+  const [progress, setProgress] = useState(0)
   const fileRef = useRef()
 
   const shippingOptList = [
     { id: "0", val: 'No' },
     { id: "1", val: 'Yes' }
   ]
+
+  const selectFile = (event) => {
+    setCurrentFile(event.target.files[0])
+    setPreviewImage(URL.createObjectURL(event.target.files[0])) // eslint-disable-line no-undef
+    setProgress(0)
+  }
 
   useEffect(() => {
     setOptListCategories(transformCategoriesToOptList(categories))
@@ -68,25 +79,24 @@ const AddProduct = () => {
   }
 
   const submitHandler = async (values) => {
-    try {
-      let data = new FormData() // eslint-disable-line no-undef
-      data.append('name', values.name)
-      data.append('photo', values.photo)
-      data.append('description', values.description)
-      data.append('category', values.category)
-      data.append('price', values.price)
-      data.append('quantity', values.quantity)
-      data.append('shipping', values.shipping)
+    setProgress(0)
 
-      await createProduct(data)
+    try {
+      await createProduct(values, currentFile, (event) => {
+        setProgress(Math.round((100 * event.loaded) / event.total))
+      })
       toast.success(`Add product ${values.name} successful`, {
         toastId: 'addProucdctSuccessToastId',
       })
+      setProgress(0)
+      setCurrentFile(null)
       return true
     } catch(err) {
       toast.error(`Add product ${values.name} failed due to ${err.message}`, {
         toastId: 'addProductFailToastId',
       })
+      setProgress(0)
+      setCurrentFile(null)
     }
 
     return false
@@ -96,7 +106,7 @@ const AddProduct = () => {
       <Formik
         initialValues={{
           name: '',
-          photo: null,
+          file: null,
           description: '',
           price: '',
           category: '',
@@ -109,7 +119,7 @@ const AddProduct = () => {
         onSubmit={async (values, { resetForm, setFieldValue }) => {
           const isSubmitSuccess = await submitHandler(values)
           if(isSubmitSuccess) {
-            setFieldValue("photo", null)
+            setFieldValue("file", null)
             resetForm()
             fileRef.current.value = ''
           }
@@ -126,19 +136,6 @@ const AddProduct = () => {
                 className="mb-3"
                 handleChange={handleChange}
               />
-
-              <Form.Group as={Row} controlId="file" className="mb-3">
-                <Form.Label column md={2}>Photo</Form.Label>
-                <Col md={10}>
-                  <Form.Control
-                    type="file"
-                    ref={fileRef}
-                    onChange={(event) => {
-                      setFieldValue("photo", event.target.files[0])
-                    }}
-                  />
-                </Col>
-              </Form.Group>
 
               <FormikInput
                 label="Description"
@@ -183,6 +180,32 @@ const AddProduct = () => {
                 handleChange={handleChange}
               />
 
+              <Form.Group as={Row} controlId="file" className="mb-3">
+                <Form.Label column md={2}>Photo</Form.Label>
+                <Col md={10}>
+                  <Form.Control
+                    type="file"
+                    ref={fileRef}
+                    onChange={(event) => {
+                      setFieldValue("file", event.target.files[0])
+                      selectFile(event)
+                    }}
+                  />
+                </Col>
+              </Form.Group>          
+
+              {
+                currentFile && <ProgressBar now={progress} min={0} max={100} />
+              }
+
+              {
+                previewImage && (
+                  <div>
+                    <img className="preview" src={previewImage} alt="" />
+                  </div>
+                )
+              }
+
               <div className={styles.submitBtncontainer}>
                 <MDBBtn rounded type="submit" color="primary" disabled={isSubmitting || !(_.isEmpty(errors))}>
                     Create Product
@@ -194,8 +217,6 @@ const AddProduct = () => {
 
       </Formik>
   )
-
-  // if (isError) return (<p>Error</p>)
 
   return (
     <>
@@ -220,5 +241,6 @@ const AddProduct = () => {
     </>
   )
 }
+/* eslint-disable @next/next/no-img-element */
 
 export default WithAuth(WithAdmin(AddProduct))

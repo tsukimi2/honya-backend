@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
-import Image from 'next/image'
+// import Image from 'next/image'
 import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -14,12 +14,14 @@ import moment from 'moment'
 import slugify from 'react-slugify'
 import { CartContext } from '../../contexts/CartContextProvider'
 import { addItemToCart, getNumItemsInCart } from '../../libs/utils/cartHelpers'
+import { API_PREFIX } from '../../config'
 
-
+/* eslint-disable @next/next/no-img-element */
 const HorizontalProductCard = ({
   id, name, description, price, category, createdAt, quantity, count, showAddToCardBtn, showCartUpdate, handleCountChange, handleRemoveProduct
 }) => {
-  const photoUrl = '/images/ancient_greece.jpg'
+  //const photoUrl = '/images/ancient_greece.jpg'
+  const photoUrl = `${API_PREFIX}/products/${id}/photo`
   const slug = slugify(name)
   const { dispatch: cartDispatch } = useContext(CartContext)
   const router = useRouter()
@@ -70,12 +72,12 @@ const HorizontalProductCard = ({
           <Col md={3}>
             <Card.Body>
             <Row>
-              <Image
+              <img
                 src={photoUrl}
                 alt='name'
                 layout="responsive"
-                width={45}
-                height={60}
+                width={245}
+                height={260}
                 onClick={handleForwardLink}
               />
             </Row>
@@ -162,5 +164,6 @@ HorizontalProductCard.defaultProps = {
   showAddToCardBtn: true,
   showCartUpdate: false,
 }
+/* eslint-disable @next/next/no-img-element */
 
 export default HorizontalProductCard

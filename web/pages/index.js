@@ -11,11 +11,11 @@ export default function Home({ initProducts }) {
   const { products: arrProductsBySell, isLoading: isLoadingProductsBySell } = useProducts({ sortBy: 'sold', order: 'desc', limit: 6 }, true)
 
   useEffect(() => { 
-    if(arrProductsByArrival && Array.isArray(arrProductsByArrival)) {    
+    if(arrProductsByArrival && Array.isArray(arrProductsByArrival)) {       
       setProductsByArrival(arrProductsByArrival.slice())
     }
 
-    if(arrProductsBySell && Array.isArray(arrProductsBySell)) {
+    if(arrProductsBySell && Array.isArray(arrProductsBySell)) {  
       setProductsBySell(arrProductsBySell.slice())
     }
   }, [arrProductsByArrival, arrProductsBySell])
